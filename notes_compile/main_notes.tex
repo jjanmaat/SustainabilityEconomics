@@ -1,0 +1,58 @@
+\documentclass[11pt, letterpaper, twoside]{book} % or scrreprt / report
+
+% 1. Convert Beamer frame/slide commands into book paragraphs
+\usepackage{beamerarticle}
+\usepackage[margin=1in]{geometry}
+\usepackage{hyperref}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{booktabs}
+
+% 3. Optional: Customize Chapter / Section headings
+% \usepackage{titlesec}
+
+% Import shared commands, packages, and custom macros
+\input{../setup/preamble.tex}
+
+% Process only one chapter worth of notes
+\includeonly{../lectures/lecture-02.tex}
+
+\title{\textbf{Sustainability Economics: Complete Lecture Notes}}
+\author{John Janmaat \\ \small Economics, Philosophy and Political Science, The University of British Columbia}
+\date{Academic Year 2026--2027}
+
+\begin{document}
+	
+	\frontmatter
+	\maketitle
+	\tableofcontents
+	
+	\chapter*{Course Overview \& Syllabus Summary}
+	\addcontentsline{toc}{chapter}{Course Overview \& Syllabus Summary}
+	What is the connection between economics and sustainability?  When people talk about economics, often they are talking about something to do with money.  How people acquire it and what they do with it.  When people talk about sustainability, often they are talking about the environment, how it is changing, and whether or not those changes are good.  Where do these two things come together?  That intersection often seems to be about the way that people are acquiring and using money is changing the environment in ways that are not good.
+	
+	\mainmatter
+	
+	% ==========================================
+	% PART I: FOUNDATIONS
+	% ==========================================
+	\part{Foundations \& Basic Principles}
+	
+	\chapter{Introduction \& Key Concepts}
+	\input{../lectures/lecture-01.tex}
+	
+	% \chapter{Methodology and Analytical Tools}
+	% \input{../lectures/lecture-02.tex}
+	
+	% ==========================================
+	% PART II: ADVANCED TOPICS
+	% ==========================================
+	% \part{Advanced Applications}
+	
+	\chapter{Hermit Economics}
+	\input{../lectures/lecture-02.tex}
+	
+	\backmatter
+	% Optional: Bibliography or Index
+	% \printbibliography
+	
+\end{document}
