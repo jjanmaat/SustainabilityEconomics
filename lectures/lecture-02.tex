@@ -17,24 +17,45 @@
 
 % Frame 1
 \begin{frame}{Hermit System}
-	% \begin{columns}
-		% \column{0.6\textwidth}
-			\begin{itemize}
-				\item A system is a collection of elements and their connections.
-				\item A social ecological system contains elements in both the social (human) and ecological (nature) domains, and has connections crossing between the domains.
-				\item A system is complex when there are 'emergent' properties that cannot be predicted looking at elements in isolation.
-				\item A system is adaptive if it continuously evolves or changes in response to internal and external forces.
-			\end{itemize}
-		% \column{0.4\textwidth}
-		% 	\centering
-		%	\includegraphics{SESgraphic.png}
-	% \end{columns}
+	\begin{itemize}
+		\item Hermit,
+		\begin{itemize}
+			\item The social element of the social ecological system.
+			\item Contributes labour and consumes the fruits of that labour.
+		\end{itemize}
+		\item Field,
+		\begin{itemize}
+			\item One ecological element of the system.
+			\item Produces grain, with labour as the main input.
+		\end{itemize}
+		\item Lake.
+		\begin{itemize}
+			\item One ecological element of the system.
+			\item Produces fish, with fishing effort (time spent fishing) as the main input.
+		\end{itemize}
+	\end{itemize}
 \end{frame}
 
-\begin{frame}{Systems}
-	\centering
-	\includegraphics<presentation>[width=0.6\linewidth]{SESgraphic.png}
-	\includegraphics<article>[width=0.8\linewidth]{SESgraphic.png}
+\mode<article>{
+	The hermit can apply their time either to labour in the field, growing grain, or effort at the lake to catch fish.  The more labour applied in the field, the more grain that the hermit harvests.  Likewise, the more effort devoted to fishing, the more fish that will be caught.
+	
+	
+}
+
+\begin{frame}{Hermit System}
+	\begin{tikzpicture}
+		% Define and place the nodes
+		\node [circle, draw] at (3,3) (hermit) {Hermit};
+		\node [circle, draw] at (1,1) (field) {Field};
+		\node [circle, draw] at (5,1) (lake) {Lake};
+		
+		% Draw edges
+		\draw [->, thick] (hermit) to[bend left=20] node[above, sloped] {labour} (field);
+		\draw [->, thick] (field) to[bend left=20] node[above, sloped] {grain} (hermit);
+		\draw [->, thick] (hermit) to[bend left=20] node[above, sloped] {effort} (lake);
+		\draw [->, thick] (lake) to[bend left=20] node[above, sloped] {fish} (hermit);
+		\draw [->, thick] (field) to[bend right=20] node[above, sloped] {sediment} (lake);
+	\end{tikzpicture}
 \end{frame}
 
 % Interspersed notes text between slides
