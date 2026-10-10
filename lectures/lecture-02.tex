@@ -38,11 +38,11 @@
 
 \mode<article>{
 	The hermit can apply their time either to labour in the field, growing grain, or effort at the lake to catch fish.  The more labour applied in the field, the more grain that the hermit harvests.  Likewise, the more effort devoted to fishing, the more fish that will be caught.
-	
-	
+		
 }
 
 \begin{frame}{Hermit System}
+	\centering
 	\begin{tikzpicture}
 		% Define and place the nodes
 		\node [circle, draw] at (3,3) (hermit) {Hermit};
@@ -67,21 +67,69 @@
 			\item The technology behaves the way that physics, chemistry, etc. require it to.
 			\item All models are wrong, some are useful.
 		\end{itemize}
+		\item Three measures are commonly used to describe production at each input level.
+		\begin{itemize}
+			\item \emph{Total Product} is the total output produced given a particular input level.
+			\item \emph{Average Product} is the total product divided by the input level.
+			\item \emph{Marginal Product} is how much the total output changes if the level of input is changed by a small amount.
+		\end{itemize}
 	\end{itemize}
 \end{frame}
 
 \begin{frame}{Production Functions}
+	\centering
 	\includegraphics[width=0.8\textwidth]{HermitProdFun.png}
 \end{frame}
+
+\begin{frame}{Total, Average and Marginal Product}
+	\begin{itemize}
+		\item Total Product (TP) and Average Product (AP) are based on a level of input.
+		\[
+		AP = TP / L
+		\]
+		\begin{itemize}
+			\item $L$ can be any input, not just labour.
+		\end{itemize}
+		\item Marginal Product (MP) is based on a small change in in the level of an input, around a specific level of that input.
+		\[
+		MP = \Delta TP / \Delta L = \partial TP / \partial L
+		\]
+		\begin{itemize}
+			\item The marginal product measures how much extra output would be produced if a small amount of extra input is used.
+			\item It is the slope of a line that just touches the production function at the input level.
+		\end{itemize}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Total, Average and Marginal Product}
+	\centering
+	\begin{tikzpicture}
+		\node[anchor=south west, inner sep=0] (image) at (0,0) {
+			\includegraphics[width=0.8\textwidth]{HermitProdFunTP.png}
+		};
+		\begin{scope}[x={(image.south east)},y={(image.north west)}]
+			\node[fill=white, rectangle, align=left] at (0.65, 0.7) {$TP = .$\\ $AP = ./. = $};
+			\node[fill=white, rectangle, align=left] at (0.65, 0.3) {$TP = .$\\ $AP = ./. = $};
+		\end{scope}
+	\end{tikzpicture}
+\end{frame}
+
+\begin{frame}{Total, Average and Marginal Product}
+	\centering
+	\begin{tikzpicture}
+		\node[anchor=south west, inner sep=0] (image) at (0,0) {
+			\includegraphics[width=0.8\textwidth]{HermitProdFunMP.png}
+		};
+		\begin{scope}[x={(image.south east)},y={(image.north west)}]
+			\node[fill=white, rectangle, align=left] at (0.7, 0.7) {$MP = \Delta TP / \Delta L$ \\ $MP = ./. = $};
+			\node[fill=white, rectangle, align=left] at (0.7, 0.3) {$MP = \Delta TP / \Delta L$ \\ $MP = ./. = $};
+		\end{scope}
+	\end{tikzpicture}
+\end{frame}
+
 % Interspersed notes text between slides
 \mode<article>{
 	\subsection{Detailed Explanation of Concept 1}
 	While the slide highlights the main points, it is important to note that the theoretical model relies on two primary assumptions...
 }
 
-% Frame 2
-\begin{frame}{Mathematical Representation}
-	\begin{equation*}
-		f(x) = \alpha + \beta x + \varepsilon
-	\end{equation*}
-\end{frame}
