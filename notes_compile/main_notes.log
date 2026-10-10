@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.28 (TeX Live 2025/Debian) (preloaded format=pdflatex 2026.10.9)  9 OCT 2026 13:22
+This is pdfTeX, Version 3.141592653-2.6-1.40.28 (TeX Live 2025/Debian) (preloaded format=pdflatex 2026.10.9)  9 OCT 2026 20:48
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -648,7 +648,87 @@ File: pgfmodulematrix.code.tex 2025-08-29 v3.1.11a (3.1.11a)
 (/usr/share/texlive/texmf-dist/tex/generic/pgf/frontendlayer/tikz/libraries/tik
 zlibrarytopaths.code.tex
 File: tikzlibrarytopaths.code.tex 2025-08-29 v3.1.11a (3.1.11a)
-))))
+)))
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/frontendlayer/tikz/libraries/tik
+zlibraryshapes.code.tex
+File: tikzlibraryshapes.code.tex 2025-08-29 v3.1.11a (3.1.11a)
+
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/frontendlayer/tikz/libraries/tik
+zlibraryshapes.geometric.code.tex
+File: tikzlibraryshapes.geometric.code.tex 2025-08-29 v3.1.11a (3.1.11a)
+
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/libraries/shapes/pgflibraryshape
+s.geometric.code.tex
+File: pgflibraryshapes.geometric.code.tex 2025-08-29 v3.1.11a (3.1.11a)
+))
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/frontendlayer/tikz/libraries/tik
+zlibraryshapes.misc.code.tex
+File: tikzlibraryshapes.misc.code.tex 2025-08-29 v3.1.11a (3.1.11a)
+
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/libraries/shapes/pgflibraryshape
+s.misc.code.tex
+File: pgflibraryshapes.misc.code.tex 2025-08-29 v3.1.11a (3.1.11a)
+))
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/frontendlayer/tikz/libraries/tik
+zlibraryshapes.symbols.code.tex
+File: tikzlibraryshapes.symbols.code.tex 2025-08-29 v3.1.11a (3.1.11a)
+
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/libraries/shapes/pgflibraryshape
+s.symbols.code.tex
+File: pgflibraryshapes.symbols.code.tex 2025-08-29 v3.1.11a (3.1.11a)
+))
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/frontendlayer/tikz/libraries/tik
+zlibraryshapes.arrows.code.tex
+File: tikzlibraryshapes.arrows.code.tex 2025-08-29 v3.1.11a (3.1.11a)
+
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/libraries/shapes/pgflibraryshape
+s.arrows.code.tex
+File: pgflibraryshapes.arrows.code.tex 2025-08-29 v3.1.11a (3.1.11a)
+))
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/frontendlayer/tikz/libraries/tik
+zlibraryshapes.callouts.code.tex
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/libraries/shapes/pgflibraryshape
+s.callouts.code.tex))
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/frontendlayer/tikz/libraries/tik
+zlibraryshapes.multipart.code.tex
+File: tikzlibraryshapes.multipart.code.tex 2025-08-29 v3.1.11a (3.1.11a)
+
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/libraries/shapes/pgflibraryshape
+s.multipart.code.tex
+File: pgflibraryshapes.multipart.code.tex 2025-08-29 v3.1.11a (3.1.11a)
+\pgfnodepartlowerbox=\box69
+\pgfnodeparttwobox=\box70
+\pgfnodepartthreebox=\box71
+\pgfnodepartfourbox=\box72
+\pgfnodeparttwentybox=\box73
+\pgfnodepartnineteenbox=\box74
+\pgfnodeparteighteenbox=\box75
+\pgfnodepartseventeenbox=\box76
+\pgfnodepartsixteenbox=\box77
+\pgfnodepartfifteenbox=\box78
+\pgfnodepartfourteenbox=\box79
+\pgfnodepartthirteenbox=\box80
+\pgfnodeparttwelvebox=\box81
+\pgfnodepartelevenbox=\box82
+\pgfnodeparttenbox=\box83
+\pgfnodepartninebox=\box84
+\pgfnodeparteightbox=\box85
+\pgfnodepartsevenbox=\box86
+\pgfnodepartsixbox=\box87
+\pgfnodepartfivebox=\box88
+)))
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/libraries/pgflibraryarrows.meta.
+code.tex
+File: pgflibraryarrows.meta.code.tex 2025-08-29 v3.1.11a (3.1.11a)
+\pgfarrowinset=\dimen291
+\pgfarrowlength=\dimen292
+\pgfarrowwidth=\dimen293
+\pgfarrowlinewidth=\dimen294
+)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/frontendlayer/tikz/libraries/tik
+zlibrarypositioning.code.tex
+File: tikzlibrarypositioning.code.tex 2025-08-29 v3.1.11a (3.1.11a)
+))
 (/usr/share/texlive/texmf-dist/tex/latex/natbib/natbib.sty
 Package: natbib 2010/09/13 8.31b (PWD, AO)
 \bibhang=\skip58
@@ -685,13 +765,13 @@ LaTeX Font Info:    ... okay on input line 23.
 (/usr/share/texlive/texmf-dist/tex/context/base/mkii/supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
 \scratchcounter=\count346
-\scratchdimen=\dimen291
-\scratchbox=\box69
+\scratchdimen=\dimen295
+\scratchbox=\box89
 \nofMPsegments=\count347
 \nofMParguments=\count348
 \everyMPshowfont=\toks45
 \MPscratchCnt=\count349
-\MPscratchDim=\dimen292
+\MPscratchDim=\dimen296
 \MPnumerator=\count350
 \makeMPintoPDFobject=\count351
 \everyMPtoPDFconversion=\toks46
@@ -797,7 +877,7 @@ File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 ] [2]
 Chapter 1.
 (../lectures/lecture-01.tex
-<../lectures/images/SESgraphic.png, id=72, 304.13625pt x 304.13625pt>
+<../lectures/images/SESgraphic.png, id=92, 304.13625pt x 304.13625pt>
 File: ../lectures/images/SESgraphic.png Graphic file (type png)
 <use ../lectures/images/SESgraphic.png>
 Package pdftex.def Info: ../lectures/images/SESgraphic.png  used on input line 
@@ -807,33 +887,48 @@ Package pdftex.def Info: ../lectures/images/SESgraphic.png  used on input line
 
 ]) [4 <../lectures/images/SESgraphic.png>]
 Chapter 2.
-(../lectures/lecture-02.tex) [5
+(../lectures/lecture-02.tex [5
 
-] [6
+]
+<../lectures/code/HermitProdFun.png, id=119, 433.62pt x 289.08pt>
+File: ../lectures/code/HermitProdFun.png Graphic file (type png)
+<use ../lectures/code/HermitProdFun.png>
+Package pdftex.def Info: ../lectures/code/HermitProdFun.png  used on input line
+ 81.
+(pdftex.def)             Requested size: 375.80544pt x 250.5492pt.
+ [6 <../lectures/code/HermitProdFun.png (PNG copy)>]
+<../lectures/code/HermitProdFunTP.png, id=130, 433.62pt x 289.08pt>
+File: ../lectures/code/HermitProdFunTP.png Graphic file (type png)
+<use ../lectures/code/HermitProdFunTP.png>
+Package pdftex.def Info: ../lectures/code/HermitProdFunTP.png  used on input li
+ne 108.
+(pdftex.def)             Requested size: 375.80544pt x 250.5492pt.
+<../lectures/code/HermitProdFunMP.png, id=131, 433.62pt x 289.08pt>
+File: ../lectures/code/HermitProdFunMP.png Graphic file (type png)
+<use ../lectures/code/HermitProdFunMP.png>
+Package pdftex.def Info: ../lectures/code/HermitProdFunMP.png  used on input li
+ne 121.
+(pdftex.def)             Requested size: 375.80544pt x 250.5492pt.
 
-] (./main_notes.aux)
+Underfull \vbox (badness 5878) has occurred while \output is active []
+
+ [7 <../lectures/code/HermitProdFunTP.png (PNG copy)>]) [8 <../lectures/code/He
+rmitProdFunMP.png (PNG copy)>] (./main_notes.aux)
  ***********
 LaTeX2e <2025-11-01>
 L3 programming layer <2026-01-19>
  ***********
-
-
-Package rerunfilecheck Warning: File `main_notes.out' has changed.
-(rerunfilecheck)                Rerun to get outlines right
-(rerunfilecheck)                or use package `bookmark'.
-
-Package rerunfilecheck Info: Checksums for `main_notes.out':
-(rerunfilecheck)             Before: 1F3FCF5FB6BB85935462AEABD6BC358A;1047
-(rerunfilecheck)             After:  BF908D9D6D59036897509ECD204795E3;1676.
+Package rerunfilecheck Info: File `main_notes.out' has not changed.
+(rerunfilecheck)             Checksum: BF908D9D6D59036897509ECD204795E3;1676.
  ) 
 Here is how much of TeX's memory you used:
- 22903 strings out of 469396
- 428556 string characters out of 5467330
- 795060 words of memory out of 5000000
- 51084 multiletter control sequences out of 15000+600000
+ 25306 strings out of 469396
+ 497609 string characters out of 5467330
+ 892907 words of memory out of 5000000
+ 53430 multiletter control sequences out of 15000+600000
  637992 words of font info for 77 fonts, out of 8000000 for 9000
  81 hyphenation exceptions out of 8191
- 118i,7n,124p,577b,473s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 118i,7n,124p,577b,826s stack positions out of 10000i,1000n,20000p,200000b,200000s
  </home/jjanmaat/.texlive2025/texmf-var/fonts/pk/ljfour/jknappen/ec/tcrm1095.
 600pk></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb>
 </usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/
@@ -842,10 +937,10 @@ texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/share/texlive
 /texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb></usr/share/texlive/texmf-
 dist/fonts/type1/public/amsfonts/cm/cmsl10.pfb></usr/share/texlive/texmf-dist/f
 onts/type1/public/amsfonts/cm/cmti10.pfb>
-Output written on main_notes.pdf (12 pages, 151810 bytes).
+Output written on main_notes.pdf (14 pages, 406120 bytes).
 PDF statistics:
- 155 PDF objects out of 1000 (max. 8388607)
- 122 compressed objects within 2 object streams
- 35 named destinations out of 1000 (max. 500000)
- 58 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 195 PDF objects out of 1000 (max. 8388607)
+ 157 compressed objects within 2 object streams
+ 45 named destinations out of 1000 (max. 500000)
+ 105 words of extra memory for PDF output out of 10000 (max. 10000000)
 
