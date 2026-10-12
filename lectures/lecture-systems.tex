@@ -1,0 +1,129 @@
+%! TEX root = ../notes/main_notes.tex
+
+\lecture{The Physical System}{lec-01}
+
+% Only appears in book/notes mode
+\mode<article>{
+	\section{Systems}
+	A system is a collection of entities (or elements) and the connections between them.  To understand a system, we need to understand the entities and their connections.  Our goal in this course is to develop an understanding of the relationship between the economy and the environment by looking at the elements that make up the economy and their relationship with elements that make up the environment.  To do so, we will proceed by building a model of a \emph{complex adaptive social ecological system}. 
+	
+	The system we inhabit, and that we will try to understand, is complex.  This means that the system as a whole exhibits properties that cannot be explained by looking at any element itself.  It is adaptive in that it changes in response to internal and external pressures.
+	
+	\begin{note}
+		Something of note.
+	\end{note}
+}
+
+% Frame 1
+\begin{frame}{Systems}
+	% \begin{columns}
+		% \column{0.6\textwidth}
+			\begin{itemize}
+				\item A system is a collection of elements and their connections.
+				\item A social ecological system contains elements in both the social (human) and ecological (nature) domains, and has connections crossing between the domains.
+				\item A system is complex when there are 'emergent' properties that cannot be predicted looking at elements in isolation.
+				\item A system is adaptive if it continuously evolves or changes in response to internal and external forces.
+			\end{itemize}
+		% \column{0.4\textwidth}
+		% 	\centering
+		%	\includegraphics{SESgraphic.png}
+	% \end{columns}
+\end{frame}
+
+\begin{frame}{Systems}
+	\centering
+	\includegraphics<presentation>[width=0.6\linewidth]{SESgraphic.png}
+	\includegraphics<article>[width=0.8\linewidth]{SESgraphic.png}
+\end{frame}
+
+% Interspersed notes text between slides
+\mode<article>{
+	When we think about systems, we need to consider scale.  If we consider the scale of ...
+}
+
+% Frame 2
+\begin{frame}{Scales}
+	\begin{itemize}
+		\item What constitutes elements of a system depends on the physical scale at which we are contemplating the system.
+		\begin{itemize}
+			\item At the atomic scale, atoms are the elements.
+			\item At the cosmic scale, galaxies are the elements.
+			\item What are the elements at the human scale?
+		\end{itemize}	
+		\item What the connections between elements are depends on the physical scale and the temporal scale chosen.
+		\begin{itemize}
+			\item How long does it take for the connection to change something for the elements that we are interested in?
+			\item For the movement of atoms ...
+			\item For the movement of galaxies ...
+			\item For the human issues we are concerned about?
+		\end{itemize}
+	\end{itemize}
+\end{frame}
+
+\mode<article>{
+	In both the natural and social systems, researchers try to identify patterns in the systems that they are studying.  Those patterns emerge from the interactions between the elements that make up the system.  When systems are large and complex, the discipline typically finds ways to describe the patterns without examining the detail of the interacting entities that leads to the pattern.
+	
+	Cosmologists studying the movement of galaxies do not spend much time considering the movement of individual hydrogen atoms.  However, it is the movement of those individual hydrogen atoms, under the influence of gravity, that leads to the formation of stars, and that leads to stars spinning together in galaxies.
+	
+	Often, the disciplines have observed or thought deeply about the entities that they are interested in, and arrived at relationships - often mathematical - that represent the patterns that they observe.
+	
+	In chemistry, the relationship $PV = nRT$ is known at the Ideal Gas Law.  It is the relationship between pressure ($P$), volume ($V$) and temperature ($T$).  The amount of gas in the volume is ($n$) in units of moles, and $R$ is the ideal gas constant, expressed the the appropriate units.  A mole is Avagadro's number of atoms.  This relationship expresses how temperature, which is a measure of how much energy atoms have, and the pressure that they are exerting within a particular volume.  The physics of the situation is that the atoms are racing around, their speed reflecting the temperature, and smashing into the sides of the container that confines them.  The more energy they have, the faster they are moving, and the harder they collide with the chamber.  However, the equation is not representing the movement of those individual atoms.  Rather, it is expressing this effect in a way that is relevant for things like the operation of a steam engine.
+	
+	In the last few decades, computers have become powerful enough for us to represent the details of relationships like this from the basic building blocks.  Agent based models are a class of such tools.  One such agent based modeling environment we will use from time to time is NetLogo (https://www.netlogo.org/).  
+}
+
+\begin{frame}{Agent Based Models}
+	\begin{itemize}
+		\item Agent Based Models (ABMs) that interact virtual agents in virtual environments, ot observe how the system evolves.
+		\item Agents can range from individual atoms to galaxies.
+	\end{itemize}
+\end{frame}
+
+\mode<article>{
+	When people who are concerned about the environment think of economics, they often conclude that it ignores the environment.  The way introductory economics is taught often reinforces this, as if the environment is mentioned at all, it is a small topic, externalities.
+	
+	There is a practical reason for this.  During a presidential debate, former US president Bill Clinton said "It's the economy, stupid." [CONFIRM QUOTE].  He was emphasizing that what people are most worried about is their own situation.  In a modern economy, your situation depends on your income and what it costs you to live.  The environment is important, but is secondary to being able to put food on the table tonight, and having a roof under which that table is placed.
+	
+	You are in this course because you are concerned about the environment, about sustainability.  Therefore, lets start by building our understanding of sustainability economics from that environment.
+}
+
+\begin{frame}{The Fish Pond}
+	\begin{itemize}
+		\item The Question: How does the population of fish in a pond change over time?
+		\begin{itemize}
+			\item What time step?
+			\item One minute? - population changes small, unless major event.
+			\item One century? - population change in relation to long term events.
+			\item One year? - scale that matches seasons.
+		\end{itemize}
+		\item The elements of a fish pond.
+		\begin{itemize}
+			\item The fish (each fish, or fish as a population - biomass?).
+			\item The water (each molecule, or as a medium for the fish?).
+			\item The food (each food item - e.g phytoplankton, insects, other fish - or as a population - biomass?).
+		\end{itemize}	
+		\item The connections within the fish pond system.
+		\begin{itemize}
+			\item Fish encountering food and eating.
+			\item Fish health and survival affected by state of the water.
+			\item Fish encounter each other and reproduce.
+		\end{itemize}
+	\end{itemize}
+\end{frame}
+
+\mode<article>{
+	In both the natural and social systems, researchers try to identify patterns in the systems that they are studying.  Those patterns emerge from the interactions between the elements that make up the system.  When systems are large and complex, the discipline typically finds ways to describe the patterns without examining the detail of the interacting entities that leads to the pattern.
+	
+	Cosmologists studying the movement of galaxies do not spend much time considering the movement of individual hydrogen atoms.  However, it is the movement of those individual hydrogen atoms, under the influence of gravity, that leads to the formation of stars, and that leads to stars spinning together in galaxies.
+	
+	Often, the disciplines have observed or thought deeply about the entities that they are interested in, and arrived at relationships - often mathematical - that represent the patterns that they observe.
+	
+	In chemistry, the relationship $PV = nRT$ is known at the Ideal Gas Law.  It is the relationship between pressure ($P$), volume ($V$) and temperature ($T$).  The amount of gas in the volume is ($n$) in units of moles, and $R$ is the ideal gas constant, expressed the the appropriate units.  A mole is Avagadro's number of atoms.  This relationship expresses how temperature, which is a measure of how much energy atoms have, and the pressure that they are exerting within a particular volume.  The physics of the situation is that the atoms are racing around, their speed reflecting the temperature, and smashing into the sides of the container that confines them.  The more energy they have, the faster they are moving, and the harder they collide with the chamber.  However, the equation is not representing the movement of those individual atoms.  Rather, it is expressing this effect in a way that is relevant for things like the operation of a steam engine.
+	
+	In the last few decades, computers have become powerful enough for us to represent the details of relationships like this from the basic building blocks.  Agent based models are a class of such tools.  One such agent based modeling environment we will use from time to time is NetLogo (https://www.netlogo.org/).  
+}
+\mode<article>{
+	
+	Fish example: https://virtualbiologylab.org/ModelsHTML5/PopGenFishbowl/PopGenFishbowl.html 
+}
+	

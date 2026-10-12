@@ -1,0 +1,10 @@
+***** Critical Output **** 
+
+Output of values to use in course text and presentations. 
+
+***** 
+Total Product (grain) =  1897.37 
+Total Product (fish =  189.74 
+Average Product (grain) at L =  180  is  11 
+Average Product (fish) at L =  180  is  1 
+*****
