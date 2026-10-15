@@ -76,6 +76,10 @@
 	\begin{itemize}
 		\item Agent Based Models (ABMs) that interact virtual agents in virtual environments, ot observe how the system evolves.
 		\item Agents can range from individual atoms to galaxies.
+		\item Agents have often simple rules of behavior that they are programmed to follow.
+		\item An ABM allows experiments with these agents, observing how the system that contains them evolves as a result of their interactions with other agents and the environment.
+		\item ABMs allow properties of the system to emerge, properties that are not inherent to the agents that make up the system.
+		\item \textit{\textbf{emergence}} is an important characteristic of complex systems.
 	\end{itemize}
 \end{frame}
 
@@ -126,4 +130,149 @@
 	
 	Fish example: https://virtualbiologylab.org/ModelsHTML5/PopGenFishbowl/PopGenFishbowl.html 
 }
-	
+
+\begin{frame}{The Fish Pond}
+	\centering
+	\begin{tikzpicture}
+		% Define and place the nodes
+		\node [circle, draw, align=center] at (2,5) (fish1) {Female \\ Fish};
+		\node [circle, draw, align=center] at (6,5) (fish2) {Male \\ Fish};
+		\node [circle] at (10,5) (fish3) {...};
+		\node [circle, draw, align=center] at (2,2) (patch1) {Food \\ Patch};
+		\node [circle, draw, align=center] at (6,2) (patch2) {Food \\ Patch};
+		\node [circle] at (10,2) (patch3) {...};
+		
+		% Draw edges
+		\draw [->, thick] (patch1) to [bend left=0] node [above, sloped] {feed} (fish1);
+		\draw [->, thick] (patch2) to [bend left=0] node [above, sloped] {feed} (fish2);
+		\draw [->, thick] (patch3) to [bend left=0] node [above, sloped] {feed} (fish3);
+		\draw [<->, thick] (fish1) to [bend left=20] node [above, sloped] {compete} (fish2);
+		\draw [<->, thick] (fish1) to [bend left=-20] node [below, sloped] {breed} (fish2);
+		\draw [<->, thick] (fish2) to [bend left=20] node [above, sloped] {compete} (fish3);
+		\draw [<->, thick] (fish2) to [bend left=-20] node [below, sloped] {breed} (fish3);
+		\draw [->, thick] (fish1) to [loop above] node[above, sloped] {grow} (fish1);
+		\draw [->, thick] (fish2) to [loop above] node[above, sloped] {grow} (fish2);
+		\draw [->, thick] (fish3) to [loop above] node[above, sloped] {grow} (fish3);
+		\draw [->, thick] (patch1) to [loop below] node[below, sloped] {grow} (patch1);
+		\draw [->, thick] (patch2) to [loop below] node[below, sloped] {grow} (patch2);
+		\draw [->, thick] (patch3) to [loop below] node[below, sloped] {grow} (patch3);
+		% \draw [->, thick] (lake) to[bend left=20] node[above, sloped] {fish} (hermit);
+		% \draw [->, thick] (field) to[bend right=20] node[above, sloped] {sediment} (lake);
+	\end{tikzpicture}
+\end{frame}
+
+\begin{frame}{The Fish Pond}
+	\begin{itemize}
+		\item What question(s) are we trying to answer with a model?
+		\item What features of the elements (fish and food patches) and their interactions will lead to a sustainable system.
+		\begin{itemize}
+			\item Sustainable = does not collapse to a system without fish.
+		\end{itemize}
+		\item What level of harvest is sustainable?
+		\begin{itemize}
+			\item Sustainable = harvest level that can continue without collapsing system to one without fish.
+		\end{itemize}
+		\item How much detail do we need to model about the ecological system to identify the sustainable harvest level?
+		\begin{itemize}
+			\item Can elements of fish pond system be treated together as one element of a social-ecological system?
+			\item Is the internal workings of the fish pond subsystem necessary to identify sustainable harvest levels?
+		\end{itemize}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{The Fish Pond}
+	\begin{itemize}
+		\item A NetLogo model.
+		\item Fish (agents) swim around in pond with patches (environment) where they feed.
+		\begin{itemize}
+			\item Fish: age to breeding, lifespan, how much food, impact of competition, breeding behavior, movement, ...
+			\item Food patch: how much food, growth rate of food.
+		\end{itemize}
+		\item Lots of details that can be considered.
+		\item Do we loose sight of the forest by focusing too much on the trees?
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{The Fish Pond}
+	\includegraphics[width=1.0\textwidth]{NetLogoFishPond1.png}
+\end{frame}
+
+\begin{frame}{Fishing in the Pond}
+	\begin{itemize}
+		\item Fish harvester chooses how much effort (e.g. time) to spend fishing.
+		\item Most processes in pond not affected by amount of fishing effort.
+		\item Effects of harvesting:
+		\begin{itemize}
+			\item Reduces population of fish.
+			\item Reduces fish on fish competition - increasing growth.
+			\item Increases success of reproduction.
+			\item May force population so low that collapses.
+		\end{itemize}
+		\item Harvest effort:
+		\begin{itemize}
+			\item With same effort, more fish caught if more fish in pond.
+		\end{itemize}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Fishing in the Pond}
+	\centering
+	\begin{tikzpicture}
+		\node [circle, draw, align=center] at (1,3) (harvester) {Fish \\ Harvester};
+		\node [circle, draw, align=center] at (6,3) (population) {Fish \\ Biomass};
+		\node at (1,1) {};
+		
+		\draw [->, thick] (harvester) to [bend left=20] node [above, sloped] {effort} (population);
+		\draw [->, thick] (population) to [bend left=20] node [above, sloped] {harvest} (harvester);
+	\end{tikzpicture}
+	\begin{itemize}
+		\item What effort level will result in a sustainable harvest?
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Fishing in the Pond}
+	\includegraphics[width=1.0\textwidth]{NetLogoFishPond2.png}
+\end{frame}
+
+\begin{frame}{Fishy Math}
+	\begin{itemize}
+		\item Fish population modeled with logistic growth curve.
+		\[
+		\frac{\Delta N}{\Delta t} = rN\left(1 - \frac{N}{K}\right) = \frac{\partial N}{\partial t} = \dot{N}
+		\]
+		\begin{itemize}
+			\item $\Delta N$ is change in fish population during time interval $\Delta t$.
+			\item $N$ is fish population.
+			\item $r$ is rate of growth of fish population.
+			\item $K$ is carrying capacity of the ecosystem represented by the model.
+		\end{itemize}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Fishy Math}
+	\begin{tikzpicture}
+		\draw [-] (0,0) to node [below] {Population ($N$)} (11,0);
+		\draw [-] (0,0) to node [above, sloped] {Growth ($\Delta N / \Delta t$)} (0,6);
+		\draw [domain=0:10, smooth, variable=\N] plot ({\N},{2*\N*(1-\N/10)});
+		\node [below] at (10,0) {$K$};
+	\end{tikzpicture}
+\end{frame}
+
+\begin{frame}{Fish Production Function}
+	\begin{itemize}
+		\item In economics, a \textbf{\textit{technology}} refers to a process that transforms \textit{\textbf{inputs}} into \textit{\textbf{outputs}}.
+		\item A function that describes this process is called a \textit{\textbf{production function}}.
+		\item In this example, effort is the input, and harvest is the output.
+		\[
+		H = qEN
+		\]
+		\begin{itemize}
+			\item $H$ is the harvest.
+			\item $E$ is the effort.
+			\item $N$ is the population of fish.
+			\item $q$ measures how catchable the fish are.
+		\end{itemize}
+		\item Note that the productivity of fishing effort depends on the size of fish population (the stock).
+		\item A unit of effort $E$ harvests a fraction $q$ of the stock $N$.
+	\end{itemize}
+\end{frame}
