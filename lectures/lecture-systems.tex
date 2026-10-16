@@ -251,10 +251,14 @@
 
 \begin{frame}{Fishy Math}
 	\begin{tikzpicture}
-		\draw [-] (0,0) to node [below] {Population ($N$)} (11,0);
-		\draw [-] (0,0) to node [above, sloped] {Growth ($\Delta N / \Delta t$)} (0,6);
-		\draw [domain=0:10, smooth, variable=\N] plot ({\N},{2*\N*(1-\N/10)});
-		\node [below] at (10,0) {$K$};
+		\draw [-] (0,0) to node [below, yshift=-8pt] {Population ($N$)} (11,0);
+		\draw [-] (0,0) to node [above, sloped, yshift=8pt] {Growth ($\Delta N / \Delta t$)} (0,6);
+		\draw [domain=0:10, smooth, variable=\N] plot ({\N},{4*(0.5*\N*(1-\N/10))});
+		\node [below, align=center] at (10,0) {$10$ \\ $K$};
+		\node [below] at (0,0) {0};
+		\node [left] at (0,0) {0};
+		\node [left] at (0,4) {1};
+		\node [right, align=left] at (7,5.5) {$\dfrac{\Delta N}{\Delta t} = 0.5N \left(1 - \dfrac{N}{10}\right)$};
 	\end{tikzpicture}
 \end{frame}
 
@@ -281,9 +285,49 @@
 	\begin{itemize}
 		\item There are three measures that are commonly used in economics to describe aspects of the production process.
 		\begin{enumerate}
-			\item \textit{\textbf{Total Product (TP)}} is the total output at a particular input level. 
+			\item \textit{\textbf{Total Product (TP)}} is the total output at a particular input level $X$. 
 			\item \textit{\textbf{Average Product (AP)}} is the total output at a particular level of input, divided by that level of input.
+			\[
+			AP = \frac{TP}{X}
+			\]
 			\item \textit{\textbf{Marginal Product (MP)}} is, at a particular level of an input, the amount by which output will increase for a small increase in that input.
+			\[
+			MP = \frac{\Delta TP}{\Delta X} = \frac{\partial TP}{\partial X}
+			\]
+			\begin{itemize}
+				\item The marginal product is the slope of the total product at $X$.
+			\end{itemize}
 		\end{enumerate}
 	\end{itemize}
 \end{frame}
+
+\begin{frame}{Fish Production Function}
+	\begin{tikzpicture}
+	\draw [-] (0,0) to node [below, yshift=-8pt] {Effort ($E$)} (6,0);
+	\draw [-] (0,0) to node [above, sloped, yshift=8pt] {Harvest ($H$, $TP$)} (0,6);
+	\draw [-] (7.5,0) to node [below, yshift=-8pt] {Effort ($E$)} (13.5,0);
+	\draw [-] (7.5,0) to node [above, sloped, yshift=8pt] {Average / Marginal Harvest ($AP$, $MP$)} (7.5,6);
+	\draw plot [domain=0:6, smooth, variable=\E] ({\E},{0.1*\E*8}) node [above left] {$N = 8$};
+	\draw plot [domain=0:6, smooth, variable=\E] ({\E},{0.1*\E*4}) node [above left] {$N = 4$};
+	\draw plot [domain=7.5:13.5, smooth, variable=\E] ({\E},{0.1*8}) node [above left] {$N = 8$};
+	\draw plot [domain=7.5:13.5, smooth, variable=\E] ({\E},{0.1*4}) node [above left] {$N = 4$};
+	\node [right] at (1,5) {$TP = H = 0.1EN$};
+	\node [right, align=left] at (8.5,5) {$AP = TP / E = 0.1N$ \\ $MP = \Delta TP / \Delta E = 0.1N$};
+	\node [left] at (0,0) {0};
+	\node [below] at (0,0) {0};
+	\node [left] at (7.5,0) {0};
+	\node [below] at (7.5,0) {0};
+	\node [left] at (0,5) {5};
+	\node [below] at (5,0) {5};
+	\node [left] at (7.5,5) {5};
+	\node [below] at (12.5,0) {5};
+\end{tikzpicture}
+\end{frame}
+
+\mode<article>{
+	The average and marginal product are the same for this production function.  Given a particular fish population, each unit of effort catches the same number of fish.  This would stop when there are no more fish left. For the range over which effort is shown in the figure, this does not happen.
+	
+	Suppose the harvester is deciding how much effort to exert this period, which we will call a year.  It is important to recognize that the choice of effort this year affects how many fish will be available to be caught next year.  The fish that are left behind reproduce, and this reproduction adds to the supply of fish that can be caught next year.
+	
+	We can throw some numbers at the example to make it a bit more concrete.
+}
