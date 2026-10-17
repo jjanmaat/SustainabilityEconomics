@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.28 (TeX Live 2025/Debian) (preloaded format=pdflatex 2026.10.9)  12 OCT 2026 07:35
+This is pdfTeX, Version 3.141592653-2.6-1.40.28 (TeX Live 2025/Debian) (preloaded format=pdflatex 2026.10.9)  16 OCT 2026 19:53
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -728,17 +728,53 @@ File: pgflibraryarrows.meta.code.tex 2025-08-29 v3.1.11a (3.1.11a)
 (/usr/share/texlive/texmf-dist/tex/generic/pgf/frontendlayer/tikz/libraries/tik
 zlibrarypositioning.code.tex
 File: tikzlibrarypositioning.code.tex 2025-08-29 v3.1.11a (3.1.11a)
-))
-(/usr/share/texlive/texmf-dist/tex/latex/natbib/natbib.sty
+)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/frontendlayer/tikz/libraries/tik
+zlibraryplotmarks.code.tex
+File: tikzlibraryplotmarks.code.tex 2025-08-29 v3.1.11a (3.1.11a)
+
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/libraries/pgflibraryplotmarks.co
+de.tex
+File: pgflibraryplotmarks.code.tex 2025-08-29 v3.1.11a (3.1.11a)
+)) (/usr/share/texlive/texmf-dist/tex/latex/natbib/natbib.sty
 Package: natbib 2010/09/13 8.31b (PWD, AO)
 \bibhang=\skip58
 \bibsep=\skip59
 LaTeX Info: Redefining \cite on input line 694.
 \c@NAT@ctr=\count344
 )
+(/usr/share/texlive/texmf-dist/tex/latex/tcolorbox/tcolorbox.sty
+Package: tcolorbox 2025/11/28 version 6.9.0 text color boxes
+
+(/usr/share/texlive/texmf-dist/tex/latex/tools/verbatim.sty
+Package: verbatim 2024-01-22 v1.5x LaTeX2e package for verbatim enhancements
+\every@verbatim=\toks45
+\verbatim@line=\toks46
+\verbatim@in@stream=\read3
+)
+(/usr/share/texlive/texmf-dist/tex/latex/environ/environ.sty
+Package: environ 2014/05/04 v0.3 A new way to define environments
+
+(/usr/share/texlive/texmf-dist/tex/latex/trimspaces/trimspaces.sty
+Package: trimspaces 2009/09/17 v1.1 Trim spaces around a token list
+))
+\tcb@titlebox=\box89
+\tcb@upperbox=\box90
+\tcb@lowerbox=\box91
+\tcb@phantombox=\box92
+\c@tcbbreakpart=\count345
+\c@tcblayer=\count346
+\c@tcolorbox@number=\count347
+\l__tcobox_tmpa_box=\box93
+\l__tcobox_tmpa_dim=\dimen295
+\tcb@temp=\box94
+\tcb@temp=\box95
+\tcb@temp=\box96
+\tcb@temp=\box97
+))
 (/usr/share/texlive/texmf-dist/tex/latex/l3backend/l3backend-pdftex.def
 File: l3backend-pdftex.def 2025-10-09 L3 backend support: PDF output (pdfTeX)
-\l__color_backend_stack_int=\count345
+\l__color_backend_stack_int=\count348
 )
 (./main_notes.aux)
 \openout1 = `main_notes.aux'.
@@ -764,17 +800,17 @@ LaTeX Font Info:    ... okay on input line 23.
 
 (/usr/share/texlive/texmf-dist/tex/context/base/mkii/supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
-\scratchcounter=\count346
-\scratchdimen=\dimen295
-\scratchbox=\box89
-\nofMPsegments=\count347
-\nofMParguments=\count348
-\everyMPshowfont=\toks45
-\MPscratchCnt=\count349
-\MPscratchDim=\dimen296
-\MPnumerator=\count350
-\makeMPintoPDFobject=\count351
-\everyMPtoPDFconversion=\toks46
+\scratchcounter=\count349
+\scratchdimen=\dimen296
+\scratchbox=\box98
+\nofMPsegments=\count350
+\nofMParguments=\count351
+\everyMPshowfont=\toks47
+\MPscratchCnt=\count352
+\MPscratchDim=\dimen297
+\MPnumerator=\count353
+\makeMPintoPDFobject=\count354
+\everyMPtoPDFconversion=\toks48
 ) (/usr/share/texlive/texmf-dist/tex/latex/epstopdf-pkg/epstopdf-base.sty
 Package: epstopdf-base 2020-01-24 v2.11 Base part for package epstopdf
 Package epstopdf-base Info: Redefining graphics rule for `.eps' on input line 4
@@ -900,30 +936,68 @@ Underfull \vbox (badness 3364) has occurred while \output is active []
 
 ]
 [6] [7]
-Overfull \hbox (31.08351pt too wide) in paragraph at lines 128--128
+Overfull \hbox (31.08351pt too wide) in paragraph at lines 132--132
 []\OT1/cmr/m/n/10.95 Fish ex-am-ple: https://virtualbiologylab.org/ModelsHTML5/
 PopGenFishbowl/PopGenFishbowl.html 
  []
 
-) [8]
+[8] [9]
+<../lectures/images/NetLogoFishPond1.png, id=161, 1595.9625pt x 852.18375pt>
+File: ../lectures/images/NetLogoFishPond1.png Graphic file (type png)
+<use ../lectures/images/NetLogoFishPond1.png>
+Package pdftex.def Info: ../lectures/images/NetLogoFishPond1.png  used on input
+ line 197.
+(pdftex.def)             Requested size: 469.75502pt x 250.83289pt.
+
+Overfull \hbox (17.0pt too wide) in paragraph at lines 197--199
+[][]
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 197--199
+
+ []
+
+[10 <../lectures/images/NetLogoFishPond1.png>]
+<../lectures/images/NetLogoFishPond2.png, id=172, 1595.9625pt x 852.18375pt>
+File: ../lectures/images/NetLogoFishPond2.png Graphic file (type png)
+<use ../lectures/images/NetLogoFishPond2.png>
+Package pdftex.def Info: ../lectures/images/NetLogoFishPond2.png  used on input
+ line 234.
+(pdftex.def)             Requested size: 469.75502pt x 250.83289pt.
+
+Overfull \hbox (17.0pt too wide) in paragraph at lines 234--236
+[][]
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 234--236
+
+ []
+
+[11 <../lectures/images/NetLogoFishPond2.png>] [12] [13]
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+ [14]
+[15]) [16]
 Chapter 3.
-(../lectures/lecture-02.tex [9
+(../lectures/lecture-02.tex [17
 
 ]
-<../lectures/code/HermitProdFun.png, id=157, 433.62pt x 289.08pt>
+<../lectures/code/HermitProdFun.png, id=238, 433.62pt x 289.08pt>
 File: ../lectures/code/HermitProdFun.png Graphic file (type png)
 <use ../lectures/code/HermitProdFun.png>
 Package pdftex.def Info: ../lectures/code/HermitProdFun.png  used on input line
  81.
 (pdftex.def)             Requested size: 375.80544pt x 250.5492pt.
- [10 <../lectures/code/HermitProdFun.png (PNG copy)>]
-<../lectures/code/HermitProdFunTP.png, id=168, 433.62pt x 289.08pt>
+ [18 <../lectures/code/HermitProdFun.png (PNG copy)>]
+<../lectures/code/HermitProdFunTP.png, id=249, 433.62pt x 289.08pt>
 File: ../lectures/code/HermitProdFunTP.png Graphic file (type png)
 <use ../lectures/code/HermitProdFunTP.png>
 Package pdftex.def Info: ../lectures/code/HermitProdFunTP.png  used on input li
 ne 108.
 (pdftex.def)             Requested size: 375.80544pt x 250.5492pt.
-<../lectures/code/HermitProdFunMP.png, id=169, 433.62pt x 289.08pt>
+<../lectures/code/HermitProdFunMP.png, id=250, 433.62pt x 289.08pt>
 File: ../lectures/code/HermitProdFunMP.png Graphic file (type png)
 <use ../lectures/code/HermitProdFunMP.png>
 Package pdftex.def Info: ../lectures/code/HermitProdFunMP.png  used on input li
@@ -932,22 +1006,22 @@ ne 121.
 
 Underfull \vbox (badness 5878) has occurred while \output is active []
 
- [11 <../lectures/code/HermitProdFunTP.png (PNG copy)>]
-<../lectures/code/HermitProdFunTan.png, id=179, 433.62pt x 289.08pt>
+ [19 <../lectures/code/HermitProdFunTP.png (PNG copy)>]
+<../lectures/code/HermitProdFunTan.png, id=261, 433.62pt x 289.08pt>
 File: ../lectures/code/HermitProdFunTan.png Graphic file (type png)
 <use ../lectures/code/HermitProdFunTan.png>
 Package pdftex.def Info: ../lectures/code/HermitProdFunTan.png  used on input l
 ine 134.
 (pdftex.def)             Requested size: 375.80544pt x 250.5492pt.
- [12 <../lectures/code/HermitProdFunMP.png (PNG copy)> <../lectures/code/Hermit
+ [20 <../lectures/code/HermitProdFunMP.png (PNG copy)> <../lectures/code/Hermit
 ProdFunTan.png (PNG copy)>]
-<../lectures/code/HermitPPF.png, id=188, 289.08pt x 289.08pt>
+<../lectures/code/HermitPPF.png, id=270, 289.08pt x 289.08pt>
 File: ../lectures/code/HermitPPF.png Graphic file (type png)
 <use ../lectures/code/HermitPPF.png>
 Package pdftex.def Info: ../lectures/code/HermitPPF.png  used on input line 154
 .
 (pdftex.def)             Requested size: 234.8775pt x 234.8769pt.
-<../lectures/code/HermitPPFoc.png, id=189, 289.08pt x 289.08pt>
+<../lectures/code/HermitPPFoc.png, id=271, 289.08pt x 289.08pt>
 File: ../lectures/code/HermitPPFoc.png Graphic file (type png)
 <use ../lectures/code/HermitPPFoc.png>
 Package pdftex.def Info: ../lectures/code/HermitPPFoc.png  used on input line 1
@@ -956,7 +1030,7 @@ Package pdftex.def Info: ../lectures/code/HermitPPFoc.png  used on input line 1
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
- [13 <../lectures/code/HermitPPF.png (PNG copy)>]) [14 <../lectures/code/Hermit
+ [21 <../lectures/code/HermitPPF.png (PNG copy)>]) [22 <../lectures/code/Hermit
 PPFoc.png (PNG copy)>] (./main_notes.aux)
  ***********
 LaTeX2e <2025-11-01>
@@ -966,26 +1040,28 @@ Package rerunfilecheck Info: File `main_notes.out' has not changed.
 (rerunfilecheck)             Checksum: AB373DD3CF0E1884EECAE7B3E5653B52;1851.
  ) 
 Here is how much of TeX's memory you used:
- 25363 strings out of 469396
- 499021 string characters out of 5467330
- 894909 words of memory out of 5000000
- 53455 multiletter control sequences out of 15000+600000
+ 27946 strings out of 469396
+ 565265 string characters out of 5467330
+ 956888 words of memory out of 5000000
+ 55969 multiletter control sequences out of 15000+600000
  638351 words of font info for 78 fonts, out of 8000000 for 9000
  81 hyphenation exceptions out of 8191
- 118i,7n,124p,1021b,826s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 118i,7n,124p,1021b,874s stack positions out of 10000i,1000n,20000p,200000b,200000s
  </home/jjanmaat/.texlive2025/texmf-var/fonts/pk/ljfour/jknappen/ec/tcrm1095.
 600pk></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb>
 </usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/
 share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbxti10.pfb></usr/shar
-e/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/share/texl
-ive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/share/texlive/tex
-mf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb></usr/share/texlive/texmf-dist
-/fonts/type1/public/amsfonts/cm/cmsl10.pfb></usr/share/texlive/texmf-dist/fonts
-/type1/public/amsfonts/cm/cmti10.pfb>
-Output written on main_notes.pdf (20 pages, 675892 bytes).
+e/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr/share/texl
+ive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/share/texlive/te
+xmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/share/texlive/texmf-dis
+t/fonts/type1/public/amsfonts/cm/cmr12.pfb></usr/share/texlive/texmf-dist/fonts
+/type1/public/amsfonts/cm/cmsl10.pfb></usr/share/texlive/texmf-dist/fonts/type1
+/public/amsfonts/cm/cmsy10.pfb></usr/share/texlive/texmf-dist/fonts/type1/publi
+c/amsfonts/cm/cmti10.pfb>
+Output written on main_notes.pdf (28 pages, 1075629 bytes).
 PDF statistics:
- 265 PDF objects out of 1000 (max. 8388607)
- 215 compressed objects within 3 object streams
- 73 named destinations out of 1000 (max. 500000)
- 136 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 362 PDF objects out of 1000 (max. 8388607)
+ 296 compressed objects within 3 object streams
+ 122 named destinations out of 1000 (max. 500000)
+ 146 words of extra memory for PDF output out of 10000 (max. 10000000)
 

@@ -343,33 +343,44 @@
 \mode<article>{
 	In the table below, the size of the fish stock, the amount harvested and the growth of the fish stock following harvest is shown for the first ten years, for effort levels $E = 2$ and $E = 3$.
 	
-	The sequence within a year is that first the harvest is taken, and then the remaining fish reproduce according to the growth relationship expressed in the formula above.  With the table is the formula, adapted to have the growth based on the stock after the harvest has happened.
+	The sequence within a year is that first fish reproduce and then the harvest is taken.  What is left of the fish stock is the growth less the amount harvested.
 	
 	The numbers in the table show a clear trend.  For these two effort levels, the stock of fish and the harvest decrease over time.  For the lower effort, the beginning harvest is lower.  However, if this lower effort is maintained, then the lower harvest leads to a slower decline in the fish stock, and by the end of the ten years, the lower effort is resulting in a higher harvest than for the higher effort level.
 	
 	If you look closely at the numbers, you can see that the differences from one year to the next are getting smaller.  In each case, with the constant effort level, the system is converging on a \textit{\textbf{steady state}}.  At the steady state, the size of the stock, the amount that is harvested, and the amount by which the fish stock grows are constant.  In fact, the growth exactly matches the amount harvested.  Each of these steady states is in effect sustainable.  Which one do we like better?
 }
 \begin{frame}{Fish Production Function}
-	$$H = 0.1EN\ \ \ \ \ \ \dfrac{\Delta N}{\Delta t} = 0.5(N - H) \left(1 - \dfrac{N - H}{10}\right)$$
+	$$H = 0.1EN\ \ \ \ \ \ \dfrac{\Delta N}{\Delta t} = 0.5N \left(1 - \dfrac{N}{10}\right) - H$$
 	\vskip 12pt
 	\centering
 	\begin{tabular}{ccccccccccc}
 		\hline
-		$t$ & $N$ & $E$ & $H$ & $\Delta N$ &  &  $N$ & $E$ & $H$ & $\Delta N$ \\
-		\hline
-		1 & 8.00 & 2 & 1.60 & 1.15 &    & 8.00 & 3 & 2.40 & 1.23 \\
-		2 & 7.55 & 2 & 1.51 & 1.20 &      & 6.83 & 3 & 2.05 & 1.25 \\
-		3 & 7.24 & 2 & 1.45 & 1.22 &      & 6.03 & 3 & 1.81 & 1.22 \\
-		4 & 7.01 & 2 & 1.40 & 1.23 &      & 5.44 & 3 & 1.63 & 1.18 \\
-		5 & 6.84 & 2 & 1.37 & 1.24 &      & 4.99 & 3 & 1.50 & 1.14 \\
-		6 & 6.71 & 2 & 1.34 & 1.24 &      & 4.63 & 3 & 1.39 & 1.09 \\
-		7 & 6.61 & 2 & 1.32 & 1.25 &      & 4.33 & 3 & 1.30 & 1.06 \\
-		8 & 6.53 & 2 & 1.31 & 1.25 &      & 4.09 & 3 & 1.23 & 1.02 \\
-		9 & 6.48 & 2 & 1.30 & 1.25 &      & 3.89 & 3 & 1.17 & 0.99 \\
-		10 & 6.43 & 2 & 1.29  & 1.25 &      & 3.71 & 3 & 1.11 & 0.96 \\
-		\hline
+		$t$ &  $N$  & $E$ & $H$  & $\Delta N$ &  &  $N$  & $E$ & $H$  & $\Delta N$ &  \\ \hline
+		 1  & 10.00 &  2  & 2.00 &    0.00    &  & 10.00 &  4  & 4.00 &    0.00    &  \\
+		 2  & 8.00  &  2  & 1.60 &    0.80    &  & 6.00  &  4  & 2.40 &    1.20    &  \\
+		 3  & 7.20  &  2  & 1.44 &    1.01    &  & 4.80  &  4  & 1.92 &    1.25    &  \\
+		 4  & 6.77  &  2  & 1.35 &    1.09    &  & 4.13  &  4  & 1.65 &    1.21    &  \\
+		 5  & 6.51  &  2  & 1.30 &    1.14    &  & 3.69  &  4  & 1.48 &    1.16    &  \\
+		 6  & 6.34  &  2  & 1.27 &    1.16    &  & 3.38  &  4  & 1.35 &    1.12    &  \\
+		 7  & 6.23  &  2  & 1.25 &    1.17    &  & 3.14  &  4  & 1.26 &    1.08    &  \\
+		 8  & 6.16  &  2  & 1.23 &    1.18    &  & 2.96  &  4  & 1.19 &    1.04    &  \\
+		 9  & 6.11  &  2  & 1.22 &    1.19    &  & 2.82  &  4  & 1.13 &    1.01    &  \\
+		10  & 6.08  &  2  & 1.22 &    1.29    &  & 2.71  &  4  & 1.08 &    0.99    &  \\ \hline
 	\end{tabular}
 \end{frame}
+\mode<article>{
+	The following graphs show the progression of the stock as the continuing harvests change the size of the stock and the growth.
+	
+	The system starts at the carrying capacity $K$.  At the carrying capacity, the stock is steady.  The new fish added to the population, the recruitment, is exactly matched by the deaths.  There is no net growth of the stock.
+	
+	The first harvest reduces the stock by the amount of the harvest.  When the effort is lower, this harvest is lower.  As the stock is now below the carrying capacity, it has room to grow.  That growth is represented by the height of the curve.  
+	
+	The second harvest captures a quantity of fish equal to all the growth and a bit more, reducing the stock further.  This effect is larger for the case with the larger effort.  With the stock reduced further, there is more capacity for growth.
+	
+	In the figures, things begin to diverge with the third harvest.  When the effort is low, the change in the stock after the harvest leads to an increase in the growth of the stock.  However, when the effort is high, the stock has been depleted so much that the further depletion results in a lower growth rate.  We have moved the stock to a place where there is little competition for food, but it takes a lot of effort to find others to mate with.
+	
+	If we continue with the same effort levels, the systems will converge on a steady state.  The steady state is the level of the stock such that, given the effort level, that stock does not change any further.  In these examples, the higher effort level leads to a lower steady state stock and a lower steady state harvest than for the lower effort level.	
+}
 
 \begin{frame}{Fish Production Function}
 	\begin{tikzpicture}
@@ -381,13 +392,15 @@
 		\node [left] at (0,0) {0};
 		\node [left] at (0,4) {1};
 		\draw [-, thin] (8,0) to (8,3.2);
-		\draw [-, thin] (7.55,0) to (7.55,3.7);
-		\draw [-, thin] (7.24,0) to (7.24,4.0);
-		\draw [-, thin] (7.01,0) to (7.01,4.2);
-		\node[circle, fill=black, inner sep=1.5pt, align=right, label=above right:{Steady State $E=2$, $H=1.25$, $N=6.25$}] at (6.25,4.69) {};
-		\draw [->, thin] (8,3.2) to [bend right=80] (7.55,3.7);
-		\draw [->, thin] (7.55,3.7) to [bend right=80] (7.24,4.0);
-		\draw [->, thin] (7.24,4.0) to [bend right=80] (7.01,4.2);
+		\draw [-, thin] (7.2,0) to (7.2,4.04);
+		\draw [-, thin] (6.77,0) to (6.77,4.36);
+		\draw [-, thin] (6.51,0) to (6.51,4.56);
+		\node[circle, fill=black, inner sep=1.5pt] at (6,4.8) {};
+		\node[align=center, below left, yshift=-8pt] at (6,4.8) {Steady State \\ $E=2$ \\ $H=1.2$ \\ $N=6$};
+		\draw [->, thin] (10,0) to [bend right=80] (8,3.2);
+		\draw [->, thin] (8,3.2) to [bend right=80] (7.2,4.04);
+		\draw [->, thin] (7.2,4.04) to [bend right=80] (6.77,4.36);
+		\draw [->, thin] (6.77,4.36) to [bend right=80] (6.51,4.56);
 	\end{tikzpicture}
 \end{frame}
 
@@ -400,32 +413,72 @@
 		\node [below] at (0,0) {0};
 		\node [left] at (0,0) {0};
 		\node [left] at (0,4) {1};
-		\draw [-, thin] (8,0) to (8,3.2);
-		\draw [-, thin] (6.83,0) to (6.83,4.32);
-		\draw [-, thin] (6.03,0) to (6.03,4.79);
-		\draw [-, thin] (5.44,0) to (5.44,4.96);
-		\node[circle, fill=black, inner sep=1.5pt] at (2.041,3.248) {};
-		\node[align=center, below right] at (2.041,3.248) {Steady State \\ $E=3$ \\ $H=0.61$ \\ $N=2.02$};
-		\draw [->, thin] (8,3.2) to [bend right=80] (6.83,4.32);
-		\draw [->, thin] (6.83,4.32) to [bend right=80] (6.03,4.79);
-		\draw [->, thin] (6.03,4.79) to [bend right=80] (5.44,4.96);
+		\draw [-, thin] (6,0) to (6,4.8);
+		\draw [-, thin] (4.8,0) to (4.8,5);
+		\draw [-, thin] (4.13,0) to (4.13,4.84);
+		\draw [-, thin] (3.69,0) to (3.69,4.64);
+		\node[circle, fill=black, inner sep=1.5pt] at (2,3.2) {};
+		\node[align=center, above left, xshift=12pt] at (2,3.2) {Steady State \\ $E=4$ \\ $H=0.8$ \\ $N=2$};
+		\draw [->, thin] (10,0) to [bend right=80] (6,4.8);
+		\draw [->, thin] (6,4.8) to [bend right=80] (4.8,5);
+		\draw [->, thin] (4.8,5) to [bend right=80] (4.13,4.84);
+		\draw [->, thin] (4.13,4.84) to [bend right=80] (3.69,4.64);
 	\end{tikzpicture}
 \end{frame}
 
 \begin{frame}{Fishing Sustainably}
 	\begin{itemize}
-		\item Starting from fish population $N = 8$:
-		\item Effort $E=3$ leads to:
+		\item Starting from fish population $N = 10$:
+		\item Effort $E=4$ leads to:
 		\begin{itemize}
-			\item An immediate harvest of $H = 2.40$ 
-			\item A steady state with $N = 2.02$ and $H = 0.61$
+			\item An immediate harvest of $H = 4$ 
+			\item A steady state with $N = 2$ and $H = 0.8$
 		\end{itemize} 
 		\item Effort $E=2$ leads to:
 		\begin{itemize}
-			\item An immediate harvest of $H = 1.60$ 
-			\item A steady state with $N = 6.25$ and $H = 1.25$
+			\item An immediate harvest of $H = 2$ 
+			\item A steady state with $N = 6$ and $H = 1.2$
 		\end{itemize} 
 		\item Steady states are "sustainable", in that the activities can continue indefinitely.
 		\item Is one steady state better?
+		\item Can it be better to take big harvests in the early years, ending up with a lower sustainable harvest?
 	\end{itemize}
 \end{frame}
+
+\mode<article>{
+	Each effort level corresponds to a unique steady state, or sustainable, stock and harvest level.  These combinations are shown in the figure.  Notice that the curve has the same shape as the stock and growth curve.  However, the horizontal axis represents the effort devoted to fishing, and the vertical axis the harvest.  The higher the effort level, the lower the corresponding steady state stock.  The stock will be at its carrying capacity when there is no effort, when no fish are being harvested.  With high enough effort, all the fish will be caught and the stock will be driven to zero.
+	
+	Is an effort level that drives the stock to zero sustainable?  Seems strange to consider.  However, if the stock is zero and therefore the harvest is zero, this will continue to be the case into the future.  In a strange way, a fish stock that has been driven to extinction is now sustainable, as it is not changing any more.
+	
+	This highlights that when we talk about sustainability, we are not just talking about a technical state of a system.  Sustainability as a concept, in most of the ways that we use the idea, is not the same thing as a steady state.  There is something more to it.
+}
+
+\begin{frame}{Fishing Sustainably}
+	\begin{tikzpicture}
+		\draw [-] (0,0) to node [below, yshift=-8pt] {Effort ($E$)} (11,0);
+		\draw [-] (0,0) to node [above, sloped, yshift=8pt] {Harvest $H = \Delta N / \Delta t$} (0,6);
+		\draw [domain=0:10, smooth, variable=\E] plot ({\E},{4*10*0.1*(\E/2)*(1-0.1*(\E/2)/0.5))});
+		\node [below, align=center] at (10,0) {5};
+		\node [below] at (0,0) {0};
+		\node [left] at (0,0) {0};
+		\node [left] at (0,4) {1};
+		\node [right, align=left] at (7,5.5) {$H = 10\times 0.1E \left(1-\dfrac{0.1}{0.5}E\right)$};
+		\draw [-, thin, dashed] (0,5) to (5,5) to (5,0);
+		\node [below] at (5,0) {2.5};
+		\node [left] at (0,5) {1.25};
+	\end{tikzpicture}
+\end{frame}
+
+\begin{frame}{Fishing Sustainably}
+	\begin{itemize}
+		\item Each effort level corresponds with a steady state "sustainable" stock size and harvest level.
+		\item There is one effort level that corresponds to the maximum sustainable harvest.
+		\begin{itemize}
+			\item In the fisheries literature, this is the \textit{\textbf{maximum sustainable yield (MSY)}}.
+		\end{itemize}
+		\item When is it best to manage a resource to achieve the maximum sustainable yield?
+		\item What is the \textit{\textbf{function}} of this harvester and fish pond system?
+		\item What would it mean for this harvester and fish pond system to be \textit{\textbf{resilient}}?
+	\end{itemize}
+\end{frame}
+
