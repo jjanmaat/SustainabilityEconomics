@@ -303,25 +303,25 @@
 
 \begin{frame}{Fish Production Function}
 	\begin{tikzpicture}
-	\draw [-] (0,0) to node [below, yshift=-8pt] {Effort ($E$)} (6,0);
-	\draw [-] (0,0) to node [above, sloped, yshift=8pt] {Harvest ($H$, $TP$)} (0,6);
-	\draw [-] (7.5,0) to node [below, yshift=-8pt] {Effort ($E$)} (13.5,0);
-	\draw [-] (7.5,0) to node [above, sloped, yshift=8pt] {Average / Marginal Harvest ($AP$, $MP$)} (7.5,6);
-	\draw plot [domain=0:6, smooth, variable=\E] ({\E},{0.1*\E*8}) node [above left] {$N = 8$};
-	\draw plot [domain=0:6, smooth, variable=\E] ({\E},{0.1*\E*4}) node [above left] {$N = 4$};
-	\draw plot [domain=7.5:13.5, smooth, variable=\E] ({\E},{0.1*8}) node [above left] {$N = 8$};
-	\draw plot [domain=7.5:13.5, smooth, variable=\E] ({\E},{0.1*4}) node [above left] {$N = 4$};
-	\node [right] at (1,5) {$TP = H = 0.1EN$};
-	\node [right, align=left] at (8.5,5) {$AP = TP / E = 0.1N$ \\ $MP = \Delta TP / \Delta E = 0.1N$};
-	\node [left] at (0,0) {0};
-	\node [below] at (0,0) {0};
-	\node [left] at (7.5,0) {0};
-	\node [below] at (7.5,0) {0};
-	\node [left] at (0,5) {5};
-	\node [below] at (5,0) {5};
-	\node [left] at (7.5,5) {5};
-	\node [below] at (12.5,0) {5};
-\end{tikzpicture}
+		\draw [-] (0,0) to node [below, yshift=-8pt] {Effort ($E$)} (6,0);
+		\draw [-] (0,0) to node [above, sloped, yshift=8pt] {Harvest ($H$, $TP$)} (0,6);
+		\draw [-] (7.5,0) to node [below, yshift=-8pt] {Effort ($E$)} (13.5,0);
+		\draw [-] (7.5,0) to node [above, sloped, yshift=8pt] {Average / Marginal Harvest ($AP$, $MP$)} (7.5,6);
+		\draw plot [domain=0:6, smooth, variable=\E] ({\E},{0.1*\E*8}) node [above left] {$N = 8$};
+		\draw plot [domain=0:6, smooth, variable=\E] ({\E},{0.1*\E*4}) node [above left] {$N = 4$};
+		\draw plot [domain=7.5:13.5, smooth, variable=\E] ({\E},{0.1*8}) node [above left] {$N = 8$};
+		\draw plot [domain=7.5:13.5, smooth, variable=\E] ({\E},{0.1*4}) node [above left] {$N = 4$};
+		\node [right] at (1,5) {$TP = H = 0.1EN$};
+		\node [right, align=left] at (8.5,5) {$AP = TP / E = 0.1N$ \\ $MP = \Delta TP / \Delta E = 0.1N$};
+		\node [left] at (0,0) {0};
+		\node [below] at (0,0) {0};
+		\node [left] at (7.5,0) {0};
+		\node [below] at (7.5,0) {0};
+		\node [left] at (0,5) {5};
+		\node [below] at (5,0) {5};
+		\node [left] at (7.5,5) {5};
+		\node [below] at (12.5,0) {5};
+	\end{tikzpicture}
 \end{frame}
 
 \mode<article>{
@@ -331,3 +331,101 @@
 	
 	We can throw some numbers at the example to make it a bit more concrete.
 }
+
+\begin{frame}{Fish Production Function}
+	\begin{itemize}
+		\item Increasing effort increases harvest.
+		\item Larger harvest means less fish left behind to reproduce.
+		\item There is an \textit{\textbf{opportunity cost}} to catching more fish today in terms of the lost contribution to growth of the fish stock in the future.
+	\end{itemize}
+\end{frame}
+
+\mode<article>{
+	In the table below, the size of the fish stock, the amount harvested and the growth of the fish stock following harvest is shown for the first ten years, for effort levels $E = 2$ and $E = 3$.
+	
+	The sequence within a year is that first the harvest is taken, and then the remaining fish reproduce according to the growth relationship expressed in the formula above.  With the table is the formula, adapted to have the growth based on the stock after the harvest has happened.
+	
+	The numbers in the table show a clear trend.  For these two effort levels, the stock of fish and the harvest decrease over time.  For the lower effort, the beginning harvest is lower.  However, if this lower effort is maintained, then the lower harvest leads to a slower decline in the fish stock, and by the end of the ten years, the lower effort is resulting in a higher harvest than for the higher effort level.
+	
+	If you look closely at the numbers, you can see that the differences from one year to the next are getting smaller.  In each case, with the constant effort level, the system is converging on a \textit{\textbf{steady state}}.  At the steady state, the size of the stock, the amount that is harvested, and the amount by which the fish stock grows are constant.  In fact, the growth exactly matches the amount harvested.  Each of these steady states is in effect sustainable.  Which one do we like better?
+}
+\begin{frame}{Fish Production Function}
+	$$H = 0.1EN\ \ \ \ \ \ \dfrac{\Delta N}{\Delta t} = 0.5(N - H) \left(1 - \dfrac{N - H}{10}\right)$$
+	\vskip 12pt
+	\centering
+	\begin{tabular}{ccccccccccc}
+		\hline
+		$t$ & $N$ & $E$ & $H$ & $\Delta N$ &  &  $N$ & $E$ & $H$ & $\Delta N$ \\
+		\hline
+		1 & 8.00 & 2 & 1.60 & 1.15 &    & 8.00 & 3 & 2.40 & 1.23 \\
+		2 & 7.55 & 2 & 1.51 & 1.20 &      & 6.83 & 3 & 2.05 & 1.25 \\
+		3 & 7.24 & 2 & 1.45 & 1.22 &      & 6.03 & 3 & 1.81 & 1.22 \\
+		4 & 7.01 & 2 & 1.40 & 1.23 &      & 5.44 & 3 & 1.63 & 1.18 \\
+		5 & 6.84 & 2 & 1.37 & 1.24 &      & 4.99 & 3 & 1.50 & 1.14 \\
+		6 & 6.71 & 2 & 1.34 & 1.24 &      & 4.63 & 3 & 1.39 & 1.09 \\
+		7 & 6.61 & 2 & 1.32 & 1.25 &      & 4.33 & 3 & 1.30 & 1.06 \\
+		8 & 6.53 & 2 & 1.31 & 1.25 &      & 4.09 & 3 & 1.23 & 1.02 \\
+		9 & 6.48 & 2 & 1.30 & 1.25 &      & 3.89 & 3 & 1.17 & 0.99 \\
+		10 & 6.43 & 2 & 1.29  & 1.25 &      & 3.71 & 3 & 1.11 & 0.96 \\
+		\hline
+	\end{tabular}
+\end{frame}
+
+\begin{frame}{Fish Production Function}
+	\begin{tikzpicture}
+		\draw [-] (0,0) to node [below, yshift=-8pt] {Population ($N$)} (11,0);
+		\draw [-] (0,0) to node [above, sloped, yshift=8pt] {Growth ($\Delta N / \Delta t$)} (0,6);
+		\draw [thick, domain=0:10, smooth, variable=\N] plot ({\N},{4*(0.5*\N*(1-\N/10))});
+		\node [below, align=center] at (10,0) {$10$ \\ $K$};
+		\node [below] at (0,0) {0};
+		\node [left] at (0,0) {0};
+		\node [left] at (0,4) {1};
+		\draw [-, thin] (8,0) to (8,3.2);
+		\draw [-, thin] (7.55,0) to (7.55,3.7);
+		\draw [-, thin] (7.24,0) to (7.24,4.0);
+		\draw [-, thin] (7.01,0) to (7.01,4.2);
+		\node[circle, fill=black, inner sep=1.5pt, align=right, label=above right:{Steady State $E=2$, $H=1.25$, $N=6.25$}] at (6.25,4.69) {};
+		\draw [->, thin] (8,3.2) to [bend right=80] (7.55,3.7);
+		\draw [->, thin] (7.55,3.7) to [bend right=80] (7.24,4.0);
+		\draw [->, thin] (7.24,4.0) to [bend right=80] (7.01,4.2);
+	\end{tikzpicture}
+\end{frame}
+
+\begin{frame}{Fish Production Function}
+	\begin{tikzpicture}
+		\draw [-] (0,0) to node [below, yshift=-8pt] {Population ($N$)} (11,0);
+		\draw [-] (0,0) to node [above, sloped, yshift=8pt] {Growth ($\Delta N / \Delta t$)} (0,6);
+		\draw [thick, domain=0:10, smooth, variable=\N] plot ({\N},{4*(0.5*\N*(1-\N/10))});
+		\node [below, align=center] at (10,0) {$10$ \\ $K$};
+		\node [below] at (0,0) {0};
+		\node [left] at (0,0) {0};
+		\node [left] at (0,4) {1};
+		\draw [-, thin] (8,0) to (8,3.2);
+		\draw [-, thin] (6.83,0) to (6.83,4.32);
+		\draw [-, thin] (6.03,0) to (6.03,4.79);
+		\draw [-, thin] (5.44,0) to (5.44,4.96);
+		\node[circle, fill=black, inner sep=1.5pt] at (2.041,3.248) {};
+		\node[align=center, below right] at (2.041,3.248) {Steady State \\ $E=3$ \\ $H=0.61$ \\ $N=2.02$};
+		\draw [->, thin] (8,3.2) to [bend right=80] (6.83,4.32);
+		\draw [->, thin] (6.83,4.32) to [bend right=80] (6.03,4.79);
+		\draw [->, thin] (6.03,4.79) to [bend right=80] (5.44,4.96);
+	\end{tikzpicture}
+\end{frame}
+
+\begin{frame}{Fishing Sustainably}
+	\begin{itemize}
+		\item Starting from fish population $N = 8$:
+		\item Effort $E=3$ leads to:
+		\begin{itemize}
+			\item An immediate harvest of $H = 2.40$ 
+			\item A steady state with $N = 2.02$ and $H = 0.61$
+		\end{itemize} 
+		\item Effort $E=2$ leads to:
+		\begin{itemize}
+			\item An immediate harvest of $H = 1.60$ 
+			\item A steady state with $N = 6.25$ and $H = 1.25$
+		\end{itemize} 
+		\item Steady states are "sustainable", in that the activities can continue indefinitely.
+		\item Is one steady state better?
+	\end{itemize}
+\end{frame}
