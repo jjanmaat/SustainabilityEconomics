@@ -9,9 +9,35 @@
 	}
 \usepackage{natbib}
 \usepackage{tcolorbox}
+\usepackage{environ} % Required for handling environment bodies safely
 
-% Define hooks to wrap frames in a tcolorbox when in article mode
-% \mode<article>{
-% 	\setbeamertemplate{frame begin}{\begin{tcolorbox}[colback=white, colframe=black!70, arc=2pt]}
-% 	\setbeamertemplate{frame end}{\end{tcolorbox}}
-% }
+% --- 1. DEFINE UNBREAKABLE BOX STYLING ---
+\tcbset{
+	slidebox/.style={
+		colframe=black,        % Border color
+		colback=white,         % Box background color
+		arc=2mm,               % Rounded corners
+		boxrule=0.5mm,         % Thickness of border
+		width=\textwidth,      % Fit perfectly to text block width
+		before=\vspace{1em},   % Spacing above the slide
+		after=\vspace{1em}     % Spacing below the slide
+	}
+}
+
+% --- 2. DEFINE THE WRAPPER ENVIRONMENT ---
+% This safely captures everything inside the frame and renders it into a single, unbreakable box
+\NewEnviron{sframe}[1]{%
+	\begin{center}
+		\begin{tcolorbox}[slidebox]
+			{\large\bfseries #1}\par\medskip % Formatted Slide Title
+			\BODY                            % Actual slide content
+		\end{tcolorbox}
+	\end{center}
+}
+
+% --- 3. REDIRECT BEAMER FRAMES TO THE SAFE ENVIROMENT ---
+% In article mode, we redefine \begin{frame} to use our safe sframe tool
+	\mode<article>{
+		\let\frame\sframe
+		\let\endframe\endsframe
+	}

@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.28 (TeX Live 2025/Debian) (preloaded format=pdflatex 2026.10.9)  16 OCT 2026 19:53
+This is pdfTeX, Version 3.141592653-2.6-1.40.28 (TeX Live 2025/Debian) (preloaded format=pdflatex 2026.10.9)  16 OCT 2026 21:52
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -913,140 +913,158 @@ File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 ] [2]
 Chapter 1.
 (../lectures/lecture-introduction.tex
-<../lectures/images/SESgraphic.png, id=102, 304.13625pt x 304.13625pt>
+<../lectures/images/SESgraphic.png, id=112, 304.13625pt x 304.13625pt>
 File: ../lectures/images/SESgraphic.png Graphic file (type png)
 <use ../lectures/images/SESgraphic.png>
 Package pdftex.def Info: ../lectures/images/SESgraphic.png  used on input line 
-38.
-(pdftex.def)             Requested size: 375.80544pt x 375.81635pt.
+39.
+(pdftex.def)             Requested size: 350.767pt x 350.77492pt.
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
  [3
 
-]) [4 <../lectures/images/SESgraphic.png>]
+])
+[4 <../lectures/images/SESgraphic.png>]
 Chapter 2.
 (../lectures/lecture-systems.tex
 File: ../lectures/images/SESgraphic.png Graphic file (type png)
 <use ../lectures/images/SESgraphic.png>
 Package pdftex.def Info: ../lectures/images/SESgraphic.png  used on input line 
-36.
-(pdftex.def)             Requested size: 375.80544pt x 375.81635pt.
+37.
+(pdftex.def)             Requested size: 350.767pt x 350.77492pt.
 
-Underfull \vbox (badness 3364) has occurred while \output is active []
+Underfull \vbox (badness 10000) has occurred while \output is active []
 
  [5
 
 ]
-[6] [7]
-Overfull \hbox (31.08351pt too wide) in paragraph at lines 132--132
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+ [6]
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+ [7])
+[8] [9
+
+] [10]
+Chapter 3.
+(../lectures/lecture-SESmodel1.tex [11
+
+]
+Overfull \hbox (31.08351pt too wide) in paragraph at lines 51--51
 []\OT1/cmr/m/n/10.95 Fish ex-am-ple: https://virtualbiologylab.org/ModelsHTML5/
 PopGenFishbowl/PopGenFishbowl.html 
  []
 
-[8] [9]
+[12]
 <../lectures/images/NetLogoFishPond1.png, id=161, 1595.9625pt x 852.18375pt>
 File: ../lectures/images/NetLogoFishPond1.png Graphic file (type png)
 <use ../lectures/images/NetLogoFishPond1.png>
 Package pdftex.def Info: ../lectures/images/NetLogoFishPond1.png  used on input
- line 197.
-(pdftex.def)             Requested size: 469.75502pt x 250.83289pt.
+ line 117.
+(pdftex.def)             Requested size: 438.45708pt x 234.11069pt.
 
-Overfull \hbox (17.0pt too wide) in paragraph at lines 197--199
-[][]
- []
+Underfull \vbox (badness 10000) has occurred while \output is active []
 
+ [13]
+Underfull \vbox (badness 10000) has occurred while \output is active []
 
-Underfull \hbox (badness 10000) in paragraph at lines 197--199
-
- []
-
-[10 <../lectures/images/NetLogoFishPond1.png>]
+ [14 <../lectures/images/NetLogoFishPond1.png>]
 <../lectures/images/NetLogoFishPond2.png, id=172, 1595.9625pt x 852.18375pt>
 File: ../lectures/images/NetLogoFishPond2.png Graphic file (type png)
 <use ../lectures/images/NetLogoFishPond2.png>
 Package pdftex.def Info: ../lectures/images/NetLogoFishPond2.png  used on input
- line 234.
-(pdftex.def)             Requested size: 469.75502pt x 250.83289pt.
-
-Overfull \hbox (17.0pt too wide) in paragraph at lines 234--236
-[][]
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 234--236
-
- []
-
-[11 <../lectures/images/NetLogoFishPond2.png>] [12] [13]
+ line 154.
+(pdftex.def)             Requested size: 438.45708pt x 234.11069pt.
+ [15 <../lectures/images/NetLogoFishPond2.png>]
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
- [14]
-[15]) [16]
-Chapter 3.
-(../lectures/lecture-02.tex [17
+ [16]
+[17] [18]
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+ [19]
+[20]) [21] [22
 
 ]
-<../lectures/code/HermitProdFun.png, id=238, 433.62pt x 289.08pt>
+Chapter 4.
+(../lectures/lecture-02.tex [23]
+<../lectures/code/HermitProdFun.png, id=216, 433.62pt x 289.08pt>
 File: ../lectures/code/HermitProdFun.png Graphic file (type png)
 <use ../lectures/code/HermitProdFun.png>
 Package pdftex.def Info: ../lectures/code/HermitProdFun.png  used on input line
- 81.
-(pdftex.def)             Requested size: 375.80544pt x 250.5492pt.
- [18 <../lectures/code/HermitProdFun.png (PNG copy)>]
-<../lectures/code/HermitProdFunTP.png, id=249, 433.62pt x 289.08pt>
-File: ../lectures/code/HermitProdFunTP.png Graphic file (type png)
-<use ../lectures/code/HermitProdFunTP.png>
-Package pdftex.def Info: ../lectures/code/HermitProdFunTP.png  used on input li
-ne 108.
-(pdftex.def)             Requested size: 375.80544pt x 250.5492pt.
-<../lectures/code/HermitProdFunMP.png, id=250, 433.62pt x 289.08pt>
-File: ../lectures/code/HermitProdFunMP.png Graphic file (type png)
-<use ../lectures/code/HermitProdFunMP.png>
-Package pdftex.def Info: ../lectures/code/HermitProdFunMP.png  used on input li
-ne 121.
-(pdftex.def)             Requested size: 375.80544pt x 250.5492pt.
-
-Underfull \vbox (badness 5878) has occurred while \output is active []
-
- [19 <../lectures/code/HermitProdFunTP.png (PNG copy)>]
-<../lectures/code/HermitProdFunTan.png, id=261, 433.62pt x 289.08pt>
-File: ../lectures/code/HermitProdFunTan.png Graphic file (type png)
-<use ../lectures/code/HermitProdFunTan.png>
-Package pdftex.def Info: ../lectures/code/HermitProdFunTan.png  used on input l
-ine 134.
-(pdftex.def)             Requested size: 375.80544pt x 250.5492pt.
- [20 <../lectures/code/HermitProdFunMP.png (PNG copy)> <../lectures/code/Hermit
-ProdFunTan.png (PNG copy)>]
-<../lectures/code/HermitPPF.png, id=270, 289.08pt x 289.08pt>
-File: ../lectures/code/HermitPPF.png Graphic file (type png)
-<use ../lectures/code/HermitPPF.png>
-Package pdftex.def Info: ../lectures/code/HermitPPF.png  used on input line 154
-.
-(pdftex.def)             Requested size: 234.8775pt x 234.8769pt.
-<../lectures/code/HermitPPFoc.png, id=271, 289.08pt x 289.08pt>
-File: ../lectures/code/HermitPPFoc.png Graphic file (type png)
-<use ../lectures/code/HermitPPFoc.png>
-Package pdftex.def Info: ../lectures/code/HermitPPFoc.png  used on input line 1
-68.
-(pdftex.def)             Requested size: 234.8775pt x 234.8769pt.
+ 82.
+(pdftex.def)             Requested size: 350.767pt x 233.85797pt.
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
- [21 <../lectures/code/HermitPPF.png (PNG copy)>]) [22 <../lectures/code/Hermit
-PPFoc.png (PNG copy)>] (./main_notes.aux)
+ [24]
+<../lectures/code/HermitProdFunTP.png, id=221, 433.62pt x 289.08pt>
+File: ../lectures/code/HermitProdFunTP.png Graphic file (type png)
+<use ../lectures/code/HermitProdFunTP.png>
+Package pdftex.def Info: ../lectures/code/HermitProdFunTP.png  used on input li
+ne 115.
+(pdftex.def)             Requested size: 350.767pt x 233.85797pt.
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+ [25 <../lectures/code/HermitProdFun.png (PNG copy)>]
+<../lectures/code/HermitProdFunMP.png, id=227, 433.62pt x 289.08pt>
+File: ../lectures/code/HermitProdFunMP.png Graphic file (type png)
+<use ../lectures/code/HermitProdFunMP.png>
+Package pdftex.def Info: ../lectures/code/HermitProdFunMP.png  used on input li
+ne 128.
+(pdftex.def)             Requested size: 350.767pt x 233.85797pt.
+<../lectures/code/HermitProdFunTan.png, id=228, 433.62pt x 289.08pt>
+File: ../lectures/code/HermitProdFunTan.png Graphic file (type png)
+<use ../lectures/code/HermitProdFunTan.png>
+Package pdftex.def Info: ../lectures/code/HermitProdFunTan.png  used on input l
+ine 141.
+(pdftex.def)             Requested size: 350.767pt x 233.85797pt.
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+ [26 <../lectures/code/HermitProdFunTP.png (PNG copy)> <../lectures/code/Hermit
+ProdFunMP.png (PNG copy)>]
+<../lectures/code/HermitPPF.png, id=233, 289.08pt x 289.08pt>
+File: ../lectures/code/HermitPPF.png Graphic file (type png)
+<use ../lectures/code/HermitPPF.png>
+Package pdftex.def Info: ../lectures/code/HermitPPF.png  used on input line 155
+.
+(pdftex.def)             Requested size: 219.22853pt x 219.22668pt.
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+ [27 <../lectures/code/HermitProdFunTan.png (PNG copy)>]
+<../lectures/code/HermitPPFoc.png, id=238, 289.08pt x 289.08pt>
+File: ../lectures/code/HermitPPFoc.png Graphic file (type png)
+<use ../lectures/code/HermitPPFoc.png>
+Package pdftex.def Info: ../lectures/code/HermitPPFoc.png  used on input line 1
+69.
+(pdftex.def)             Requested size: 219.22853pt x 219.22668pt.
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+ [28 <../lectures/code/HermitPPF.png (PNG copy)>]) [29 <../lectures/code/Hermit
+PPFoc.png (PNG copy)>] [30
+
+] (./main_notes.aux)
  ***********
 LaTeX2e <2025-11-01>
 L3 programming layer <2026-01-19>
  ***********
 Package rerunfilecheck Info: File `main_notes.out' has not changed.
-(rerunfilecheck)             Checksum: AB373DD3CF0E1884EECAE7B3E5653B52;1851.
+(rerunfilecheck)             Checksum: 289E4C26EB28A1614ED6FCB5ED00E2A5;2216.
  ) 
 Here is how much of TeX's memory you used:
- 27946 strings out of 469396
- 565265 string characters out of 5467330
- 956888 words of memory out of 5000000
- 55969 multiletter control sequences out of 15000+600000
+ 27950 strings out of 469396
+ 565768 string characters out of 5467330
+ 956430 words of memory out of 5000000
+ 56038 multiletter control sequences out of 15000+600000
  638351 words of font info for 78 fonts, out of 8000000 for 9000
  81 hyphenation exceptions out of 8191
- 118i,7n,124p,1021b,874s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 118i,9n,124p,1023b,1054s stack positions out of 10000i,1000n,20000p,200000b,200000s
  </home/jjanmaat/.texlive2025/texmf-var/fonts/pk/ljfour/jknappen/ec/tcrm1095.
 600pk></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb>
 </usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/
@@ -1058,10 +1076,10 @@ t/fonts/type1/public/amsfonts/cm/cmr12.pfb></usr/share/texlive/texmf-dist/fonts
 /type1/public/amsfonts/cm/cmsl10.pfb></usr/share/texlive/texmf-dist/fonts/type1
 /public/amsfonts/cm/cmsy10.pfb></usr/share/texlive/texmf-dist/fonts/type1/publi
 c/amsfonts/cm/cmti10.pfb>
-Output written on main_notes.pdf (28 pages, 1075629 bytes).
+Output written on main_notes.pdf (36 pages, 1087846 bytes).
 PDF statistics:
- 362 PDF objects out of 1000 (max. 8388607)
- 296 compressed objects within 3 object streams
- 122 named destinations out of 1000 (max. 500000)
- 146 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 313 PDF objects out of 1000 (max. 8388607)
+ 239 compressed objects within 3 object streams
+ 54 named destinations out of 1000 (max. 500000)
+ 162 words of extra memory for PDF output out of 10000 (max. 10000000)
 
