@@ -27,12 +27,20 @@ people-own [
   myNeedGrain    ;; grain per tick person needs to consume
   myMax-steps    ;; maximum steps person can take during a tick
   myNetRadius    ;; radius of fishing net
+  myNet          ;; hold net patches while fishing
+  myFishStepCost ;; cost, in steps, of pulling fish out of net
   myVillage      ;; village person is attached to
   myJob          ;; job person has - fish harvester or grain gatherer
   goHome         ;; flag to indicate person is headed home
 ]
 breed [ villages village ]
-villages-own [ourFish ourGrain myPeople ]
+villages-own [
+  ourFish        ;; fish in village inventory
+  ourMinFishTicks ;; fish inventory measured in ticks comfy with
+  ourGrain       ;; grain inventory in village
+  ourMinGrainTicks ;; grain inventory measured in ticks comfy with
+  myPeople       ;; people attached to this village
+]
 
 ;; Setup global variables
 globals [
@@ -94,6 +102,9 @@ to setup-village
           move-to patchClicked
           set shape "house"
           set color yellow
+          ;; set village starting values
+          set ourMinFishTicks 10
+          set ourMinGrainTicks 10
           ;; create people and add them to the village
           let parent self
           set myPeople []
@@ -109,13 +120,18 @@ to setup-village
             set myMaxFish 30
             set myMaxGrain 200
             set myFishHold 10
+            set myFish myFishHold
             set myGrainHold 50
-            set myNetRadius 5
-            set goHome false
+            set myGrain myGrainHold
+            set myNetRadius 10
+            set myFishStepCost 0.33
+            set myNet no-patches
+            set goHome true
             set myMax-steps people-max-steps
             set myVillage parent
             ifelse [fisher-counter] of parent < (village-population / 2) [
               set myJob "Fishing"
+              set fisher-counter fisher-counter + 1
             ]
             [ 
               set myJob "Gathering"
@@ -128,6 +144,9 @@ to setup-village
           ask patchClicked [
             set grain 0
           ]
+            ;; set village inventory at start enough to fill everyone's desired hold 
+            set ourFish sum [myFishHold] of myPeople
+            set ourGrain sum [myGrainHold] of myPeople
         ]          
         set placed true
       ]
@@ -145,50 +164,155 @@ to setup-fish [ n-fish ]
   ]
 end
 
+;;***************************************************************************************************************
 ;; Go
 to go
   move-fish 
   grow-fish
-  ;; set-current-plot "Fish Population"
-  ;; plot count fish
-  ;; let herePeople [people] of (one-of villages)
-  harvest-fish one-of ([people] of (one-of villages)) with [myJob = "Fishing"]
-  gather-grain one-of ([people] of (one-of villages)) with [myJob = "Gathering"]
+  grow-grain
+  eat
+  ;; go over every person
+  ask villages [
+    in-village self
+    ask myPeople with [ myJob = "Fishing" ][ harvest-fish self ]
+    ask myPeople with [ myJob = "Gathering" ][ gather-grain self ]
+  ]
   tick
+end
+;;
+;;**************************************************************************************************************
+
+;; determine how many ticks we have enough food for in the 
+;; village storage
+to-report get-inventory-fish-ticks [ thisVillage ]
+  let inventTicks 0
+  ask thisVillage [
+    if count myPeople > 0 [
+      let sumNeedFish sum [myNeedFish] of myPeople
+      set inventTicks int (ourFish / sumNeedFish)
+    ]
+  ]
+  report inventTicks
+end
+
+;; determine how many ticks we have enough food for in the 
+;; village storage
+to-report get-inventory-grain-ticks [ thisVillage ]
+  let inventTicks 0
+  ask thisVillage [
+    if count myPeople > 0 [
+      let sumNeedGrain sum [myNeedGrain] of myPeople
+      set inventTicks int (ourGrain / sumNeedGrain)
+    ]
+  ]
+  report inventTicks
+end
+
+;; do activity at home
+;; if at home, adjust inventory so each person is holding inventory would start with if 
+;; leaving on activity
+;; check if number of ticks of village inventory less than resting ticks.  If it is, send 
+;; out people who are at home for inventory with least ticks
+to in-village [ thisVillage ]
+  ask thisVillage [
+    ;; get all people who are at home
+    let peopleHere myPeople with [patch-here = [patch-here] of thisVillage]
+    ask peopleHere [
+      ;; first move everything but basic need into common inventory
+      ask thisVillage [set ourFish ourFish + [myFish] of myself]
+      set myFish 0
+      ask thisVillage [set ourGrain ourGrain + [myGrain] of myself]
+      set myGrain 0
+      ;; take back amount I want to hold, if it is there
+      let availFish min list myFishHold [ourFish] of thisVillage
+      set myFish myFish + availFish
+      ask thisVillage [set ourFish ourFish - availFish]
+      let availGrain min list myGrainHold [ourGrain] of thisVillage
+      set myGrain myGrain + availGrain
+      ask thisVillage [set ourGrain ourGrain - availGrain]
+    ]
+    ;; check how inventory for fish is doing
+    if (get-inventory-fish-ticks self) < ourMinFishTicks [
+      ;; send out everyone who has fishing as a job to go fishing
+      ask (peopleHere with [myJob = "Fishing"]) [
+        set goHome false
+      ]
+    ]
+    ;; check how inventory for grain is doing
+    if (get-inventory-grain-ticks self) < ourMinGrainTicks [
+      ;; send out everyone who has fishing as a job to go fishing
+      ask (peopleHere with [myJob = "Gathering"]) [
+        set goHome false
+      ]
+    ]
+  ]
 end
 
 ;; eat-food
-;; each tick, people need to eat 
+;; each tick, people need to eat.  Amount need to eat set as owned variables 
+to eat
+  ask villages [
+    ask myPeople [
+      set myFish myFish - myNeedFish
+      set myGrain myGrain - myNeedGrain
+      if (myFish < 0) or (myGrain < 0) [die]
+    ]
+  ]
+end
+
+;; check to see how many ticks worth of food remaining
+to-report get-food-ticks [ thisPerson ]
+  report min list (int myFish / myNeedFish) (int myGrain / myNeedGrain)
+end
+
+;; check to see how many ticks needed to get home
+to-report get-ticks-to-home [ thisPerson ] 
+  report (distance myVillage / myMax-steps) + 1
+end
+
 ;; harvest fish
 ;; each fish caught takes a time step.  Throwing the net takes one step.
 to harvest-fish [ thisPerson ]
   ask thisPerson [
+    ;; check if time to start heading for home
+    if ((get-food-ticks self) - 1) < (get-ticks-to-home self) [
+      set goHome true
+      if not any? myNet [
+        ask myNet [set pcolor blue]
+        set myNet no-patches
+        show "Pulling net when running short of food"
+      ]
+    ]
     ;; check if they are going home
     ifelse goHome [
       move-toward-village self
     ]
     [
       ifelse any? (neighbors with [ zone = "Water" ]) [
-        let steps-used 0
-        let netPatches []
-        while [steps-used < myMax-steps ] [
           ;; have a patch with water as a neighbour, so can harvest fish
+        let steps-used 0
+        ;; if necessary, cast the net
+        if not any? myNet [
           ;; get the closest water patch
           let netCenter min-one-of patches with [ zone = "Water" ][distance thisPerson]
-          set netPatches ([patches in-radius ([myNetRadius] of thisPerson)] of netCenter) with [ zone = "Water" ]
-          ask netPatches [set pcolor cyan]
+          set myNet ([patches in-radius ([myNetRadius] of thisPerson)] of netCenter) with [ zone = "Water" ]
+          ask myNet [set pcolor cyan]
           set steps-used steps-used + 1
-          ;; get any fish that are in the net patches
-          let inNet fish-on netPatches
-          let caughtFish up-to-n-of (myMax-steps - steps-used) inNet
-          set myFish MyFish + count caughtFish
-          set steps-used steps-used + count caughtFish
-          ask caughtFish [ die ]
-        ]
+        ]          
+        ;; pull as many fish out of the net as have energy for
+        ;; get any fish that are in the net patches
+        let inNet fish-on myNet
+        let caughtFish up-to-n-of ((myMax-steps - steps-used) / myFishStepCost) inNet
+        set myFish MyFish + count caughtFish
+        set steps-used steps-used + count caughtFish
+        ask caughtFish [ die ]
+        show "Hauling in fish"
         ;; have we hit maximum fish?
         if myFish > myMaxFish [
           set goHome true
-          ask netPatches [set pcolor blue]
+          ask myNet [set pcolor blue]
+          set myNet no-patches
+          show "Pulling net when cannot carry more fish"
         ]
       ]
       [
@@ -265,6 +389,10 @@ end
 ;; well as movement.
 to gather-grain [ thisPerson ]
   ask thisPerson [
+    ;; check if time to start heading for home
+    if ((get-food-ticks self) - 1) < (get-ticks-to-home self) [
+      set goHome true
+    ]
     ;; check if going home
     ifelse goHome [
       move-toward-village self
@@ -337,7 +465,22 @@ to grow-fish
   ]
 end
 
-]]></code>
+;; grow the grain
+to grow-grain
+  ask patches with [zone = "Land"] [
+    set since-harvest since-harvest + 1
+    ;; set color to lime half way to harvest
+    ifelse since-harvest >= harvest-age [
+      set pcolor green
+      set grain harvest-max
+    ]
+    [
+      if since-harvest > (harvest-age / 2) [
+        set pcolor lime
+      ]
+    ]
+  ]
+end]]></code>
   <widgets>
     <view x="368" wrappingAllowedX="false" y="10" frameRate="30.0" minPycor="0" height="668" showTickCounter="true" patchSize="13.0" fontSize="10" wrappingAllowedY="false" width="668" tickCounterLabel="ticks" maxPycor="50" updateMode="0" maxPxcor="50" minPxcor="0"></view>
     <button x="10" y="10" height="40" disableUntilTicks="false" forever="false" kind="Observer" width="55">setup</button>
@@ -355,6 +498,8 @@ end
     <monitor x="1045" precision="17" y="190" height="60" fontSize="11" width="100">count fish</monitor>
     <monitor x="10" precision="17" y="115" height="60" fontSize="11" width="100" display="myFish"><![CDATA[map [ [t] -> [myFish] of t ] sort people]]></monitor>
     <monitor x="10" precision="17" y="180" height="60" fontSize="11" width="100" display="myGrain"><![CDATA[map [ [t] -> [myGrain] of t ] sort people]]></monitor>
+    <monitor x="10" precision="17" y="310" height="60" fontSize="11" width="100" display="ourGrain"><![CDATA[map [ [t] -> [ourGrain] of t ] sort villages]]></monitor>
+    <monitor x="10" precision="17" y="245" height="60" fontSize="11" width="100" display="ourFish"><![CDATA[map [ [t] -> [ourFish] of t ] sort villages]]></monitor>
   </widgets>
   <info>## WHAT IS IT?
 
