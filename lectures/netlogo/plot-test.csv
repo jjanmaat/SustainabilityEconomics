@@ -1,0 +1,28 @@
+"export-plot data (NetLogo 7.0.4)"
+"FishLand.nlogox"
+"10/19/2026 09:43:47:512 -0700"
+
+"MODEL SETTINGS"
+"harvest"
+"0"
+
+"""Fish Population"""
+"x min","x max","y min","y max","autoplot?","current pen","legend open?","number of pens"
+"0","10","0","160","true","""default""","false","1"
+
+"pen name","pen down?","mode","interval","color","x"
+"""default""","true","0","1","0","10"
+
+"""default"""
+"x","y","color","pen down?"
+"0","100","0","true"
+"1","105","0","true"
+"2","110","0","true"
+"3","115","0","true"
+"4","120","0","true"
+"5","125","0","true"
+"6","130","0","true"
+"7","135","0","true"
+"8","139","0","true"
+"9","143","0","true"
+"10","147","0","true"
