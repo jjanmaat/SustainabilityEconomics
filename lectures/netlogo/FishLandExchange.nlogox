@@ -1,0 +1,1697 @@
+<?xml version="1.0" encoding="utf-8"?>
+<model version="NetLogo 7.0.4" snapToGrid="true">
+  <code><![CDATA[;; Landscape with water and land.  
+;; Fish live in the water, reproducing according to standard logistic growth 
+;; Land produces grain.  Grain must be gathered from patches.
+;;
+;; A couple is set up with a house somewhere on land.
+;; There are two types that make up the couple, a gatherer and a hunter
+;; The gatherer will have a comparative advantage in gathering
+;; The hunter will have a comparative advantage in hunting - which here is fishing
+;; The people need to consume a combination of fish and grain each tick to survive
+;; Each type carries an inventory of fish and grain that they consume from each tick
+;; The house has an inventory of fish and grain that the people contribute to and draw from
+;; There will be a threshold level for the house inventory that triggers movement to gather or hunt
+
+patches-own [ zone harvest-max since-harvest grain]
+breed [ fish a-fish ]
+breed [ people person ]
+people-own [
+  myFish         ;; fish person holds
+  myGrain        ;; grain person holds
+  myMaxFish      ;; maximum fish person can hold
+  myMaxGrain     ;; maximum grain person can hold
+  myFishHold     ;; fish person holds when at village
+  myGrainHold    ;; grain person holds when at village
+  myNeedFish     ;; fish per tick person needs to consume
+  myNeedGrain    ;; grain per tick person needs to consume
+  myMinRestTicks ;; minimum number of food ticks before I want to go back harvesting
+  myMax-steps    ;; maximum steps person can take during a tick
+  myNetRadius    ;; radius of fishing net
+  myNet          ;; hold net patches while fishing
+  myFishStepCost ;; cost, in steps, of pulling fish out of net
+  myGrainStepCost ;; cost, in steps, for each unit of grain gathered
+  myVillage      ;; village person is attached to
+  myJob          ;; job person has - fish harvester or grain gatherer
+  myLeisureTicks ;; sum of ticks when at home and not being sent out 
+  goHome         ;; flag to indicate person is headed home
+]
+breed [ villages village ]
+villages-own [
+  ourFish        ;; fish in village inventory
+  ourMinFishTicks ;; fish inventory measured in ticks comfy with
+  ourGrain       ;; grain inventory in village
+  ourMinGrainTicks ;; grain inventory measured in ticks comfy with
+  myPeople       ;; people attached to this village
+]
+
+;; Setup global variables
+globals [
+  ;; carrying capacity follows a triangle distribution
+  ;; fish-carrying-capacity-mu    ;; mean of fish carrying capacity
+  ;; fish-carrying-capacity-rng   ;; range for fish carrying capacity distribution
+  ;; fish-growth-rate
+  ;; fish-tick-move-distance
+  ;; land patch yield follows a triangle distribution
+  ;; land-yield-mu                ;; mean of land yield
+  ;; land-yield-rng               ;; range for land yield
+  ;; land-yield-maturity-ticks    ;; ticks till land is mature after harvest
+  ;; invent-fish-decay-mu         ;; mean decay rate for fish held in village inventory
+  ;; invent-fish-decay-rng
+  ;; invent-grain-decay-mu
+  ;; invent-grain-decay-rng
+  ;; invent-min-fish-ticks
+  ;; invent-min-grain-ticks
+  ;; people-max-steps
+  ;; fish-net-radius-mu
+  ;; fish-net-radius-rng
+  ;; fish-take-step-cost-mu
+  ;; fish-take-step-cost-rng
+]
+
+;; set default values
+to defaults
+  set-globals
+end
+
+;; Set values for globals
+to set-globals 
+  ;; set up fish ecology
+  set fish-carrying-capacity-mu 200
+  set fish-carrying-capacity-rng 0
+  set fish-growth-rate 0.1
+  set fish-tick-move-distance 2
+  ;; set up land ecology
+  set land-yield-mu 5
+  set land-yield-rng 0
+  set land-yield-maturity-ticks 10
+  ;; set defaults for fisher
+  set fisher-max-steps 5
+  set fisher-grain-step-cost-mu 0.67
+  set fisher-grain-step-cost-rng 0
+  set fisher-fish-net-radius-mu 10
+  set fisher-fish-net-radius-rng 0
+  set fisher-fish-take-step-cost-mu 0.33
+  set fisher-fish-take-step-cost-rng 0
+  set fisher-fish-max-carry 30
+  set fisher-grain-max-carry 100
+  set fisher-fish-step-eat 1
+  set fisher-grain-step-eat 5
+  ;; set defaults for gatherer
+  set gather-max-steps 5
+  set gather-grain-step-cost-mu 0.33
+  set gather-grain-step-cost-rng 0
+  set gather-fish-net-radius-mu 5
+  set gather-fish-net-radius-rng 0
+  set gather-fish-take-step-cost-mu 0.67
+  set gather-fish-take-step-cost-rng 0
+  set gather-fish-max-carry 20
+  set gather-grain-max-carry 200
+  set gather-fish-step-eat 1
+  set gather-grain-step-eat 5
+  ;; set village defaults
+  ;; set invent-min-fish-ticks 10
+  ;; set invent-min-grain-ticks 10
+  set village-population 2
+  set village-share-fishing 0.5
+  ;; set up inventory decay parameters
+  set invent-fish-decay-mu 0
+  set invent-fish-decay-rng 0
+  set invent-grain-decay-mu 0
+  set invent-grain-decay-rng 0
+  ;; parameters specifying how many ticks worth of inventory desired in village
+  ;; set invent-min-fish-ticks 10
+  ;; set invent-min-grain-ticks 10
+end
+
+;; random draw from triangle distribution
+to-report random-triangle [ 
+  mu          ;; mean
+  rng         ;; base width of triangle
+]
+  report mu + rng * (random-float 0.5 - random-float 0.5)
+end
+
+;; Setup
+
+to setup
+  clear-all
+  clear-all-plots
+  ;; set dimensions of world
+  resize-world 0 50 0 50
+  ;; set-globals ;; set global values
+  ask patches [
+    ifelse pxcor < 30
+    [
+      set zone "Land" 
+      ;; set pcolor green
+      set harvest-max 10
+      set since-harvest land-yield-maturity-ticks
+      set grain random-triangle land-yield-mu (land-yield-rng * land-yield-mu)
+      let colorAdj 0
+      if land-yield-rng > 0 [
+        set colorAdj round((land-yield-mu - grain) / (2 * land-yield-rng * land-yield-mu)) * 2
+        show (word "grain: " grain ", colorAdj: " colorAdj) 
+      ]
+      set pcolor 55 + colorAdj
+    ]
+    [
+      set zone "Water" 
+      set pcolor blue
+      set harvest-max 0
+    ]
+  ]
+  ;; initialize fish population
+  setup-fish fish-carrying-capacity-mu / 2
+  reset-ticks
+  setup-village
+  show "Done Setup"
+end
+
+;; get harvester location
+to setup-village
+  user-message "Please select a starting point on the landscape before proceeding."
+  let placed false
+  while [not placed] [
+    ;; get mouse location if clicked
+    if mouse-inside? and mouse-down? [
+  let patchClicked patch mouse-xcor mouse-ycor
+      ;; check that location is on land
+      if [ zone ] of patchClicked = "Land" [
+        create-villages 1 [
+          move-to patchClicked
+          set shape "house"
+          set color yellow
+          ;; set village starting values
+          ;; set ourMinFishTicks 10
+          ;; set ourMinGrainTicks 10
+          ;; create people and add them to the village
+          let parent self
+          set myPeople []
+          ;; let village-population 2
+          let fisher-counter 0
+          hatch village-population [
+            set breed people
+            move-to patchClicked
+            set shape "person"
+            set color red
+            set myJob "Ga"
+            set myVillage parent
+            ; ifelse [fisher-counter] of parent < (village-population / 2) [
+            ;   set myJob "Fi"
+            ;   set fisher-counter fisher-counter + 1
+            ; ]
+            ; [ 
+            ;   set myJob "Ga"
+            ; ]
+            ask parent [ 
+              set myPeople (turtle-set myPeople myself) 
+              set fisher-counter fisher-counter + 1
+            ]
+          ]
+          ;; assign share of village people to fishing task
+          ask n-of (round (village-population * village-share-fishing)) myPeople [
+            set myJob "Fi"
+          ]
+          ;; set abilities of the two types, from random setting
+          ask myPeople [
+            ;; set the common stuff for all of them
+            ;; set myNeedFish 1
+            ;; set myNeedGrain 5
+            ;; set myMaxFish 30
+            ;; set myMaxGrain 200
+            set myFishHold 10
+            set myFish myFishHold
+            set myGrainHold 50
+            set myGrain myGrainHold
+            ;; set myNetRadius 10
+            ;; set myFishStepCost 0.33
+            set myLeisureTicks 0
+            set myNet no-patches
+            set goHome true
+            ;; set myMax-steps people-max-steps
+            ;; set the stuff that is specific to the fishing type
+            if myJob = "Fi" [
+              set myNetRadius random-triangle fisher-fish-net-radius-mu (fisher-fish-net-radius-mu * fisher-fish-net-radius-rng)
+              set myFishStepCost random-triangle fisher-fish-take-step-cost-mu (fisher-fish-take-step-cost-mu * fisher-fish-take-step-cost-rng)
+              set myGrainStepCost random-triangle fisher-grain-step-cost-mu (fisher-grain-step-cost-mu * fisher-grain-step-cost-rng)
+              set myMax-steps fisher-max-steps
+              set myMaxFish fisher-fish-max-carry
+              set myMaxGrain fisher-grain-max-carry
+              set myNeedFish fisher-fish-step-eat
+              set myNeedGrain fisher-grain-step-eat
+              set myMinRestTicks fisher-min-rest-ticks
+            ]
+            ;; set the stuff that is specific to the gatherer type
+            if myJob = "Ga" [
+              set myNetRadius random-triangle gather-fish-net-radius-mu (gather-fish-net-radius-mu * gather-fish-net-radius-rng)
+              set myFishStepCost random-triangle gather-fish-take-step-cost-mu (gather-fish-take-step-cost-mu * gather-fish-take-step-cost-rng)
+              set myGrainStepCost random-triangle gather-grain-step-cost-mu (gather-grain-step-cost-mu * gather-grain-step-cost-rng)
+              set myMax-steps gather-max-steps
+              set myMaxFish gather-fish-max-carry
+              set myMaxGrain gather-grain-max-carry
+              set myNeedFish gather-fish-step-eat
+              set myNeedGrain gather-grain-step-eat
+              set myMinRestTicks gather-min-rest-ticks
+            ]
+          ]
+          ;; clear out grain in spot where village is
+          ask patchClicked [
+            set grain 0
+          ]
+            ;; set village inventory at start enough to fill everyone's desired hold 
+            set ourFish sum [myFishHold] of myPeople
+            set ourGrain sum [myGrainHold] of myPeople
+        ]          
+        set placed true
+      ]
+    ]   
+  ]
+end
+
+;; set fish numbers in water
+to setup-fish [ n-fish ]
+  create-fish n-fish [
+    set shape "fish"
+    set color red
+    move-to one-of patches with [ zone = "Water" ]
+    set heading random-float 360
+  ]
+end
+
+;;***************************************************************************************************************
+;; Go
+to go
+  move-fish 
+  grow-fish
+  grow-grain
+  eat
+  ;; go over every person
+  ask villages [
+    in-village self
+    ask myPeople with [ myJob = "Fi" ][ harvest-fish self ]
+    ask myPeople with [ myJob = "Ga" ][ gather-grain self ]
+  ]
+  tick
+end
+;;
+;;**************************************************************************************************************
+
+;; determine how many ticks we have enough food for in the 
+;; village storage
+to-report get-inventory-fish-ticks [ thisVillage ]
+  let inventTicks 0
+  ask thisVillage [
+    if count myPeople > 0 [
+      let sumNeedFish sum [myNeedFish] of myPeople
+      set inventTicks int (ourFish / sumNeedFish)
+    ]
+  ]
+  report inventTicks
+end
+
+;; determine how many ticks we have enough food for in the 
+;; village storage
+to-report get-inventory-grain-ticks [ thisVillage ]
+  let inventTicks 0
+  ask thisVillage [
+    if count myPeople > 0 [
+      let sumNeedGrain sum [myNeedGrain] of myPeople
+      set inventTicks int (ourGrain / sumNeedGrain)
+    ]
+  ]
+  report inventTicks
+end
+
+;; check how many ticks of life do I have with current personal inventory
+to-report getMyLifeLeft
+  report min list (myFish / myNeedFish) (myGrain / myNeedGrain)
+end
+
+;; how much excess grain do I have
+to-report getMyExcessGrain
+  report min list (myNeedGrain * (myGrain / myNeedGrain - myFish / myNeedFish)) 0
+end
+
+;; how much excess fish do I have
+to-report getMyExcessFish
+  report min list (myNeedFish * (myFish / myNeedFish - myGrain / myNeedGrain)) 0
+end
+
+;; get the slope of the trading ratio for a diagonal across the core between the endowments in an edgeworth box
+;; slope will be in the space of fish - how much grain traded per fish.
+to-report getCoreSlope [ trader1 trader2 ]
+  report (([myGrain] of trader1) - ([myGrain] of trader2)) / (([myFish] of trader1) - ([myFish] of trader2))
+end
+
+;; This has been informed by gemini.google.com
+;; Let the untility function be the ticks of life that the trader has left
+;; U1 = min(myFish1 / myNeedFish1, myGrain1 / myNeedGrain1)
+;; U2 = min(myFish2 / myNeedFish2, myGrain2 / myNeedGrain2)
+;;
+;; Expressing this as a scaling parameter on fish, have
+;; U1 = min((myNeedGrain1 / myNeedFish1) * myFish, myGrain1) / myNeedGrain1
+;; U2 = ...
+;;
+;; The contract curve in the core is thick.  There are sets of points for any value of (myFish1 + myFish2) that
+;; yield the same utility for different levels of (myGrain1 + myGrain2).  This results in a thick core.  
+;; Changing (myFish1, myFish2) will make one trader better off and the other worse off.  However, changing
+;; (myGrain1, myGrain2) will not affect eithet traders utility for this range.  The result is that for the 
+;; region in the set of utility improving points - the lens - that are on the contract curve, utility
+;; can be expressed using only one dimension.  In this case using myFish.  
+;;
+;; The procedure is
+;; 1) find the corner points of the core, bottom right and top left
+;; 2) find the line through these two points
+;; 3) find the line between the two endowments
+;; 4) find the intersection of these two lines
+;; 5) check to see if this intersection is an improvement for both traders
+;; 6) if it is an improvement, then make the trade happen
+to-report tradeSolution [ trader1 trader2 ]
+  show ( word "trader1:" [who] of trader1 "," [myJob] of trader1 " trader2:" [who] of trader2 "," [myJob] of trader2)
+  ;; endowments for the traders
+  let fish1 [myFish] of trader1
+  let fish2 [myFish] of trader2
+  let grain1 [myGrain] of trader1
+  let grain2 [myGrain] of trader2
+  show (word "fish1:" fish1 " grain1:" grain1 " fish2:" fish2 " grain2:" grain2) 
+  ;; get slope of Leontief ray for each trader
+  let rayFish1 [myNeedGrain / myNeedFish] of trader1
+  let rayFish2 [myNeedGrain / myNeedFish] of trader2
+  ;; get the utility for each trader at the endowment
+  let utilTrader1 [getMyLifeLeft] of trader1
+  let utilTrader2 [getMyLifeLeft] of trader2
+  ;; get the limits for the levels of fish within which any solution must lie
+  let fishLB utilTrader1 / rayFish1
+  let fishUB (fish1 + fish2) - (utilTrader2 / rayFish2)
+  ;; get the value for fish that equates the gain in utility for each of the traders
+  ;; Gain in utility for trader1 is rayFish1 * newFish1 - utilTrader1
+  ;; Gain in utility for trader2 is rayFish2 * (fish1 + fish2 - newFish1) - utilTrader2
+  ;; After some algebra
+  ;; newFish1 = (rayFish2 * (fish1 + fish2) - utilTrader2 + utilTrader1) / (rayFish1 + rayFish2)
+  let newFish1 (rayFish2 * (fish1 + fish2) - utilTrader2 + utilTrader1) / (rayFish1 + rayFish2)
+  ;; At newFish1, there is likely a whole range of values for grain that have the same 
+  ;; utility for both agent
+  let newGrainLim1 rayFish1 * newFish1
+  let newGrainLim2 (grain1 + grain2) - rayFish2 * (fish1 + fish2) + rayFish2 * newFish1
+  ;; To simplify, pick the midpoint of this segemnt
+  let newGrain1 (newGrainLim1 + newGrainLim2) / 2
+  ;; Validity check, does the new point exist within the lens?
+  if ((newFish1 < fishLB) or (newFish1 > fishUB)) [
+    ;; the newFish is either below lower bound or above upper bound.  Set it equal to the original
+    set newFish1 fish1
+    set newGrain1 grain1
+  ]
+  let newFish2 (fish1 + fish2) - newFish1
+  let newGrain2 (grain1 + grain2) - newGrain1
+  show (word "newFish1:" newFish1 " newGrain1:" newGrain1 " newFish2:" newFish2 " newGrain2:" newGrain2) 
+  ;; report the trade solution
+  report (list newFish1 newGrain1 newFish2 newGrain2)
+end
+
+;; given two traders, return the life span increase if the trade occurs
+to-report tradeLifeExtend [ trader1 trader2 ]
+  ;;
+  ;; get the trade solution
+  let tradePlan tradeSolution trader1 trader2
+  ;;
+  ;; Check if at trade solution both traders can live longer than at their endowment
+  let endowLife1 [getMyLifeLeft] of trader1
+  let endowLife2 [getMyLifeLeft] of trader2
+  let tradeLife1 min list (item 0 tradePlan / ([myNeedFish] of trader1)) (item 1 tradePlan / ([myNeedGrain] of trader1))
+  let tradeLife2 min list (item 2 tradePlan / ([myNeedFish] of trader2)) (item 3 tradePlan / ([myNeedGrain] of trader2))
+  ;;
+  report (list (tradeLife1 - endowLife1) (tradeLife2 - endowLife2))
+end
+
+to makeTrade [ trader1 trader2 ]
+  ;;
+  ;; get the trade solution
+  let tradePlan tradeSolution trader1 trader2
+  ask trader1 [ 
+    set myFish item 1 tradePlan
+    set myGrain item 2 tradePlan
+  ]
+  ask trader2 [
+    set myFish item 3 tradePlan
+    set myGrain item 4 tradePlan
+  ]
+end
+;; 
+;; do activity at home
+;; if at home, adjust inventory so each person is holding inventory would start with if 
+;; leaving on activity
+;; check if number of ticks of village inventory less than resting ticks.  If it is, send 
+;; out people who are at home for inventory with least ticks
+to in-village [ thisVillage ]
+  ask thisVillage [
+    ;; get all people who are at home
+    let peopleHere myPeople with [
+      patch-here = [patch-here] of thisVillage
+    ]
+    ask peopleHere [
+      ;; get everyone else in the turtle set
+      let othersHere peopleHere who-are-not self
+      if any? othersHere [
+        ;; there are other turtles.  Find the turtle with whom would get the longest life extension
+        let tradeWith min-one-of othersHere [ 
+          item 0 tradeLifeExtend self myself 
+        ]
+        ;; check to ensure this trade actually extends agent's life
+        if not ((tradeLifeExtend self tradeWith) < 0) [
+          ;; life is not shortened by trade, do the trade
+          makeTrade self tradeWith 
+        ]
+      ]
+    ]
+    ;;
+    ;; Decay everybody's fish and grain
+    ask peopleHere [
+      ;; decay the fish and the grain
+      ;; decay based on triangle distribution, where one end of distribution is no decay
+      let fishDecay random-triangle invent-fish-decay-mu ((min list invent-fish-decay-mu ( 1 - invent-fish-decay-mu)) * invent-fish-decay-rng )
+      set myFish myFish * (1 - fishDecay)
+      let grainDecay random-triangle invent-grain-decay-mu ((min list invent-grain-decay-mu ( 1 - invent-grain-decay-mu)) * invent-grain-decay-rng )
+      set myGrain myGrain * (1 - grainDecay)
+      show (word "ID: " who "Decay Rates " fishDecay " " grainDecay )
+      ;;
+      ;; add to leisure, since I am here
+      set myLeisureTicks myLeisureTicks + 1
+    ]
+    ;; 
+    ;; check if I am happy to just stay here
+    ;; This is actually complicated.  If I am running low on the thing I don't produce, should I wait until somebody else gets here, or go 
+    ;; get more fish.
+    ;; process.  Stay until life expectency below threshold.  If short on what I don't harvest, continue to wait for someone to come 
+    ;; back and trade with.  If I am a fish harvester and I will die from lack of grain, stay in village and hope somebody with grain comes in time
+    ask (peopleHere with [myJob = "Fi"]) [
+      if getMyLifeLeft <= myMinRestTicks [
+        ;; want to go
+        if getMyExcessGrain > 0 [
+          set goHome false
+        ]
+      ]
+    ]
+    ask (peopleHere with [myJob = "Ga"]) [
+      if getMyLifeLeft <= myMinRestTicks [
+        ;; want to go
+        if getMyExcessFish > 0 [
+          set goHome false
+        ]
+      ]
+    ]
+  ]
+end
+
+;; eat-food
+;; each tick, people need to eat.  Amount need to eat set as owned variables 
+to eat
+  ask villages [
+    ask myPeople [
+      set myFish myFish - myNeedFish
+      set myGrain myGrain - myNeedGrain
+      if (myFish < 0) or (myGrain < 0) [die]
+    ]
+  ]
+end
+
+;; check to see how many ticks worth of food remaining
+to-report get-food-ticks [ thisPerson ]
+  report min list (int myFish / myNeedFish) (int myGrain / myNeedGrain)
+end
+
+;; check to see how many ticks needed to get home
+to-report get-ticks-to-home [ thisPerson ] 
+  report (distance myVillage / myMax-steps) + 1
+end
+
+;; harvest fish
+;; each fish caught takes a time step.  Throwing the net takes one step.
+to harvest-fish [ thisPerson ]
+  ask thisPerson [
+    ;; check if time to start heading for home
+    if ((get-food-ticks self) - 1) < (get-ticks-to-home self) [
+      set goHome true
+    ]
+    ;; check if they are going home
+    ifelse goHome [
+      ;; if going home, pull net if not already pulled
+      if any? myNet [
+        ask myNet [set pcolor blue]
+        set myNet no-patches
+        show "Pulling net"
+      ]
+      move-toward-village self
+    ]
+    [
+      ifelse any? (neighbors with [ zone = "Water" ]) [
+          ;; have a patch with water as a neighbour, so can harvest fish
+        let steps-used 0
+        ;; if necessary, cast the net
+        if not any? myNet [
+          ;; get the closest water patch
+          let netCenter min-one-of patches with [ zone = "Water" ][distance thisPerson]
+          set myNet ([patches in-radius ([myNetRadius] of thisPerson)] of netCenter) with [ zone = "Water" ]
+          ask myNet [set pcolor cyan]
+          set steps-used steps-used + 1
+        ]          
+        ;; pull as many fish out of the net as have energy for
+        ;; get any fish that are in the net patches
+        let inNet fish-on myNet
+        let caughtFish up-to-n-of ((myMax-steps - steps-used) / myFishStepCost) inNet
+        set myFish MyFish + count caughtFish
+        set steps-used steps-used + count caughtFish
+        ask caughtFish [ die ]
+        show "Hauling in fish"
+        ;; have we hit maximum fish?
+        if myFish > myMaxFish [
+          set goHome true
+        ]
+      ]
+      [
+        ;; no water in neighbourhood, so move toward shore
+        move-toward-shore self
+      ]
+    ]
+  ]
+end
+;; 
+;; move a person agent toward shore
+to move-toward-shore [ thisPerson ]
+  ask thisPerson [
+    if not any? (neighbors with [ zone = "Water" ]) [
+      ;; get closest water patch
+      let shore min-one-of patches with [ zone = "Water" ][distance thisPerson]
+      if shore != nobody [
+        face shore
+        let steps-moved 0
+        ;; move step by step until neighbour is water
+        while [ steps-moved < myMax-steps and not any? (neighbors with [ zone = "Water" ])] [
+          fd 1
+          set steps-moved steps-moved + 1
+          ;; should not be in the water, but might accidentally be
+          if patch-here = shore [
+            stop
+          ]
+        ]
+      ]
+    ]
+  ]
+end
+
+;; move a person agent toward the house
+to move-toward-village [ thisPerson ]
+  ask thisPerson [
+    ;; are we at the house?
+    ifelse [patch-here] of thisPerson != [patch-here] of myVillage [
+      ;; not at the house, so move toward house
+      face myVillage
+      let steps-moved 0
+      while [ steps-moved < myMax-steps and ([patch-here] of thisPerson != [patch-here] of myVillage)] [
+        fd 1
+        set steps-moved steps-moved + 1
+      ]
+    ]
+    [
+      ;; at the village
+      
+    ]
+  ]
+end
+  
+;; move toward gathering spot
+;; move in direction of neighborhood with the most food
+;; move just one step.  This is called from the gathering process
+to move-toward-grain [ thisPerson ]
+  ask thisPerson [
+    ;; find the neighboring patch with the most food in its neighbourhood
+    let mostGrain max-one-of neighbors [
+      grain + sum [grain] of neighbors 
+    ]
+    ;; point towards neighbour
+    if mostGrain != nobody [
+      face mostGrain
+      forward 1
+    ]
+  ]
+end
+
+;; gather grain
+;; gather grain proceeds by moving in the direction of grain until finding a patch with grain.
+;; movement and harvesting continue until max step reached.  Each harvest counts as a step, as 
+;; well as movement.
+to gather-grain [ thisPerson ]
+  ask thisPerson [
+    ;; check if time to start heading for home
+    if ((get-food-ticks self) - 1) < (get-ticks-to-home self) [
+      set goHome true
+    ]
+    ;; check if going home
+    ifelse goHome [
+      move-toward-village self
+    ]
+    [
+      let steps-used 0
+      while [steps-used < myMax-steps] [
+        ;; check if there is grain here to harvest
+        if [grain] of patch-here > 0 [
+          ;; harvest the grain from the patch
+          ;; harvest four patches near to patch on
+          let harvestPatches ( patch-set patch-here neighbors4 )
+          let harvestGrain sum [grain] of harvestPatches
+          set myGrain myGrain + harvestGrain
+          ask harvestPatches [
+            set grain 0
+            set since-harvest 0
+            set pcolor brown
+          ]
+          set steps-used steps-used + harvestGrain * myGrainStepCost
+        ]
+        ;; do we have any movement space left
+        if steps-used < myMax-steps [
+          ;; move one step in direction of most grain
+          move-toward-grain self
+          set steps-used steps-used + 1
+        ]
+      ]
+      ;; check if have maximum grain
+      if myGrain > myMaxGrain [set goHome true]
+    ]
+  ]
+end
+
+;; move fish
+to move-fish
+  ;; do a somewhat random walk for fish
+  let fish-step fish-tick-move-distance
+  ask fish [
+    let ahead patch-ahead fish-step
+    let flag true 
+    while [flag] [
+      if ahead != nobody [ 
+        if [zone] of ahead = "Water" [
+          set flag false
+        ]
+      ]
+      let myDirection heading
+      if flag [
+        set myDirection myDirection + 150 + random-float 60
+      ]
+      set heading myDirection + random-float 45 - 22.5
+      set ahead patch-ahead fish-step
+    ]
+    forward fish-step
+  ]
+end
+
+;; grow fish
+to grow-fish
+  let n count fish
+  let K-now random-triangle fish-carrying-capacity-mu (fish-carrying-capacity-rng * fish-carrying-capacity-mu)
+  let births round(n * fish-growth-rate * (1 - n / K-now))
+  ;; add fish if under carrying capacity
+  if births > 0 [
+    ask up-to-n-of births fish [ hatch 1 [
+      set heading random-float 360
+      ]
+    ]
+  ]
+  ;; kill fish if beyond carrying capacity
+  if births < 0 [
+    ask up-to-n-of (-1 * births) fish [die]
+  ]
+end
+
+;; grow the grain
+to grow-grain
+  ask patches with [zone = "Land"] [
+    set since-harvest since-harvest + 1
+    ;; set color to lime half way to harvest
+    ifelse since-harvest >= land-yield-maturity-ticks [
+      ;; set pcolor green
+      set grain random-triangle land-yield-mu (land-yield-rng * land-yield-mu)
+      let colorAdj 0
+      if land-yield-rng > 0 [
+        set colorAdj round((land-yield-mu - grain) / (2 * land-yield-rng * land-yield-mu)) * 2
+      ]
+      set pcolor 55 + colorAdj
+    ]
+    [
+      if since-harvest > (land-yield-maturity-ticks / 2) [
+        set pcolor lime
+      ]
+    ]
+  ]
+end]]></code>
+  <widgets>
+    <view x="368" wrappingAllowedX="false" y="10" frameRate="30.0" minPycor="0" height="668" showTickCounter="true" patchSize="13.0" fontSize="10" wrappingAllowedY="false" width="668" tickCounterLabel="ticks" maxPycor="50" updateMode="0" maxPxcor="50" minPxcor="0"></view>
+    <button x="10" y="10" height="40" disableUntilTicks="false" forever="false" kind="Observer" width="55">setup</button>
+    <button x="70" y="10" height="40" disableUntilTicks="false" forever="false" kind="Observer" width="55" display="step">go</button>
+    <plot x="1045" autoPlotX="true" yMax="10.0" autoPlotY="true" y="10" xMin="0.0" height="175" legend="false" xMax="10.0" yMin="0.0" width="240" display="Fish Population">
+      <setup></setup>
+      <update></update>
+      <pen interval="1.0" mode="0" display="default" color="-16777216" legend="true">
+        <setup></setup>
+        <update>plot count fish</update>
+      </pen>
+    </plot>
+    <button x="130" y="10" height="40" disableUntilTicks="false" forever="true" kind="Observer" width="55">go</button>
+    <monitor x="1045" precision="17" y="190" height="60" fontSize="11" width="100">count fish</monitor>
+    <note x="10" y="55" backgroundDark="0" fontSize="12" width="170" markdown="false" height="25" textColorDark="-1" textColorLight="-16777216" backgroundLight="0">Environmental Parameters</note>
+    <slider x="10" step="1" y="85" max="500" width="225" display="fish-carrying-capacity-mu" height="50" min="0" direction="Horizontal" default="200.0" variable="fish-carrying-capacity-mu"></slider>
+    <slider x="10" step="0.01" y="145" max="1" width="225" display="fish-carrying-capacity-rng" height="50" min="0" direction="Horizontal" default="0.0" variable="fish-carrying-capacity-rng"></slider>
+    <slider x="10" step="0.01" y="205" max="0.25" width="225" display="fish-growth-rate" height="50" min="0" direction="Horizontal" default="0.1" variable="fish-growth-rate"></slider>
+    <slider x="10" step="0.1" y="260" max="10" width="225" display="fish-tick-move-distance" height="50" min="0" direction="Horizontal" default="2.0" variable="fish-tick-move-distance"></slider>
+    <slider x="10" step="0.1" y="315" max="10" width="225" display="land-yield-mu" height="50" min="0" direction="Horizontal" default="5.0" variable="land-yield-mu"></slider>
+    <slider x="10" step="0.01" y="370" max="1" width="225" display="land-yield-rng" height="50" min="0" direction="Horizontal" default="0.0" variable="land-yield-rng"></slider>
+    <slider x="10" step="1" y="425" max="30" width="225" display="land-yield-maturity-ticks" height="50" min="0" direction="Horizontal" default="10.0" variable="land-yield-maturity-ticks"></slider>
+    <monitor x="1045" precision="17" y="285" height="60" fontSize="11" width="135" display="myJob"><![CDATA[map [ [t] -> [myJob] of t ] sort people]]></monitor>
+    <monitor x="1045" precision="17" y="350" height="60" fontSize="11" width="135" display="myFish"><![CDATA[map [ [t] -> [myFish] of t ] sort people]]></monitor>
+    <monitor x="1045" precision="17" y="415" height="60" fontSize="11" width="135" display="myGrain"><![CDATA[map [ [t] -> [myGrain] of t ] sort people]]></monitor>
+    <monitor x="1045" precision="17" y="480" height="60" fontSize="11" width="135" display="myLeisureTicks"><![CDATA[map [ [t] -> [myLeisureTicks] of t ] sort people]]></monitor>
+    <plot x="1185" autoPlotX="true" yMax="10.0" autoPlotY="true" y="285" xMin="0.0" height="255" legend="true" xMax="10.0" yMin="0.0" width="255" display="Village">
+      <setup></setup>
+      <update></update>
+      <pen interval="1.0" mode="0" display="ourFish" color="-13345367" legend="true">
+        <setup></setup>
+        <update>plot sum [ourFish] of villages</update>
+      </pen>
+      <pen interval="1.0" mode="0" display="ourGrain" color="-10899396" legend="true">
+        <setup></setup>
+        <update>plot sum [ourGrain] of villages</update>
+      </pen>
+      <pen interval="1.0" mode="0" display="myLeisureTicks" color="-5825686" legend="true">
+        <setup></setup>
+        <update>plot sum [ sum [ myLeisureTicks ] of myPeople ] of villages </update>
+      </pen>
+      <pen interval="1.0" mode="0" display="population" color="-2064490" legend="true">
+        <setup></setup>
+        <update>plot count people</update>
+      </pen>
+    </plot>
+    <slider x="10" step="0.01" y="480" max="1" width="225" display="invent-fish-decay-mu" height="50" min="0" direction="Horizontal" default="0.0" variable="invent-fish-decay-mu"></slider>
+    <slider x="10" step="0.01" y="535" max="1" width="225" display="invent-fish-decay-rng" height="50" min="0" direction="Horizontal" default="0.0" variable="invent-fish-decay-rng"></slider>
+    <slider x="10" step="0.01" y="590" max="1" width="225" display="invent-grain-decay-mu" height="50" min="0" direction="Horizontal" default="0.0" variable="invent-grain-decay-mu"></slider>
+    <slider x="10" step="0.01" y="645" max="1" width="225" display="invent-grain-decay-rng" height="50" min="0" direction="Horizontal" default="0.0" variable="invent-grain-decay-rng"></slider>
+    <note x="10" y="720" backgroundDark="0" fontSize="12" width="150" markdown="false" height="25" textColorDark="-1" textColorLight="-16777216" backgroundLight="0">Village Parameters</note>
+    <button x="190" y="10" height="40" disableUntilTicks="false" forever="false" kind="Observer" width="65">defaults</button>
+    <slider x="270" step="1" y="750" max="20" width="225" display="fisher-max-steps" height="50" min="0" direction="Horizontal" default="5.0" variable="fisher-max-steps"></slider>
+    <note x="270" y="720" backgroundDark="0" fontSize="12" width="215" markdown="false" height="25" textColorDark="-1" textColorLight="-16777216" backgroundLight="0">Parameters for Fishing Job</note>
+    <slider x="270" step="1" y="805" max="100" width="225" display="fisher-fish-max-carry" height="50" min="0" direction="Horizontal" default="30.0" variable="fisher-fish-max-carry"></slider>
+    <slider x="270" step="1" y="860" max="500" width="225" display="fisher-grain-max-carry" height="50" min="0" direction="Horizontal" default="100.0" variable="fisher-grain-max-carry"></slider>
+    <slider x="10" step="1" y="750" max="10" width="225" display="village-population" height="50" min="0" direction="Horizontal" default="2.0" variable="village-population"></slider>
+    <slider x="10" step="0.05" y="805" max="1" width="225" display="village-share-fishing" height="50" min="0" direction="Horizontal" default="0.5" variable="village-share-fishing"></slider>
+    <slider x="985" step="1" y="860" max="500" width="225" display="gather-grain-max-carry" height="50" min="0" direction="Horizontal" default="200.0" variable="gather-grain-max-carry"></slider>
+    <slider x="985" step="1" y="805" max="100" width="225" display="gather-fish-max-carry" height="50" min="0" direction="Horizontal" default="20.0" variable="gather-fish-max-carry"></slider>
+    <slider x="985" step="1" y="750" max="20" width="225" display="gather-max-steps" height="50" min="0" direction="Horizontal" default="5.0" variable="gather-max-steps"></slider>
+    <note x="985" y="720" backgroundDark="0" fontSize="12" width="215" markdown="false" height="25" textColorDark="-1" textColorLight="-16777216" backgroundLight="0">Parameters for Harvesting Job</note>
+    <slider x="730" step="1" y="750" max="20" width="225" display="fisher-fish-net-radius-mu" height="50" min="0" direction="Horizontal" default="10.0" variable="fisher-fish-net-radius-mu"></slider>
+    <slider x="730" step="0.01" y="805" max="1" width="225" display="fisher-fish-net-radius-rng" height="50" min="0" direction="Horizontal" default="0.0" variable="fisher-fish-net-radius-rng"></slider>
+    <slider x="730" step="0.01" y="860" max="2" width="225" display="fisher-fish-take-step-cost-mu" height="50" min="0" direction="Horizontal" default="0.33" variable="fisher-fish-take-step-cost-mu"></slider>
+    <slider x="730" step="0.01" y="915" max="1" width="225" display="fisher-fish-take-step-cost-rng" height="50" min="0" direction="Horizontal" default="0.0" variable="fisher-fish-take-step-cost-rng"></slider>
+    <slider x="1445" step="1" y="750" max="10" width="225" display="gather-fish-net-radius-mu" height="50" min="0" direction="Horizontal" default="5.0" variable="gather-fish-net-radius-mu"></slider>
+    <slider x="1445" step="0.01" y="860" max="2" width="225" display="gather-fish-take-step-cost-mu" height="50" min="0" direction="Horizontal" default="0.67" variable="gather-fish-take-step-cost-mu"></slider>
+    <slider x="1445" step="0.01" y="915" max="1" width="225" display="gather-fish-take-step-cost-rng" height="50" min="0" direction="Horizontal" default="0.0" variable="gather-fish-take-step-cost-rng"></slider>
+    <slider x="1445" step="0.01" y="805" max="1" width="225" display="gather-fish-net-radius-rng" height="50" min="0" direction="Horizontal" default="0.0" variable="gather-fish-net-radius-rng"></slider>
+    <slider x="270" step="1" y="915" max="50" width="225" display="fisher-min-rest-ticks" height="50" min="0" direction="Horizontal" default="10.0" variable="fisher-min-rest-ticks"></slider>
+    <slider x="985" step="1" y="915" max="50" width="225" display="gather-min-rest-ticks" height="50" min="0" direction="Horizontal" default="10.0" variable="gather-min-rest-ticks"></slider>
+    <slider x="500" step="0.01" y="915" max="1" width="225" display="fisher-grain-step-cost-rng" height="50" min="0" direction="Horizontal" default="0.0" variable="fisher-grain-step-cost-rng"></slider>
+    <slider x="1215" step="0.01" y="860" max="2" width="225" display="gather-grain-step-cost-mu" height="50" min="0" direction="Horizontal" default="0.33" variable="gather-grain-step-cost-mu"></slider>
+    <slider x="1215" step="0.01" y="915" max="1" width="225" display="gather-grain-step-cost-rng" height="50" min="0" direction="Horizontal" default="0.0" variable="gather-grain-step-cost-rng"></slider>
+    <slider x="500" step="0.01" y="860" max="2" width="225" display="fisher-grain-step-cost-mu" height="50" min="0" direction="Horizontal" default="0.67" variable="fisher-grain-step-cost-mu"></slider>
+    <slider x="500" step="0.1" y="750" max="10" width="225" display="fisher-fish-step-eat" height="50" min="0" direction="Horizontal" default="1.0" variable="fisher-fish-step-eat"></slider>
+    <slider x="1215" step="0.1" y="750" max="10" width="225" display="gather-fish-step-eat" height="50" min="0" direction="Horizontal" default="2.0" variable="gather-fish-step-eat"></slider>
+    <slider x="500" step="0.1" y="805" max="50" width="225" display="fisher-grain-step-eat" height="50" min="0" direction="Horizontal" default="10.0" variable="fisher-grain-step-eat"></slider>
+    <slider x="1215" step="0.1" y="805" max="50" width="225" display="gather-grain-step-eat" height="50" min="0" direction="Horizontal" default="5.0" variable="gather-grain-step-eat"></slider>
+  </widgets>
+  <info>## WHAT IS IT?
+
+(a general understanding of what the model is trying to show or explain)
+
+## HOW IT WORKS
+
+(what rules the agents use to create the overall behavior of the model)
+
+## HOW TO USE IT
+
+(how to use the model, including a description of each of the items in the Interface tab)
+
+## THINGS TO NOTICE
+
+(suggested things for the user to notice while running the model)
+
+## THINGS TO TRY
+
+(suggested things for the user to try to do (move sliders, switches, etc.) with the model)
+
+## EXTENDING THE MODEL
+
+(suggested things to add or change in the Code tab to make the model more complicated, detailed, accurate, etc.)
+
+## NETLOGO FEATURES
+
+(interesting or unusual features of NetLogo that the model uses, particularly in the Code tab; or where workarounds were needed for missing features)
+
+## RELATED MODELS
+
+(models in the NetLogo Models Library and elsewhere which are of related interest)
+
+## CREDITS AND REFERENCES
+
+(a reference to the model's URL on the web if it has one, as well as any other necessary credits, citations, and links)
+</info>
+  <turtleShapes>
+    <shape name="default" rotatable="true" editableColorIndex="0">
+      <polygon color="-1920102913" filled="true" marked="true">
+        <point x="150" y="5"></point>
+        <point x="40" y="250"></point>
+        <point x="150" y="205"></point>
+        <point x="260" y="250"></point>
+      </polygon>
+    </shape>
+    <shape name="airplane" rotatable="true" editableColorIndex="0">
+      <polygon color="-1920102913" filled="true" marked="true">
+        <point x="150" y="0"></point>
+        <point x="135" y="15"></point>
+        <point x="120" y="60"></point>
+        <point x="120" y="105"></point>
+        <point x="15" y="165"></point>
+        <point x="15" y="195"></point>
+        <point x="120" y="180"></point>
+        <point x="135" y="240"></point>
+        <point x="105" y="270"></point>
+        <point x="120" y="285"></point>
+        <point x="150" y="270"></point>
+        <point x="180" y="285"></point>
+        <point x="210" y="270"></point>
+        <point x="165" y="240"></point>
+        <point x="180" y="180"></point>
+        <point x="285" y="195"></point>
+        <point x="285" y="165"></point>
+        <point x="180" y="105"></point>
+        <point x="180" y="60"></point>
+        <point x="165" y="15"></point>
+      </polygon>
+    </shape>
+    <shape name="arrow" rotatable="true" editableColorIndex="0">
+      <polygon color="-1920102913" filled="true" marked="true">
+        <point x="150" y="0"></point>
+        <point x="0" y="150"></point>
+        <point x="105" y="150"></point>
+        <point x="105" y="293"></point>
+        <point x="195" y="293"></point>
+        <point x="195" y="150"></point>
+        <point x="300" y="150"></point>
+      </polygon>
+    </shape>
+    <shape name="box" rotatable="false" editableColorIndex="0">
+      <polygon color="-1920102913" filled="true" marked="true">
+        <point x="150" y="285"></point>
+        <point x="285" y="225"></point>
+        <point x="285" y="75"></point>
+        <point x="150" y="135"></point>
+      </polygon>
+      <polygon color="-1920102913" filled="true" marked="true">
+        <point x="150" y="135"></point>
+        <point x="15" y="75"></point>
+        <point x="150" y="15"></point>
+        <point x="285" y="75"></point>
+      </polygon>
+      <polygon color="-1920102913" filled="true" marked="true">
+        <point x="15" y="75"></point>
+        <point x="15" y="225"></point>
+        <point x="150" y="285"></point>
+        <point x="150" y="135"></point>
+      </polygon>
+      <line endX="150" startY="285" marked="false" color="255" endY="135" startX="150"></line>
+      <line endX="15" startY="135" marked="false" color="255" endY="75" startX="150"></line>
+      <line endX="285" startY="135" marked="false" color="255" endY="75" startX="150"></line>
+    </shape>
+    <shape name="bug" rotatable="true" editableColorIndex="0">
+      <circle x="96" y="182" marked="true" color="-1920102913" diameter="108" filled="true"></circle>
+      <circle x="110" y="127" marked="true" color="-1920102913" diameter="80" filled="true"></circle>
+      <circle x="110" y="75" marked="true" color="-1920102913" diameter="80" filled="true"></circle>
+      <line endX="80" startY="100" marked="true" color="-1920102913" endY="30" startX="150"></line>
+      <line endX="220" startY="100" marked="true" color="-1920102913" endY="30" startX="150"></line>
+    </shape>
+    <shape name="butterfly" rotatable="true" editableColorIndex="0">
+      <polygon color="-1920102913" filled="true" marked="true">
+        <point x="150" y="165"></point>
+        <point x="209" y="199"></point>
+        <point x="225" y="225"></point>
+        <point x="225" y="255"></point>
+        <point x="195" y="270"></point>
+        <point x="165" y="255"></point>
+        <point x="150" y="240"></point>
+      </polygon>
+      <polygon color="-1920102913" filled="true" marked="true">
+        <point x="150" y="165"></point>
+        <point x="89" y="198"></point>
+        <point x="75" y="225"></point>
+        <point x="75" y="255"></point>
+        <point x="105" y="270"></point>
+        <point x="135" y="255"></point>
+        <point x="150" y="240"></point>
+      </polygon>
+      <polygon color="-1920102913" filled="true" marked="true">
+        <point x="139" y="148"></point>
+        <point x="100" y="105"></point>
+        <point x="55" y="90"></point>
+        <point x="25" y="90"></point>
+        <point x="10" y="105"></point>
+        <point x="10" y="135"></point>
+        <point x="25" y="180"></point>
+        <point x="40" y="195"></point>
+        <point x="85" y="194"></point>
+        <point x="139" y="163"></point>
+      </polygon>
+      <polygon color="-1920102913" filled="true" marked="true">
+        <point x="162" y="150"></point>
+        <point x="200" y="105"></point>
+        <point x="245" y="90"></point>
+        <point x="275" y="90"></point>
+        <point x="290" y="105"></point>
+        <point x="290" y="135"></point>
+        <point x="275" y="180"></point>
+        <point x="260" y="195"></point>
+        <point x="215" y="195"></point>
+        <point x="162" y="165"></point>
+      </polygon>
+      <polygon color="255" filled="true" marked="false">
+        <point x="150" y="255"></point>
+        <point x="135" y="225"></point>
+        <point x="120" y="150"></point>
+        <point x="135" y="120"></point>
+        <point x="150" y="105"></point>
+        <point x="165" y="120"></point>
+        <point x="180" y="150"></point>
+        <point x="165" y="225"></point>
+      </polygon>
+      <circle x="135" y="90" marked="false" color="255" diameter="30" filled="true"></circle>
+      <line endX="195" startY="105" marked="false" color="255" endY="60" startX="150"></line>
+      <line endX="105" startY="105" marked="false" color="255" endY="60" startX="150"></line>
+    </shape>
+    <shape name="car" rotatable="false" editableColorIndex="0">
+      <polygon color="-1920102913" filled="true" marked="true">
+        <point x="300" y="180"></point>
+        <point x="279" y="164"></point>
+        <point x="261" y="144"></point>
+        <point x="240" y="135"></point>
+        <point x="226" y="132"></point>
+        <point x="213" y="106"></point>
+        <point x="203" y="84"></point>
+        <point x="185" y="63"></point>
+        <point x="159" y="50"></point>
+        <point x="135" y="50"></point>
+        <point x="75" y="60"></point>
+        <point x="0" y="150"></point>
+        <point x="0" y="165"></point>
+        <point x="0" y="225"></point>
+        <point x="300" y="225"></point>
+        <point x="300" y="180"></point>
+      </polygon>
+      <circle x="180" y="180" marked="false" color="255" diameter="90" filled="true"></circle>
+      <circle x="30" y="180" marked="false" color="255" diameter="90" filled="true"></circle>
+      <polygon color="255" filled="true" marked="false">
+        <point x="162" y="80"></point>
+        <point x="132" y="78"></point>
+        <point x="134" y="135"></point>
+        <point x="209" y="135"></point>
+        <point x="194" y="105"></point>
+        <point x="189" y="96"></point>
+        <point x="180" y="89"></point>
+      </polygon>
+      <circle x="47" y="195" marked="true" color="-1920102913" diameter="58" filled="true"></circle>
+      <circle x="195" y="195" marked="true" color="-1920102913" diameter="58" filled="true"></circle>
+    </shape>
+    <shape name="circle" rotatable="false" editableColorIndex="0">
+      <circle x="0" y="0" marked="true" color="-1920102913" diameter="300" filled="true"></circle>
+    </shape>
+    <shape name="circle 2" rotatable="false" editableColorIndex="0">
+      <circle x="0" y="0" marked="true" color="-1920102913" diameter="300" filled="true"></circle>
+      <circle x="30" y="30" marked="false" color="255" diameter="240" filled="true"></circle>
+    </shape>
+    <shape name="cow" rotatable="false" editableColorIndex="0">
+      <polygon color="-1920102913" filled="true" marked="true">
+        <point x="200" y="193"></point>
+        <point x="197" y="249"></point>
+        <point x="179" y="249"></point>
+        <point x="177" y="196"></point>
+        <point x="166" y="187"></point>
+        <point x="140" y="189"></point>
+        <point x="93" y="191"></point>
+        <point x="78" y="179"></point>
+        <point x="72" y="211"></point>
+        <point x="49" y="209"></point>
+        <point x="48" y="181"></point>
+        <point x="37" y="149"></point>
+        <point x="25" y="120"></point>
+        <point x="25" y="89"></point>
+        <point x="45" y="72"></point>
+        <point x="103" y="84"></point>
+        <point x="179" y="75"></point>
+        <point x="198" y="76"></point>
+        <point x="252" y="64"></point>
+        <point x="272" y="81"></point>
+        <point x="293" y="103"></point>
+        <point x="285" y="121"></point>
+        <point x="255" y="121"></point>
+        <point x="242" y="118"></point>
+        <point x="224" y="167"></point>
+      </polygon>
+      <polygon color="-1920102913" filled="true" marked="true">
+        <point x="73" y="210"></point>
+        <point x="86" y="251"></point>
+        <point x="62" y="249"></point>
+        <point x="48" y="208"></point>
+      </polygon>
+      <polygon color="-1920102913" filled="true" marked="true">
+        <point x="25" y="114"></point>
+        <point x="16" y="195"></point>
+        <point x="9" y="204"></point>
+        <point x="23" y="213"></point>
+        <point x="25" y="200"></point>
+        <point x="39" y="123"></point>
+      </polygon>
+    </shape>
+    <shape name="cylinder" rotatable="false" editableColorIndex="0">
+      <circle x="0" y="0" marked="true" color="-1920102913" diameter="300" filled="true"></circle>
+    </shape>
+    <shape name="dot" rotatable="false" editableColorIndex="0">
+      <circle x="90" y="90" marked="true" color="-1920102913" diameter="120" filled="true"></circle>
+    </shape>
+    <shape name="face happy" rotatable="false" editableColorIndex="0">
+      <circle x="8" y="8" marked="true" color="-1920102913" diameter="285" filled="true"></circle>
+      <circle x="60" y="75" marked="false" color="255" diameter="60" filled="true"></circle>
+      <circle x="180" y="75" marked="false" color="255" diameter="60" filled="true"></circle>
+      <polygon color="255" filled="true" marked="false">
+        <point x="150" y="255"></point>
+        <point x="90" y="239"></point>
+        <point x="62" y="213"></point>
+        <point x="47" y="191"></point>
+        <point x="67" y="179"></point>
+        <point x="90" y="203"></point>
+        <point x="109" y="218"></point>
+        <point x="150" y="225"></point>
+        <point x="192" y="218"></point>
+        <point x="210" y="203"></point>
+        <point x="227" y="181"></point>
+        <point x="251" y="194"></point>
+        <point x="236" y="217"></point>
+        <point x="212" y="240"></point>
+      </polygon>
+    </shape>
+    <shape name="face neutral" rotatable="false" editableColorIndex="0">
+      <circle x="8" y="7" marked="true" color="-1920102913" diameter="285" filled="true"></circle>
+      <circle x="60" y="75" marked="false" color="255" diameter="60" filled="true"></circle>
+      <circle x="180" y="75" marked="false" color="255" diameter="60" filled="true"></circle>
+      <rectangle endX="240" startY="195" marked="false" color="255" endY="225" startX="60" filled="true"></rectangle>
+    </shape>
+    <shape name="face sad" rotatable="false" editableColorIndex="0">
+      <circle x="8" y="8" marked="true" color="-1920102913" diameter="285" filled="true"></circle>
+      <circle x="60" y="75" marked="false" color="255" diameter="60" filled="true"></circle>
+      <circle x="180" y="75" marked="false" color="255" diameter="60" filled="true"></circle>
+      <polygon color="255" filled="true" marked="false">
+        <point x="150" y="168"></point>
+        <point x="90" y="184"></point>
+        <point x="62" y="210"></point>
+        <point x="47" y="232"></point>
+        <point x="67" y="244"></point>
+        <point x="90" y="220"></point>
+        <point x="109" y="205"></point>
+        <point x="150" y="198"></point>
+        <point x="192" y="205"></point>
+        <point x="210" y="220"></point>
+        <point x="227" y="242"></point>
+        <point x="251" y="229"></point>
+        <point x="236" y="206"></point>
+        <point x="212" y="183"></point>
+      </polygon>
+    </shape>
+    <shape name="fish" rotatable="false" editableColorIndex="0">
+      <polygon color="-1" filled="true" marked="false">
+        <point x="44" y="131"></point>
+        <point x="21" y="87"></point>
+        <point x="15" y="86"></point>
+        <point x="0" y="120"></point>
+        <point x="15" y="150"></point>
+        <point x="0" y="180"></point>
+        <point x="13" y="214"></point>
+        <point x="20" y="212"></point>
+        <point x="45" y="166"></point>
+      </polygon>
+      <polygon color="-1" filled="true" marked="false">
+        <point x="135" y="195"></point>
+        <point x="119" y="235"></point>
+        <point x="95" y="218"></point>
+        <point x="76" y="210"></point>
+        <point x="46" y="204"></point>
+        <point x="60" y="165"></point>
+      </polygon>
+      <polygon color="-1" filled="true" marked="false">
+        <point x="75" y="45"></point>
+        <point x="83" y="77"></point>
+        <point x="71" y="103"></point>
+        <point x="86" y="114"></point>
+        <point x="166" y="78"></point>
+        <point x="135" y="60"></point>
+      </polygon>
+      <polygon color="-1920102913" filled="true" marked="true">
+        <point x="30" y="136"></point>
+        <point x="151" y="77"></point>
+        <point x="226" y="81"></point>
+        <point x="280" y="119"></point>
+        <point x="292" y="146"></point>
+        <point x="292" y="160"></point>
+        <point x="287" y="170"></point>
+        <point x="270" y="195"></point>
+        <point x="195" y="210"></point>
+        <point x="151" y="212"></point>
+        <point x="30" y="166"></point>
+      </polygon>
+      <circle x="215" y="106" marked="false" color="255" diameter="30" filled="true"></circle>
+    </shape>
+    <shape name="flag" rotatable="false" editableColorIndex="0">
+      <rectangle endX="75" startY="15" marked="true" color="-1920102913" endY="300" startX="60" filled="true"></rectangle>
+      <polygon color="-1920102913" filled="true" marked="true">
+        <point x="90" y="150"></point>
+        <point x="270" y="90"></point>
+        <point x="90" y="30"></point>
+      </polygon>
+      <line endX="90" startY="135" marked="true" color="-1920102913" endY="135" startX="75"></line>
+      <line endX="90" startY="45" marked="true" color="-1920102913" endY="45" startX="75"></line>
+    </shape>
+    <shape name="flower" rotatable="false" editableColorIndex="0">
+      <polygon color="1504722175" filled="true" marked="false">
+        <point x="135" y="120"></point>
+        <point x="165" y="165"></point>
+        <point x="180" y="210"></point>
+        <point x="180" y="240"></point>
+        <point x="150" y="300"></point>
+        <point x="165" y="300"></point>
+        <point x="195" y="240"></point>
+        <point x="195" y="195"></point>
+        <point x="165" y="135"></point>
+      </polygon>
+      <circle x="85" y="132" marked="true" color="-1920102913" diameter="38" filled="true"></circle>
+      <circle x="130" y="147" marked="true" color="-1920102913" diameter="38" filled="true"></circle>
+      <circle x="192" y="85" marked="true" color="-1920102913" diameter="38" filled="true"></circle>
+      <circle x="85" y="40" marked="true" color="-1920102913" diameter="38" filled="true"></circle>
+      <circle x="177" y="40" marked="true" color="-1920102913" diameter="38" filled="true"></circle>
+      <circle x="177" y="132" marked="true" color="-1920102913" diameter="38" filled="true"></circle>
+      <circle x="70" y="85" marked="true" color="-1920102913" diameter="38" filled="true"></circle>
+      <circle x="130" y="25" marked="true" color="-1920102913" diameter="38" filled="true"></circle>
+      <circle x="96" y="51" marked="true" color="-1920102913" diameter="108" filled="true"></circle>
+      <circle x="113" y="68" marked="false" color="255" diameter="74" filled="true"></circle>
+      <polygon color="1504722175" filled="true" marked="false">
+        <point x="189" y="233"></point>
+        <point x="219" y="188"></point>
+        <point x="249" y="173"></point>
+        <point x="279" y="188"></point>
+        <point x="234" y="218"></point>
+      </polygon>
+      <polygon color="1504722175" filled="true" marked="false">
+        <point x="180" y="255"></point>
+        <point x="150" y="210"></point>
+        <point x="105" y="210"></point>
+        <point x="75" y="240"></point>
+        <point x="135" y="240"></point>
+      </polygon>
+    </shape>
+    <shape name="house" rotatable="false" editableColorIndex="0">
+      <rectangle endX="255" startY="120" marked="true" color="-1920102913" endY="285" startX="45" filled="true"></rectangle>
+      <rectangle endX="180" startY="210" marked="false" color="255" endY="285" startX="120" filled="true"></rectangle>
+      <polygon color="-1920102913" filled="true" marked="true">
+        <point x="15" y="120"></point>
+        <point x="150" y="15"></point>
+        <point x="285" y="120"></point>
+      </polygon>
+      <line endX="270" startY="120" marked="false" color="255" endY="120" startX="30"></line>
+    </shape>
+    <shape name="leaf" rotatable="false" editableColorIndex="0">
+      <polygon color="-1920102913" filled="true" marked="true">
+        <point x="150" y="210"></point>
+        <point x="135" y="195"></point>
+        <point x="120" y="210"></point>
+        <point x="60" y="210"></point>
+        <point x="30" y="195"></point>
+        <point x="60" y="180"></point>
+        <point x="60" y="165"></point>
+        <point x="15" y="135"></point>
+        <point x="30" y="120"></point>
+        <point x="15" y="105"></point>
+        <point x="40" y="104"></point>
+        <point x="45" y="90"></point>
+        <point x="60" y="90"></point>
+        <point x="90" y="105"></point>
+        <point x="105" y="120"></point>
+        <point x="120" y="120"></point>
+        <point x="105" y="60"></point>
+        <point x="120" y="60"></point>
+        <point x="135" y="30"></point>
+        <point x="150" y="15"></point>
+        <point x="165" y="30"></point>
+        <point x="180" y="60"></point>
+        <point x="195" y="60"></point>
+        <point x="180" y="120"></point>
+        <point x="195" y="120"></point>
+        <point x="210" y="105"></point>
+        <point x="240" y="90"></point>
+        <point x="255" y="90"></point>
+        <point x="263" y="104"></point>
+        <point x="285" y="105"></point>
+        <point x="270" y="120"></point>
+        <point x="285" y="135"></point>
+        <point x="240" y="165"></point>
+        <point x="240" y="180"></point>
+        <point x="270" y="195"></point>
+        <point x="240" y="210"></point>
+        <point x="180" y="210"></point>
+        <point x="165" y="195"></point>
+      </polygon>
+      <polygon color="-1920102913" filled="true" marked="true">
+        <point x="135" y="195"></point>
+        <point x="135" y="240"></point>
+        <point x="120" y="255"></point>
+        <point x="105" y="255"></point>
+        <point x="105" y="285"></point>
+        <point x="135" y="285"></point>
+        <point x="165" y="240"></point>
+        <point x="165" y="195"></point>
+      </polygon>
+    </shape>
+    <shape name="line" rotatable="true" editableColorIndex="0">
+      <line endX="150" startY="0" marked="true" color="-1920102913" endY="300" startX="150"></line>
+    </shape>
+    <shape name="line half" rotatable="true" editableColorIndex="0">
+      <line endX="150" startY="0" marked="true" color="-1920102913" endY="150" startX="150"></line>
+    </shape>
+    <shape name="pentagon" rotatable="false" editableColorIndex="0">
+      <polygon color="-1920102913" filled="true" marked="true">
+        <point x="150" y="15"></point>
+        <point x="15" y="120"></point>
+        <point x="60" y="285"></point>
+        <point x="240" y="285"></point>
+        <point x="285" y="120"></point>
+      </polygon>
+    </shape>
+    <shape name="person" rotatable="false" editableColorIndex="0">
+      <circle x="110" y="5" marked="true" color="-1920102913" diameter="80" filled="true"></circle>
+      <polygon color="-1920102913" filled="true" marked="true">
+        <point x="105" y="90"></point>
+        <point x="120" y="195"></point>
+        <point x="90" y="285"></point>
+        <point x="105" y="300"></point>
+        <point x="135" y="300"></point>
+        <point x="150" y="225"></point>
+        <point x="165" y="300"></point>
+        <point x="195" y="300"></point>
+        <point x="210" y="285"></point>
+        <point x="180" y="195"></point>
+        <point x="195" y="90"></point>
+      </polygon>
+      <rectangle endX="172" startY="79" marked="true" color="-1920102913" endY="94" startX="127" filled="true"></rectangle>
+      <polygon color="-1920102913" filled="true" marked="true">
+        <point x="195" y="90"></point>
+        <point x="240" y="150"></point>
+        <point x="225" y="180"></point>
+        <point x="165" y="105"></point>
+      </polygon>
+      <polygon color="-1920102913" filled="true" marked="true">
+        <point x="105" y="90"></point>
+        <point x="60" y="150"></point>
+        <point x="75" y="180"></point>
+        <point x="135" y="105"></point>
+      </polygon>
+    </shape>
+    <shape name="plant" rotatable="false" editableColorIndex="0">
+      <rectangle endX="165" startY="90" marked="true" color="-1920102913" endY="300" startX="135" filled="true"></rectangle>
+      <polygon color="-1920102913" filled="true" marked="true">
+        <point x="135" y="255"></point>
+        <point x="90" y="210"></point>
+        <point x="45" y="195"></point>
+        <point x="75" y="255"></point>
+        <point x="135" y="285"></point>
+      </polygon>
+      <polygon color="-1920102913" filled="true" marked="true">
+        <point x="165" y="255"></point>
+        <point x="210" y="210"></point>
+        <point x="255" y="195"></point>
+        <point x="225" y="255"></point>
+        <point x="165" y="285"></point>
+      </polygon>
+      <polygon color="-1920102913" filled="true" marked="true">
+        <point x="135" y="180"></point>
+        <point x="90" y="135"></point>
+        <point x="45" y="120"></point>
+        <point x="75" y="180"></point>
+        <point x="135" y="210"></point>
+      </polygon>
+      <polygon color="-1920102913" filled="true" marked="true">
+        <point x="165" y="180"></point>
+        <point x="165" y="210"></point>
+        <point x="225" y="180"></point>
+        <point x="255" y="120"></point>
+        <point x="210" y="135"></point>
+      </polygon>
+      <polygon color="-1920102913" filled="true" marked="true">
+        <point x="135" y="105"></point>
+        <point x="90" y="60"></point>
+        <point x="45" y="45"></point>
+        <point x="75" y="105"></point>
+        <point x="135" y="135"></point>
+      </polygon>
+      <polygon color="-1920102913" filled="true" marked="true">
+        <point x="165" y="105"></point>
+        <point x="165" y="135"></point>
+        <point x="225" y="105"></point>
+        <point x="255" y="45"></point>
+        <point x="210" y="60"></point>
+      </polygon>
+      <polygon color="-1920102913" filled="true" marked="true">
+        <point x="135" y="90"></point>
+        <point x="120" y="45"></point>
+        <point x="150" y="15"></point>
+        <point x="180" y="45"></point>
+        <point x="165" y="90"></point>
+      </polygon>
+    </shape>
+    <shape name="sheep" rotatable="false" editableColorIndex="15">
+      <circle x="203" y="65" marked="true" color="-1" diameter="88" filled="true"></circle>
+      <circle x="70" y="65" marked="true" color="-1" diameter="162" filled="true"></circle>
+      <circle x="150" y="105" marked="true" color="-1" diameter="120" filled="true"></circle>
+      <polygon color="-1920102913" filled="true" marked="false">
+        <point x="218" y="120"></point>
+        <point x="240" y="165"></point>
+        <point x="255" y="165"></point>
+        <point x="278" y="120"></point>
+      </polygon>
+      <circle x="214" y="72" marked="false" color="-1920102913" diameter="67" filled="true"></circle>
+      <rectangle endX="179" startY="223" marked="true" color="-1" endY="298" startX="164" filled="true"></rectangle>
+      <polygon color="-1" filled="true" marked="true">
+        <point x="45" y="285"></point>
+        <point x="30" y="285"></point>
+        <point x="30" y="240"></point>
+        <point x="15" y="195"></point>
+        <point x="45" y="210"></point>
+      </polygon>
+      <circle x="3" y="83" marked="true" color="-1" diameter="150" filled="true"></circle>
+      <rectangle endX="80" startY="221" marked="true" color="-1" endY="296" startX="65" filled="true"></rectangle>
+      <polygon color="-1" filled="true" marked="true">
+        <point x="195" y="285"></point>
+        <point x="210" y="285"></point>
+        <point x="210" y="240"></point>
+        <point x="240" y="210"></point>
+        <point x="195" y="210"></point>
+      </polygon>
+      <polygon color="-1920102913" filled="true" marked="false">
+        <point x="276" y="85"></point>
+        <point x="285" y="105"></point>
+        <point x="302" y="99"></point>
+        <point x="294" y="83"></point>
+      </polygon>
+      <polygon color="-1920102913" filled="true" marked="false">
+        <point x="219" y="85"></point>
+        <point x="210" y="105"></point>
+        <point x="193" y="99"></point>
+        <point x="201" y="83"></point>
+      </polygon>
+    </shape>
+    <shape name="square" rotatable="false" editableColorIndex="0">
+      <rectangle endX="270" startY="30" marked="true" color="-1920102913" endY="270" startX="30" filled="true"></rectangle>
+    </shape>
+    <shape name="square 2" rotatable="false" editableColorIndex="0">
+      <rectangle endX="270" startY="30" marked="true" color="-1920102913" endY="270" startX="30" filled="true"></rectangle>
+      <rectangle endX="240" startY="60" marked="false" color="255" endY="240" startX="60" filled="true"></rectangle>
+    </shape>
+    <shape name="star" rotatable="false" editableColorIndex="0">
+      <polygon color="-1920102913" filled="true" marked="true">
+        <point x="151" y="1"></point>
+        <point x="185" y="108"></point>
+        <point x="298" y="108"></point>
+        <point x="207" y="175"></point>
+        <point x="242" y="282"></point>
+        <point x="151" y="216"></point>
+        <point x="59" y="282"></point>
+        <point x="94" y="175"></point>
+        <point x="3" y="108"></point>
+        <point x="116" y="108"></point>
+      </polygon>
+    </shape>
+    <shape name="target" rotatable="false" editableColorIndex="0">
+      <circle x="0" y="0" marked="true" color="-1920102913" diameter="300" filled="true"></circle>
+      <circle x="30" y="30" marked="false" color="255" diameter="240" filled="true"></circle>
+      <circle x="60" y="60" marked="true" color="-1920102913" diameter="180" filled="true"></circle>
+      <circle x="90" y="90" marked="false" color="255" diameter="120" filled="true"></circle>
+      <circle x="120" y="120" marked="true" color="-1920102913" diameter="60" filled="true"></circle>
+    </shape>
+    <shape name="tree" rotatable="false" editableColorIndex="0">
+      <circle x="118" y="3" marked="true" color="-1920102913" diameter="94" filled="true"></circle>
+      <rectangle endX="180" startY="195" marked="false" color="-1653716737" endY="300" startX="120" filled="true"></rectangle>
+      <circle x="65" y="21" marked="true" color="-1920102913" diameter="108" filled="true"></circle>
+      <circle x="116" y="41" marked="true" color="-1920102913" diameter="127" filled="true"></circle>
+      <circle x="45" y="90" marked="true" color="-1920102913" diameter="120" filled="true"></circle>
+      <circle x="104" y="74" marked="true" color="-1920102913" diameter="152" filled="true"></circle>
+    </shape>
+    <shape name="triangle" rotatable="false" editableColorIndex="0">
+      <polygon color="-1920102913" filled="true" marked="true">
+        <point x="150" y="30"></point>
+        <point x="15" y="255"></point>
+        <point x="285" y="255"></point>
+      </polygon>
+    </shape>
+    <shape name="triangle 2" rotatable="false" editableColorIndex="0">
+      <polygon color="-1920102913" filled="true" marked="true">
+        <point x="150" y="30"></point>
+        <point x="15" y="255"></point>
+        <point x="285" y="255"></point>
+      </polygon>
+      <polygon color="255" filled="true" marked="false">
+        <point x="151" y="99"></point>
+        <point x="225" y="223"></point>
+        <point x="75" y="224"></point>
+      </polygon>
+    </shape>
+    <shape name="truck" rotatable="false" editableColorIndex="0">
+      <rectangle endX="195" startY="45" marked="true" color="-1920102913" endY="187" startX="4" filled="true"></rectangle>
+      <polygon color="-1920102913" filled="true" marked="true">
+        <point x="296" y="193"></point>
+        <point x="296" y="150"></point>
+        <point x="259" y="134"></point>
+        <point x="244" y="104"></point>
+        <point x="208" y="104"></point>
+        <point x="207" y="194"></point>
+      </polygon>
+      <rectangle endX="195" startY="60" marked="false" color="-1" endY="105" startX="195" filled="true"></rectangle>
+      <polygon color="255" filled="true" marked="false">
+        <point x="238" y="112"></point>
+        <point x="252" y="141"></point>
+        <point x="219" y="141"></point>
+        <point x="218" y="112"></point>
+      </polygon>
+      <circle x="234" y="174" marked="false" color="255" diameter="42" filled="true"></circle>
+      <rectangle endX="214" startY="185" marked="true" color="-1920102913" endY="194" startX="181" filled="true"></rectangle>
+      <circle x="144" y="174" marked="false" color="255" diameter="42" filled="true"></circle>
+      <circle x="24" y="174" marked="false" color="255" diameter="42" filled="true"></circle>
+      <circle x="24" y="174" marked="true" color="-1920102913" diameter="42" filled="false"></circle>
+      <circle x="144" y="174" marked="true" color="-1920102913" diameter="42" filled="false"></circle>
+      <circle x="234" y="174" marked="true" color="-1920102913" diameter="42" filled="false"></circle>
+    </shape>
+    <shape name="turtle" rotatable="true" editableColorIndex="0">
+      <polygon color="1504722175" filled="true" marked="false">
+        <point x="215" y="204"></point>
+        <point x="240" y="233"></point>
+        <point x="246" y="254"></point>
+        <point x="228" y="266"></point>
+        <point x="215" y="252"></point>
+        <point x="193" y="210"></point>
+      </polygon>
+      <polygon color="1504722175" filled="true" marked="false">
+        <point x="195" y="90"></point>
+        <point x="225" y="75"></point>
+        <point x="245" y="75"></point>
+        <point x="260" y="89"></point>
+        <point x="269" y="108"></point>
+        <point x="261" y="124"></point>
+        <point x="240" y="105"></point>
+        <point x="225" y="105"></point>
+        <point x="210" y="105"></point>
+      </polygon>
+      <polygon color="1504722175" filled="true" marked="false">
+        <point x="105" y="90"></point>
+        <point x="75" y="75"></point>
+        <point x="55" y="75"></point>
+        <point x="40" y="89"></point>
+        <point x="31" y="108"></point>
+        <point x="39" y="124"></point>
+        <point x="60" y="105"></point>
+        <point x="75" y="105"></point>
+        <point x="90" y="105"></point>
+      </polygon>
+      <polygon color="1504722175" filled="true" marked="false">
+        <point x="132" y="85"></point>
+        <point x="134" y="64"></point>
+        <point x="107" y="51"></point>
+        <point x="108" y="17"></point>
+        <point x="150" y="2"></point>
+        <point x="192" y="18"></point>
+        <point x="192" y="52"></point>
+        <point x="169" y="65"></point>
+        <point x="172" y="87"></point>
+      </polygon>
+      <polygon color="1504722175" filled="true" marked="false">
+        <point x="85" y="204"></point>
+        <point x="60" y="233"></point>
+        <point x="54" y="254"></point>
+        <point x="72" y="266"></point>
+        <point x="85" y="252"></point>
+        <point x="107" y="210"></point>
+      </polygon>
+      <polygon color="-1920102913" filled="true" marked="true">
+        <point x="119" y="75"></point>
+        <point x="179" y="75"></point>
+        <point x="209" y="101"></point>
+        <point x="224" y="135"></point>
+        <point x="220" y="225"></point>
+        <point x="175" y="261"></point>
+        <point x="128" y="261"></point>
+        <point x="81" y="224"></point>
+        <point x="74" y="135"></point>
+        <point x="88" y="99"></point>
+      </polygon>
+    </shape>
+    <shape name="wheel" rotatable="false" editableColorIndex="0">
+      <circle x="3" y="3" marked="true" color="-1920102913" diameter="294" filled="true"></circle>
+      <circle x="30" y="30" marked="false" color="255" diameter="240" filled="true"></circle>
+      <line endX="150" startY="285" marked="true" color="-1920102913" endY="15" startX="150"></line>
+      <line endX="285" startY="150" marked="true" color="-1920102913" endY="150" startX="15"></line>
+      <circle x="120" y="120" marked="true" color="-1920102913" diameter="60" filled="true"></circle>
+      <line endX="79" startY="40" marked="true" color="-1920102913" endY="269" startX="216"></line>
+      <line endX="269" startY="84" marked="true" color="-1920102913" endY="221" startX="40"></line>
+      <line endX="269" startY="216" marked="true" color="-1920102913" endY="79" startX="40"></line>
+      <line endX="221" startY="40" marked="true" color="-1920102913" endY="269" startX="84"></line>
+    </shape>
+    <shape name="wolf" rotatable="false" editableColorIndex="0">
+      <polygon color="255" filled="true" marked="false">
+        <point x="253" y="133"></point>
+        <point x="245" y="131"></point>
+        <point x="245" y="133"></point>
+      </polygon>
+      <polygon color="-1920102913" filled="true" marked="true">
+        <point x="2" y="194"></point>
+        <point x="13" y="197"></point>
+        <point x="30" y="191"></point>
+        <point x="38" y="193"></point>
+        <point x="38" y="205"></point>
+        <point x="20" y="226"></point>
+        <point x="20" y="257"></point>
+        <point x="27" y="265"></point>
+        <point x="38" y="266"></point>
+        <point x="40" y="260"></point>
+        <point x="31" y="253"></point>
+        <point x="31" y="230"></point>
+        <point x="60" y="206"></point>
+        <point x="68" y="198"></point>
+        <point x="75" y="209"></point>
+        <point x="66" y="228"></point>
+        <point x="65" y="243"></point>
+        <point x="82" y="261"></point>
+        <point x="84" y="268"></point>
+        <point x="100" y="267"></point>
+        <point x="103" y="261"></point>
+        <point x="77" y="239"></point>
+        <point x="79" y="231"></point>
+        <point x="100" y="207"></point>
+        <point x="98" y="196"></point>
+        <point x="119" y="201"></point>
+        <point x="143" y="202"></point>
+        <point x="160" y="195"></point>
+        <point x="166" y="210"></point>
+        <point x="172" y="213"></point>
+        <point x="173" y="238"></point>
+        <point x="167" y="251"></point>
+        <point x="160" y="248"></point>
+        <point x="154" y="265"></point>
+        <point x="169" y="264"></point>
+        <point x="178" y="247"></point>
+        <point x="186" y="240"></point>
+        <point x="198" y="260"></point>
+        <point x="200" y="271"></point>
+        <point x="217" y="271"></point>
+        <point x="219" y="262"></point>
+        <point x="207" y="258"></point>
+        <point x="195" y="230"></point>
+        <point x="192" y="198"></point>
+        <point x="210" y="184"></point>
+        <point x="227" y="164"></point>
+        <point x="242" y="144"></point>
+        <point x="259" y="145"></point>
+        <point x="284" y="151"></point>
+        <point x="277" y="141"></point>
+        <point x="293" y="140"></point>
+        <point x="299" y="134"></point>
+        <point x="297" y="127"></point>
+        <point x="273" y="119"></point>
+        <point x="270" y="105"></point>
+      </polygon>
+      <polygon color="-1920102913" filled="true" marked="true">
+        <point x="-1" y="195"></point>
+        <point x="14" y="180"></point>
+        <point x="36" y="166"></point>
+        <point x="40" y="153"></point>
+        <point x="53" y="140"></point>
+        <point x="82" y="131"></point>
+        <point x="134" y="133"></point>
+        <point x="159" y="126"></point>
+        <point x="188" y="115"></point>
+        <point x="227" y="108"></point>
+        <point x="236" y="102"></point>
+        <point x="238" y="98"></point>
+        <point x="268" y="86"></point>
+        <point x="269" y="92"></point>
+        <point x="281" y="87"></point>
+        <point x="269" y="103"></point>
+        <point x="269" y="113"></point>
+      </polygon>
+    </shape>
+    <shape name="x" rotatable="false" editableColorIndex="0">
+      <polygon color="-1920102913" filled="true" marked="true">
+        <point x="270" y="75"></point>
+        <point x="225" y="30"></point>
+        <point x="30" y="225"></point>
+        <point x="75" y="270"></point>
+      </polygon>
+      <polygon color="-1920102913" filled="true" marked="true">
+        <point x="30" y="75"></point>
+        <point x="75" y="30"></point>
+        <point x="270" y="225"></point>
+        <point x="225" y="270"></point>
+      </polygon>
+    </shape>
+  </turtleShapes>
+  <linkShapes>
+    <shape name="default" curviness="0.0">
+      <lines>
+        <line x="-0.2" visible="false">
+          <dash value="0.0"></dash>
+          <dash value="1.0"></dash>
+        </line>
+        <line x="0.0" visible="true">
+          <dash value="1.0"></dash>
+          <dash value="0.0"></dash>
+        </line>
+        <line x="0.2" visible="false">
+          <dash value="0.0"></dash>
+          <dash value="1.0"></dash>
+        </line>
+      </lines>
+      <indicator>
+        <shape name="link direction" rotatable="true" editableColorIndex="0">
+          <line endX="90" startY="150" marked="true" color="-1920102913" endY="180" startX="150"></line>
+          <line endX="210" startY="150" marked="true" color="-1920102913" endY="180" startX="150"></line>
+        </shape>
+      </indicator>
+    </shape>
+  </linkShapes>
+  <previewCommands>setup repeat 75 [ go ]</previewCommands>
+</model>
