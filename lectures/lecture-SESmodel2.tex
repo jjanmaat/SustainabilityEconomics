@@ -66,3 +66,169 @@
 	\end{itemize}
 \end{frame}
 
+\begin{frame}{Human Ecology}
+	\begin{columns}[T]
+		\begin{column}{0.4\textwidth}
+			\begin{itemize}
+				\item Humans need food.
+				\item Carbohydrates, fat and protein.
+				\item Grain high in carbohydrates
+				\item Fish provide fat and protein.
+				\item Assume need fixed amounts of each.
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.6\textwidth}
+			\centering
+			\begin{tikzpicture}
+				\draw [-] (6,0) to node [below, sloped] {Fish} (0,0) to node [above, sloped] {Grain} (0,6) {};
+				\draw [-, dashed] (0,0) to (3,6) {};
+				\draw [-, thick] (6,1)  node [right, above left] {1 day} to (0.5,1) to (0.5,6);
+				\draw [-, thick] (6,2)  node [right, above left] {2 day} to (1,2) to (1,6);
+				\draw [-, thick] (6,3)  node [right, above left] {3 day} to (1.5,3) to (1.5,6);
+				\draw [-, thick] (6,4)  node [right, above left] {4 day} to (2,4) to (2,6);
+				\draw [-, thick] (6,5)  node [right, above left] {5 day} to (2.5,5) to (2.5,6);
+				\draw [-, dotted] (0.5,1) to (0,1) node [left, left] {2};
+				\draw [-, dotted] (0.5,1) to (0.5,0) node [below] {1};
+			\end{tikzpicture}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\mode<article>{
+	Humans need food to survive.  The basic components of that food are carbohydrates, fat and protein.  There are various specific nutrients and micronutrients we need.  So long as the fish and grain in our example provide sufficient quantities of these, we can focus on the balance of the three main nutrients.  For our model, we assume that the grain provides the carbohydrate requirements and the fish provide the fat and protein.
+	
+	One way to think about this is in terms of the number of days that a person has enough grain and fish to survive.  We can show this graphically using a contour map.  The dimensions of the map are the amount of fish and the amount of grain that the person has in their possesses.  Each contour line represents a day of survival.  
+	
+	The contours are 'L' shaped because survival for a day depends on consuming a minimum amount of each food source.  Consider the contour representing one day of survival.  The point where $q_F=1$ and $q_G=2$ is, in this example, the minimum amounts of fish and grain that are needed to survive one day.  If the person has more fish, but only the two units of grain, they will not survive more than one day.  Thus, with two units of grain, the contour for all larger quantities of fish always represents the same one day of survival.  
+	
+	The same logic applies when the person has one unit of fish.  For any amount of grain that is more than two, the person cannot survive any additional days.  Therefore the contour is vertical at the minimum amount of fish needed to survive one day.
+	
+	For the mathematically inclined, the function for the contours is
+	
+	\begin{equation}
+		d(q_F,q_G) = \min\left(\frac{q_F}{\alpha_F},\frac{q_G}{\alpha_G}\right)
+	\end{equation}
+	
+	In this equation, $\alpha_F$ and $\alpha_G$ are, respectively, the amounts of fish and grain that the person needs to consume per day to survive that day.  One can imagine that these amounts can differ by person.  One can also imagine that if there is a change in technology that translates fish and grain into nutrients could also change this relationship.  For example, a food preparation method that wastes less would reduce the amount needed per day of that food item.
+	
+	What have we not considered?  What would change if fish and grain decay?  The fact that the kinks in the figure follow a straight line, and the spacing of the contours is always the same assumes that there is no decay.  We know that grain can be stored far longer than raw fish.  If the fish is not processed into something that can be stored - dried for example - then how would the figure change?  What would happen if a share of the fish is lost each day?  What would happen if no fish can be consumed after it is five days old?
+	
+	Another thing to consider is that while grain has far more carbohydrates than it does have fat and protein, it does have some.  How would this change the graph?  In those cases, it will not have the tight kink.  Instead, it will have a bit of a curve, since there is some ability to substitute more grain for less fish.
+}
+
+\begin{frame}{The Fish Subsystem}
+	\begin{itemize}
+		\item Time path:
+		\begin{enumerate}
+			\item Travel from village to water
+			\item Cast net
+			\item Collect fish from net until can't carry any more
+			\item Travel back to village
+			\item Exchange fish for grain
+		\end{enumerate}
+		\item Each step of time path requires effort.
+	\end{itemize}
+\end{frame}
+
+\mode<article>{
+	If we consider the fish subsystem in relation to the village, we need to add a couple of elements that are not there when we just consider the relationship between effort and fish caught.  The fish harvester also needs to spend time traveling between the village and the water where fishing is done.
+}
+\begin{frame}{The Fish Subsystem}
+	\centering
+	\begin{tikzpicture}
+		% Define and place the nodes
+		\node [circle, draw, minimum size=2cm, align=center] at (0,2) (fish) {Fish \\ Harvester};
+		\node [circle, draw, minimum size=2cm, align=center] at (3,4) (water) {Water};
+		
+		% Draw edges
+		\draw [->, thick, align=center] (water) to [bend right=20] node [above, sloped] {Harvest \\ Fish} (fish);
+		\draw [->, thick, align=center] (fish) to [bend right=20] node [below, sloped] {Effort} (water);
+		
+		% Draw graph with production function
+		\draw [-] (5,0) to node [above, sloped] {Fish} (5,6) {};
+		\draw [-] (5,0) to node [below, sloped] {Effort} (13,0) {};
+		\draw [-, thick] (7,0) to (8.5,3) to node [above, sloped] {high stock} (11,5) to (13,5) {};
+		\draw [-, thick, dashed] (7,0) to (8.5,2.25) to node [below, sloped] {low stock} (12.75,5) to (13,5) {};
+		\draw [-, dashed] (7,0) to (7,6) {};
+		\draw [-, dashed] (8.5,0) to (8.5,6) {};
+		\draw [-, dashed] (11,0) to (11,6) {};
+		\node [align=center] at (6,5.5) {Travel \\ to and from \\ water};
+		\node [align=center] at (7.75,5.5) {First \\ cast};
+		\node [align=center] at (9.75,5.5) {Further \\ casts};
+		\node [align=center] at (12,5.5) {Bag \\ full};
+	\end{tikzpicture}
+\end{frame}
+
+\mode<artile>{
+	The production function, if we start from the village and include travel time, a capacity constraint, and the reality of the fish movement, looks a bit more complicated.  
+	
+	There is an amount of effort needed to get to and from the water.  There are no fish produced until this amount of effort is provided.  
+	
+	The fish move around in the water.  It takes time for the fish to move.  When the fish harvester first arrives at the water, there are fish near where the harvester starts fishing from.  Thus, the first cast of the net captures a relatively large number of fish.  If the harvester says at the same location, then casting the net again will only catch fish that have moved into the area of the cast.  This means that further casts beyond the first will catch less fish.
+	
+	When the bag is full, then any extra effort does not add to the amount of fish that the fish harvester can bring back to the village.
+	
+	In the last chapter, we described the relationship between effort and harvest as dependent also on the size of the stock of fish in the water.  When we consider this stock effect, we would see the production function change shape.  For a lower stock, the first catch will catch less fish, as will the further casts.  Thus, it will take more effort to reach the capacity limit, where the harvester cannot bring any more fish back to the village.
+}
+
+\begin{frame}{The Grain Subsystem}
+	\begin{tikzpicture}
+		% Define and place the nodes
+		\node [circle, draw, minimum size=2cm, align=center] at (3,2) (gather) {Grain \\ Harvester};
+		\node [circle, draw, minimum size=2cm, align=center] at (0,4) (land) {Land};
+		
+		% Draw edges
+		\draw [->, thick, align=center] (land) to [bend left=20] node [above, sloped] {Harvest \\ Grain} (gather);
+		\draw [->, thick, align=center] (gather) to [bend left=20] node [below, sloped] {Effort} (land);
+		
+		% Draw graph with production function
+		\draw [-] (5,0) to node [above, sloped] {Grain} (5,6) {};
+		\draw [-] (5,0) to node [below, sloped] {Effort} (13,0) {};
+		\draw [-, thick] (6.5,0) to node [above, sloped] {grain near village} (10,5) to (13,5) {};
+		\draw [-, thick, dashed] (8.5,0) to node [below, sloped] {near village depleted} (12,5) to (13,5) {};
+		\draw [-, dashed] (6.5,0) to (6.5,6) {};
+		\draw [-, dashed] (10,0) to (10,6) {};
+		\node [align=center] at (5.75,5.5) {Travel \\ out and \\ back};
+		\node [align=center] at (8.5,5.5) {Gathering \\ grain};
+		\node [align=center] at (11.5,5.5) {Bag \\ full};
+	\end{tikzpicture}
+\end{frame}
+
+\mode<article>{
+	For the fish harvester, the travel distance before fish can be harvested is the same for every trip.  For the grain harvester, the village is located among land that can produce grain.  The harvester does not need to travel far if the land near the village has grain to harvest.  However, if the land near the village has been depleted, then the grain harvester has to travel out from the village before any grain can be harvested, and has to travel further on the return trip.
+	
+	How would things change if the amount of effort needed to travel to land that has grain?  How would things change if the effort required to harvest a unit of grain is reduced?  These are the impacts of technological change.
+}
+
+\begin{frame}{The Village Market}
+	\begin{columns}[T]
+		\begin{column}{0.3\textwidth}
+			\begin{itemize}
+				\item How do fish and grain harvesters exchange their fish and grain?
+				\item A collective?  From each according to their means, to each according to their needs?
+				\item A place where individuals trade for their own gain?
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.7\textwidth}
+		\centering
+			\begin{tikzpicture}
+				% Define and place the nodes
+				\node [circle, draw, minimum size=2cm, align=center] at (6,6) (village) {Village \\ Market};
+				\node [circle, draw, minimum size=2cm, align=center] at (3,2) (gather) {Grain \\ Harvester};
+				\node [circle, draw, minimum size=2cm, align=center] at (9,2) (fish) {Fish \\ Harvester};
+				
+				% Draw edges
+				\draw [->, thick, align=center] (gather) to [bend left=20] node [above, sloped] {Provide \\ Grain} (village);
+				\draw [->, thick, align=center] (village) to [bend left=20] node [above, sloped] {Receive \\ Fish} (gather);
+				\draw [->, thick, align=center] (fish) to [bend right=20] node [above, sloped] {Provide \\ Fish} (village);
+				\draw [->, thick, align=center] (village) to [bend right=20] node [above, sloped] {Receive \\ Grain} (fish);
+			\end{tikzpicture}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Production Possibilities}
+	\begin{itemize}
+		\item content...
+	\end{itemize}
+\end{frame}
