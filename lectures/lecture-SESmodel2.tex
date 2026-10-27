@@ -172,6 +172,20 @@
 }
 
 \begin{frame}{The Grain Subsystem}
+	\begin{itemize}
+		\item Time path:
+		\begin{enumerate}
+			\item Travel from village to closest patch of land with grain.
+			\item Harvest grain from patch.
+			\item Move to next patch and repeat until grain bucket full.
+			\item Travel back to village
+			\item Exchange fish for grain
+		\end{enumerate}
+		\item Each step of time path requires effort.
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{The Grain Subsystem}
 	\begin{tikzpicture}
 		% Define and place the nodes
 		\node [circle, draw, minimum size=2cm, align=center] at (3,2) (gather) {Grain \\ Harvester};
@@ -227,8 +241,133 @@
 	\end{columns}
 \end{frame}
 
+\mode<article>{
+	Figuring out how to represent the exchange of fish for grain is a tricky problem.  What are the motivations that drive the decisions of these two people?  Before delving into this problem, we can consider how their efforts may be combined to yield different combinations of fish and grain.  For this exercise, imagine that there is enough fish and grain to share between the villagers so that they can live at least long enough to survive the trip to and from their respective harvest areas.  If this is all they have, then they can travel out and back, without doing any harvesting or gathering, and upon return they would die, marked at $E_1$.  Not ideal.
+	
+	If there is sufficient food to allow them to survive beyond the travel time, then we can examine the combinations of fish and grain that can be produced by dividing the effort in different ways between fishing and gathering.  In the figure, each line represents the combinations that can be produced for a given effort level.  These curves are known as the \textbf{\textit{production possibilities frontier (PPF)}}.  It is a frontier because it is what could be produced if all effort is used.  
+	
+	For the curves represented by $E_2$ and $E_3$, if the effort is reallocated from harvesting fish to gathering grain, the amount of fish harvested decreases and the amount of grain harvested increases.
+	
+	With the PPF labeled $E_4$, we hit the limit of what the fish basket can hold.  In effect, we 'throw away' part of the total effort, as we are dedicating it to catching fish, which we cannot take back to the village.  Since our first cast is the most productive, we are in fact throwing away our most productive effort when running up against this constraint.  If this seems strange, think of the order of events.  The fish harvester cannot devote effort to later catches until they have made our first cast.
+	
+	The PPF labeled $E_5$ corresponds to an effort level where one of the grain bucket or fish basket is full for most of the effort divisions.  There is in effect a lot of wasted effort here, as it is being applied to activities which cannot result in any more grain or fish being brought back to the village.  We might think of this wasted effort as leisure.  If there is enough food in the village to sustain these harvesters and gatherers for this many days, maybe it would be better for them to stay in the village and enjoy themselves while eating the stockpiled food, heading out when they have enough food left to fill their basket or bucket and bring it back to the village.
+}
+
 \begin{frame}{Production Possibilities}
-	\begin{itemize}
-		\item content...
-	\end{itemize}
+	\begin{columns}[T]
+	\begin{column}{0.3\textwidth}
+		\begin{itemize}
+			\item Split total effort between fish and grain.
+			\item $E_5 > E_4 > E_3 > E_2 > E_1$
+			\item At $E_1$, no fish caught or grain gathered.
+			\item At $E_5$, most effort not used, as bucket or basket full.
+		\end{itemize}
+	\end{column}
+	\begin{column}{0.7\textwidth}
+		\centering
+		\begin{tikzpicture}
+			% Axes for plot
+			\draw [-] (6,0) to node [below, sloped] {Fish} (0,0) to node [above, sloped] {Grain} (0,6);
+			\draw [-,thick] (3,0) to (2,1) to (0,2) node [left, right, yshift=2pt] {$E_2$};
+			\draw [-,thick] (4,0) to (3,1) to (0,2.5) node [left, right, yshift=2pt] {$E_3$};
+			\draw [-,thick] (5,0) to (5,0.5) to (4.5,1) to (0,3.25) node [left, right, yshift=2pt] {$E_4$};
+			\draw [-,thick] (5,0) to node [above right, sloped] {Basket full} (5,4) to (3,5) to 
+				node [right, above, sloped] {Bucket full}(0,5) node [left, below right] {$E_5$};
+			\draw [-,dashed] (0,1) to (6,1) {};
+			\draw [-,thick] (0,0) node [above right] {$E_1$} to (0,0) {};
+			\node [align=center] at (5.5,0.5) {First \\ cast};
+		\end{tikzpicture}
+	\end{column}
+\end{columns}
+\end{frame}
+
+\mode<article>{
+	When the production functions were described above, some aspects relevant to sustainability were illustrate that do not show up here.  For fishing, if harvesting reduces the fish stock, then the production function slope becomes flatter.  It will take more effort, more days spent fishing, to fill up the fish basket.  This shows up in the PPF as a rotation inward around the intercept with the Grain axis.  The decline in the fish stock does not affect the amount of grain that can be gathered, if all the effort is devoted to gathering grain.  However, the amount of grain production that is given up to harvest another fish increases.
+	
+	When the grain available in patches near the village is depleted, more effort must be spent on travel.  This reduces the total effort available for both activities, if we start from the same premise where we only examine how to reallocate effort after enough food is devoted to enabling both the fish harvester and the grain gatherer to travel to and from their respective activity locations.  The PPF shifts left, lowering the intersection with the Grain axis.  Since the total effort to divide is reduced, there is no longer enough effort to fill the fish basket, even when all the effort is put toward fishing.
+}
+
+\begin{frame}{Production Possibilities}
+	\centering
+	\begin{tikzpicture}
+		\coordinate (ListBase) at (6.5,6);
+		% Left figure
+		\draw [-] (6,0) to node [below, sloped] {Fish} (0,0) to node [above, sloped] {Grain} (0,6);
+		\draw [-,thick,gray] (5,0) to (5,0.5) to (4.5,1) to node [left, right, yshift=4pt] {$S_1$} (0,3.25) {};
+		\draw [-,thick] (4.25,0) to node [left, below left, yshift=5pt] {$S_2$} (3.75,0.75) to (0,3.25) {};
+		\draw [-,dashed] (0,1) to (6,1) {};
+		\node [align=center] at (5.5,0.5) {First \\ cast};
+		\node [anchor=north west, text width=0.35\textwidth] at ([xshift=-5.5cm]ListBase) {
+			\begin{itemize}
+				\item Stock decrease, $S_2 < S_1$
+				\item PPF rotates inward as fishing effort less effective.
+			\end{itemize}
+		};
+		% Right figure, more travel for grain harvest
+		\draw [-] (13,0) to node [below, sloped] {Fish} (7,0) to node [above, sloped] {Grain} (7,6);
+		\draw [-,thick,gray] (12,0) to (12,0.5) to (11.5,1) to node [above, sloped] {grain near village} (7,3.25) {};
+		\draw [-,thick] (11.5,0) to (10.5,1) to node [below, sloped] {near village deleted} (7,2.75) {};
+		\draw [-,dashed] (7,1) to (13,1) {};
+		\node [align=center] at (12.5,0.5) {First \\ cast};
+		\node [anchor=north west, text width=0.35\textwidth] at ([xshift=1cm]ListBase) {
+			\begin{itemize}
+				\item More effort needed to get to patches with grain.
+				\item PPF shifts left as more effort needed for grain harvester travel.
+			\end{itemize}
+		};
+
+	\end{tikzpicture}
+\end{frame}
+
+\mode<article>{
+	The production possibilities frontier tells us what combinations of fish and grain can be produced by the villagers, for different levels of effort.  The biological reality of our villagers requires that the consume a particular bundle of fish and grain each day.  If we put the biology together with the production possibilities frontier, we can see how to allocate the effort to provide the most days of life for the villagers.
+}
+
+\begin{frame}{Production Possibilities}
+	\begin{columns}[T]
+		\begin{column}{0.3\textwidth}
+			\begin{itemize}
+				\item Lifespans $L_1$ and $L_2$ are attainable.
+				\begin{itemize}
+					\item At \textbf{b} attain $L_1$.
+					\item At \textbf{a} attain $L_2$.
+					\item Same effort level.
+				\end{itemize}
+				\item Lifespans $L_3$, $L_4$ and $L_5$ are not attainable.
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.7\textwidth}
+			\centering
+			\begin{tikzpicture}
+				% Axes for plot
+				\draw [-] (6,0) to node [below, sloped] {Fish} (0,0) to node [above, sloped] {Grain} (0,6);
+				% \draw [-,thick] (3,0) to (2,1) to (0,2) node [left, right, yshift=2pt] {$E_2$};
+				\draw [-,thick] (4,0) to (3,1) to (0,2.5) node [left, right, yshift=2pt] {};
+				% \draw [-,thick] (5,0) to (5,0.5) to (4.5,1) to (0,3.25) node [left, right, yshift=2pt] {$E_4$};
+				% \draw [-,thick] (5,0) to node [above right, sloped] {Basket full} (5,4) to (3,5) to 
+				% node [right, above, sloped] {Bucket full}(0,5) node [left, below right] {$E_5$};
+				% \draw [-,dashed] (0,1) to (6,1) {};
+				% \draw [-,thick] (0,0) node [above right] {$E_1$} to (0,0) {};
+				% \node [align=center] at (5.5,0.5) {First \\ cast};
+				
+				% Indifference curves
+				\draw [-, dashed] (0,0) to (3,6) {};
+				\draw [-, thick] (6,1) node [right, above left] {$L_1$} to (0.5,1) to (0.5,6);
+				\draw [-, thick] (6,2) node [right, above left] {$L_2$} to (1,2) to (1,6);
+				\draw [-, thick, gray!35] (6,3) node [right, above left] {$L_3$} to (1.5,3) to (1.5,6);
+				\draw [-, thick, gray!35] (6,4) node [right, above left] {$L_4$} to (2,4) to (2,6);
+				\draw [-, thick, gray!35] (6,5) node [right, above left] {$L_5$} to (2.5,5) to (2.5,6);
+				\node [below, xshift=2pt] at (1,2) {a}; 
+				\node [below] at (3,1) {b};
+			\end{tikzpicture}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\mode<article>{
+	Putting together the human needs and the production possibilities lets us identify something we might see as optimal.  It seems reasonable to think that dividing up the resources that the villagers have in such a way as to maximize the number of days that they continue living would be a reasonable objective.
+}
+
+\begin{frame}{A Village Model}
+	content...
 \end{frame}
