@@ -323,9 +323,14 @@ to-report get-inventory-grain-ticks [ thisVillage ]
   report inventTicks
 end
 
+;; a function to get the life left, given the parameters
+to-report getLifeLeft [ fishNow grainNow needFish needGrain ]
+  report min list (fishNow / needFish) (grainNow / needGrain)
+end
+
 ;; check how many ticks of life do I have with current personal inventory
 to-report getMyLifeLeft
-  report min list (myFish / myNeedFish) (myGrain / myNeedGrain)
+  report getLifeLeft myFish myGrain myNeedFish myNeedGrain
 end
 
 ;; how much excess grain do I have
@@ -368,6 +373,7 @@ end
 ;; 5) check to see if this intersection is an improvement for both traders
 ;; 6) if it is an improvement, then make the trade happen
 to-report tradeSolution [ trader1 trader2 ]
+  show "**********"
   show ( word "trader1:" [who] of trader1 "," [myJob] of trader1 " trader2:" [who] of trader2 "," [myJob] of trader2)
   ;; endowments for the traders
   let fish1 [myFish] of trader1
@@ -378,12 +384,15 @@ to-report tradeSolution [ trader1 trader2 ]
   ;; get slope of Leontief ray for each trader
   let rayFish1 [myNeedGrain / myNeedFish] of trader1
   let rayFish2 [myNeedGrain / myNeedFish] of trader2
+  show (word "rayFish1:" rayFish1 " rayFish2:" rayFish2)
   ;; get the utility for each trader at the endowment
-  let utilTrader1 [getMyLifeLeft] of trader1
-  let utilTrader2 [getMyLifeLeft] of trader2
+  let utilTrader1 min list (rayFish1 * fish1) grain1
+  let utilTrader2 min list (rayFish2 * fish2) grain2
+  show (word "utilTrader1:" utilTrader1 " utilTrader2:" utilTrader2)
   ;; get the limits for the levels of fish within which any solution must lie
   let fishLB utilTrader1 / rayFish1
   let fishUB (fish1 + fish2) - (utilTrader2 / rayFish2)
+  show (word "fishLB:" fishLB " fishUB:" fishUB)
   ;; get the value for fish that equates the gain in utility for each of the traders
   ;; Gain in utility for trader1 is rayFish1 * newFish1 - utilTrader1
   ;; Gain in utility for trader2 is rayFish2 * (fish1 + fish2 - newFish1) - utilTrader2
@@ -418,23 +427,25 @@ to-report tradeLifeExtend [ trader1 trader2 ]
   ;; Check if at trade solution both traders can live longer than at their endowment
   let endowLife1 [getMyLifeLeft] of trader1
   let endowLife2 [getMyLifeLeft] of trader2
-  let tradeLife1 min list (item 0 tradePlan / ([myNeedFish] of trader1)) (item 1 tradePlan / ([myNeedGrain] of trader1))
-  let tradeLife2 min list (item 2 tradePlan / ([myNeedFish] of trader2)) (item 3 tradePlan / ([myNeedGrain] of trader2))
+  let tradeLife1 getLifeLeft item 0 tradePlan item 1 tradePlan [myNeedFish] of trader1 [myNeedGrain] of trader1
+  let tradeLife2 getLifeLeft item 2 tradePlan item 3 tradePlan [myNeedFish] of trader2 [myNeedGrain] of trader2
   ;;
+  show (word "endowLife1:" endowLife1 " tradeLife1:" tradeLife1 " endowLife2:" endowLife2 " tradeLife2:" tradeLife2)
   report (list (tradeLife1 - endowLife1) (tradeLife2 - endowLife2))
 end
 
 to makeTrade [ trader1 trader2 ]
   ;;
   ;; get the trade solution
+  show (word "Trading between " trader1 " and " trader2)
   let tradePlan tradeSolution trader1 trader2
   ask trader1 [ 
-    set myFish item 1 tradePlan
-    set myGrain item 2 tradePlan
+    set myFish item 0 tradePlan
+    set myGrain item 1 tradePlan
   ]
   ask trader2 [
-    set myFish item 3 tradePlan
-    set myGrain item 4 tradePlan
+    set myFish item 2 tradePlan
+    set myGrain item 3 tradePlan
   ]
 end
 ;; 
@@ -450,6 +461,7 @@ to in-village [ thisVillage ]
       patch-here = [patch-here] of thisVillage
     ]
     ask peopleHere [
+      show (word "self in peoleHere:" self)
       ;; get everyone else in the turtle set
       let othersHere peopleHere who-are-not self
       if any? othersHere [
@@ -457,9 +469,10 @@ to in-village [ thisVillage ]
         let tradeWith min-one-of othersHere [ 
           item 0 tradeLifeExtend self myself 
         ]
-        ;; check to ensure this trade actually extends agent's life
-        if not ((tradeLifeExtend self tradeWith) < 0) [
-          ;; life is not shortened by trade, do the trade
+        ;; check that trade solution is not just endowment
+        let tradePlan tradeSolution self tradeWith
+        if not((myFish = item 0 tradePlan) and (myGrain = item 1 tradePlan)) [
+          ;; trade is not endowment, do the trade
           makeTrade self tradeWith 
         ]
       ]
