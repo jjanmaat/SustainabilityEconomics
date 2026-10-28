@@ -32,6 +32,7 @@ people-own [
   myFishStepCost ;; cost, in steps, of pulling fish out of net
   myGrainStepCost ;; cost, in steps, for each unit of grain gathered
   myVillage      ;; village person is attached to
+  myCompAdv      ;; my comparative advantage
   myJob          ;; job person has - fish harvester or grain gatherer
   myLeisureTicks ;; sum of ticks when at home and not being sent out 
   goHome         ;; flag to indicate person is headed home
@@ -67,6 +68,8 @@ globals [
   ;; fish-net-radius-rng
   ;; fish-take-step-cost-mu
   ;; fish-take-step-cost-rng
+  clock
+  maxClock
 ]
 
 ;; set default values
@@ -97,6 +100,7 @@ to set-globals
   set fisher-grain-max-carry 100
   set fisher-fish-step-eat 1
   set fisher-grain-step-eat 5
+  set fisher-min-rest-ticks 18
   ;; set defaults for gatherer
   set gather-max-steps 5
   set gather-grain-step-cost-mu 0.33
@@ -109,6 +113,7 @@ to set-globals
   set gather-grain-max-carry 200
   set gather-fish-step-eat 1
   set gather-grain-step-eat 5
+  set gather-min-rest-ticks 18
   ;; set village defaults
   ;; set invent-min-fish-ticks 10
   ;; set invent-min-grain-ticks 10
@@ -165,108 +170,140 @@ to setup
   setup-fish fish-carrying-capacity-mu / 2
   reset-ticks
   setup-village
+  ;; set the clock
+  set clock 0
+  set maxClock 12
   show "Done Setup"
 end
 
 ;; get harvester location
 to setup-village
-  user-message "Please select a starting point on the landscape before proceeding."
-  let placed false
-  while [not placed] [
-    ;; get mouse location if clicked
-    if mouse-inside? and mouse-down? [
-  let patchClicked patch mouse-xcor mouse-ycor
-      ;; check that location is on land
-      if [ zone ] of patchClicked = "Land" [
-        create-villages 1 [
-          move-to patchClicked
-          set shape "house"
-          set color yellow
-          ;; set village starting values
-          ;; set ourMinFishTicks 10
-          ;; set ourMinGrainTicks 10
-          ;; create people and add them to the village
-          let parent self
-          set myPeople []
-          ;; let village-population 2
-          let fisher-counter 0
-          hatch village-population [
-            set breed people
-            move-to patchClicked
-            set shape "person"
-            set color red
-            set myJob "Ga"
-            set myVillage parent
-            ; ifelse [fisher-counter] of parent < (village-population / 2) [
-            ;   set myJob "Fi"
-            ;   set fisher-counter fisher-counter + 1
-            ; ]
-            ; [ 
-            ;   set myJob "Ga"
-            ; ]
-            ask parent [ 
-              set myPeople (turtle-set myPeople myself) 
-              set fisher-counter fisher-counter + 1
-            ]
+  ;; check that location is on land, and that this village is not located in the same place
+  ;; as another village
+  create-villages count-of-villages [
+    ;; First thing is placing the village.  This is done for each village.  If placement is user 
+    let newPlace one-of patches with [ zone = "Land" ]
+    ifelse place-villages [
+      user-message ( word "Please place " self ".  Total villages: " count-of-villages)
+      ;; loop until have an approriate location
+      let placed false
+      while [not placed] [
+        ;; get mouse location if clicked
+        if mouse-inside? and mouse-down? [
+          set newPlace patch mouse-xcor mouse-ycor
+          ;; got a click.  Check that does not have a water neighbour and does not contain another village
+          show (word "Neighbors with water" (any? (([neighbors] of newPlace) with [ zone = "Water" ])))
+          show (word "Villages here" (any? villages-on newPlace))
+          if not ((any? (([neighbors] of newPlace) with [ zone = "Water" ])) or (any? villages-on newPlace)) [
+            set placed true
           ]
-          ;; assign share of village people to fishing task
-          ask n-of (round (village-population * village-share-fishing)) myPeople [
-            set myJob "Fi"
-          ]
-          ;; set abilities of the two types, from random setting
-          ask myPeople [
-            ;; set the common stuff for all of them
-            ;; set myNeedFish 1
-            ;; set myNeedGrain 5
-            ;; set myMaxFish 30
-            ;; set myMaxGrain 200
-            set myFishHold 10
-            set myFish myFishHold
-            set myGrainHold 50
-            set myGrain myGrainHold
-            ;; set myNetRadius 10
-            ;; set myFishStepCost 0.33
-            set myLeisureTicks 0
-            set myNet no-patches
-            set goHome true
-            ;; set myMax-steps people-max-steps
-            ;; set the stuff that is specific to the fishing type
-            if myJob = "Fi" [
-              set myNetRadius random-triangle fisher-fish-net-radius-mu (fisher-fish-net-radius-mu * fisher-fish-net-radius-rng)
-              set myFishStepCost random-triangle fisher-fish-take-step-cost-mu (fisher-fish-take-step-cost-mu * fisher-fish-take-step-cost-rng)
-              set myGrainStepCost random-triangle fisher-grain-step-cost-mu (fisher-grain-step-cost-mu * fisher-grain-step-cost-rng)
-              set myMax-steps fisher-max-steps
-              set myMaxFish fisher-fish-max-carry
-              set myMaxGrain fisher-grain-max-carry
-              set myNeedFish fisher-fish-step-eat
-              set myNeedGrain fisher-grain-step-eat
-              set myMinRestTicks fisher-min-rest-ticks
-            ]
-            ;; set the stuff that is specific to the gatherer type
-            if myJob = "Ga" [
-              set myNetRadius random-triangle gather-fish-net-radius-mu (gather-fish-net-radius-mu * gather-fish-net-radius-rng)
-              set myFishStepCost random-triangle gather-fish-take-step-cost-mu (gather-fish-take-step-cost-mu * gather-fish-take-step-cost-rng)
-              set myGrainStepCost random-triangle gather-grain-step-cost-mu (gather-grain-step-cost-mu * gather-grain-step-cost-rng)
-              set myMax-steps gather-max-steps
-              set myMaxFish gather-fish-max-carry
-              set myMaxGrain gather-grain-max-carry
-              set myNeedFish gather-fish-step-eat
-              set myNeedGrain gather-grain-step-eat
-              set myMinRestTicks gather-min-rest-ticks
-            ]
-          ]
-          ;; clear out grain in spot where village is
-          ask patchClicked [
-            set grain 0
-          ]
-            ;; set village inventory at start enough to fill everyone's desired hold 
-            set ourFish sum [myFishHold] of myPeople
-            set ourGrain sum [myGrainHold] of myPeople
-        ]          
-        set placed true
+        ]
       ]
-    ]   
-  ]
+    ]
+    [
+      ;; doing the random placement
+      let placed false
+      while [not placed] [
+        ifelse not ((any? (([neighbors] of newPlace) with [ zone = "Water" ])) or (any? villages-on newPlace)) [
+          set placed true
+        ]
+        [
+          ;; get a new random patch
+          set newPlace one-of patches with [ zone = "Land" ]
+        ]
+      ]
+    ]
+    ;; got a place that works.  Now set up the village
+    move-to newPlace
+    set shape "house"
+    set color yellow
+    ;; clear out grain in spot where village is
+    ask newPlace [ set grain 0 ]
+    ;; set village starting values
+    ;; set ourMinFishTicks 10
+    ;; set ourMinGrainTicks 10
+    ;; create people and add them to the village
+    let parent self
+    set myPeople []
+    ;; let village-population 2
+    let fisher-counter 0
+    hatch village-population [
+      set breed people
+      move-to newPlace
+      set shape "person"
+      set color red
+      set myCompAdv "Gathering"
+      set myVillage parent
+      ; ifelse [fisher-counter] of parent < (village-population / 2) [
+      ;   set myJob "Fi"
+      ;   set fisher-counter fisher-counter + 1
+      ; ]
+      ; [ 
+      ;   set myJob "Ga"
+      ; ]
+      ask parent [ 
+        set myPeople (turtle-set myPeople myself) 
+        set fisher-counter fisher-counter + 1
+      ]
+    ]
+    ;; assign share of village people to the comparative advantage groups.
+    ;; with the two tasks, those with a comparative advantage are expected 
+    ;; to be relatively better at fishing, and those with the comparative advantage in
+    ;; gathering are better at gathering.  This can show up as differences in the 
+    ;; step cost for collecting fish from the net and the step cost of gathering
+    ;; grain from the patch with grain.  It can also show up in the size of the 
+    ;; fish basket and grain bucket.
+    ask n-of (round (village-population * village-share-fishing)) myPeople [
+      set myCompAdv "Fishing"
+    ]
+    ;; set abilities of the two types, from random setting
+    ask myPeople [
+      ;; set the common stuff for all of them
+      ;; set myNeedFish 1
+      ;; set myNeedGrain 5
+      ;; set myMaxFish 30
+      ;; set myMaxGrain 200
+      set myFishHold 20
+      set myFish myFishHold
+      set myGrainHold 100
+      set myGrain myGrainHold
+      ;; set myNetRadius 10
+      ;; set myFishStepCost 0.33
+      set myLeisureTicks 0
+      set myNet no-patches
+      set goHome true
+      ;; set myMax-steps people-max-steps
+      ;; set the stuff that is specific to the fishing type
+      if myCompAdv = "Fishing" [
+        set myNetRadius random-triangle fisher-fish-net-radius-mu (fisher-fish-net-radius-mu * fisher-fish-net-radius-rng)
+        set myFishStepCost random-triangle fisher-fish-take-step-cost-mu (fisher-fish-take-step-cost-mu * fisher-fish-take-step-cost-rng)
+        set myGrainStepCost random-triangle fisher-grain-step-cost-mu (fisher-grain-step-cost-mu * fisher-grain-step-cost-rng)
+        set myMax-steps fisher-max-steps
+        set myMaxFish fisher-fish-max-carry
+        set myMaxGrain fisher-grain-max-carry
+        set myNeedFish fisher-fish-step-eat
+        set myNeedGrain fisher-grain-step-eat
+        set myMinRestTicks fisher-min-rest-ticks
+        set myJob "Fi"
+      ]
+      ;; set the stuff that is specific to the gatherer type
+      if myCompAdv = "Gathering" [
+        set myNetRadius random-triangle gather-fish-net-radius-mu (gather-fish-net-radius-mu * gather-fish-net-radius-rng)
+        set myFishStepCost random-triangle gather-fish-take-step-cost-mu (gather-fish-take-step-cost-mu * gather-fish-take-step-cost-rng)
+        set myGrainStepCost random-triangle gather-grain-step-cost-mu (gather-grain-step-cost-mu * gather-grain-step-cost-rng)
+        set myMax-steps gather-max-steps
+        set myMaxFish gather-fish-max-carry
+        set myMaxGrain gather-grain-max-carry
+        set myNeedFish gather-fish-step-eat
+        set myNeedGrain gather-grain-step-eat
+        set myMinRestTicks gather-min-rest-ticks
+        set myJob "Ga"
+      ]
+    ]
+    ;; set village inventory at start enough to fill everyone's desired hold 
+    set ourFish sum [myFishHold] of myPeople
+    set ourGrain sum [myGrainHold] of myPeople
+  ]          
 end
 
 ;; set fish numbers in water
@@ -292,6 +329,9 @@ to go
     ask myPeople with [ myJob = "Fi" ][ harvest-fish self ]
     ask myPeople with [ myJob = "Ga" ][ gather-grain self ]
   ]
+  ;; advance the clock, reset if hits max time
+  set clock clock + 1
+  if clock > maxClock [ set clock 0 ]
   tick
 end
 ;;
@@ -335,12 +375,12 @@ end
 
 ;; how much excess grain do I have
 to-report getMyExcessGrain
-  report min list (myNeedGrain * (myGrain / myNeedGrain - myFish / myNeedFish)) 0
+  report max list (myNeedGrain * (myGrain / myNeedGrain - myFish / myNeedFish)) 0
 end
 
 ;; how much excess fish do I have
 to-report getMyExcessFish
-  report min list (myNeedFish * (myFish / myNeedFish - myGrain / myNeedGrain)) 0
+  report max list (myNeedFish * (myFish / myNeedFish - myGrain / myNeedGrain)) 0
 end
 
 ;; get the slope of the trading ratio for a diagonal across the core between the endowments in an edgeworth box
@@ -455,25 +495,40 @@ end
 ;; check if number of ticks of village inventory less than resting ticks.  If it is, send 
 ;; out people who are at home for inventory with least ticks
 to in-village [ thisVillage ]
+  ;; Once per day everyone should be home.  This occurs when the clock is zero.
+  ;; At this time, when the clock is zero, do the trading.
   ask thisVillage [
+    ;; check if nobody left alive
+    if count myPeople = 0 [
+      set color black
+    ]
     ;; get all people who are at home
     let peopleHere myPeople with [
       patch-here = [patch-here] of thisVillage
     ]
-    ask peopleHere [
-      show (word "self in peoleHere:" self)
-      ;; get everyone else in the turtle set
-      let othersHere peopleHere who-are-not self
-      if any? othersHere [
-        ;; there are other turtles.  Find the turtle with whom would get the longest life extension
-        let tradeWith min-one-of othersHere [ 
-          item 0 tradeLifeExtend self myself 
-        ]
-        ;; check that trade solution is not just endowment
-        let tradePlan tradeSolution self tradeWith
-        if not((myFish = item 0 tradePlan) and (myGrain = item 1 tradePlan)) [
-          ;; trade is not endowment, do the trade
-          makeTrade self tradeWith 
+    ;; check to see if it is market time.  Market time occurs when the clock gets to 12
+    if clock = maxClock [
+      ;; market time.  Check if everybody is home
+      if not ((count peopleHere) = (count myPeople)) [
+        show (word "ERROR #peopleHere:" count peopleHere " #myPeople:" count myPeople)
+      ]
+      ;; do the market transactions by cycling through everyone, letting them trade with
+      ;; one other person
+      ask peopleHere [
+        show (word "self in peoleHere:" self)
+        ;; get everyone else in the turtle set
+        let othersHere peopleHere who-are-not self
+        if any? othersHere [
+          ;; there are other turtles.  Find the turtle with whom would get the longest life extension
+          let tradeWith min-one-of othersHere [ 
+            item 0 tradeLifeExtend self myself 
+          ]
+          ;; check that trade solution is not just endowment
+          let tradePlan tradeSolution self tradeWith
+          if not((myFish = item 0 tradePlan) and (myGrain = item 1 tradePlan)) [
+            ;; trade is not endowment, do the trade
+            makeTrade self tradeWith 
+          ]
         ]
       ]
     ]
@@ -497,19 +552,30 @@ to in-village [ thisVillage ]
     ;; get more fish.
     ;; process.  Stay until life expectency below threshold.  If short on what I don't harvest, continue to wait for someone to come 
     ;; back and trade with.  If I am a fish harvester and I will die from lack of grain, stay in village and hope somebody with grain comes in time
-    ask (peopleHere with [myJob = "Fi"]) [
+    ;; check if people are content to stay in the village
+    ask peopleHere [
+      show (word "myJob:" myJob " getMyLifeLeft:" getMyLifeLeft " getMyExcessGrain:" getMyExcessGrain " getMyExcessFish:" getMyExcessFish)
       if getMyLifeLeft <= myMinRestTicks [
-        ;; want to go
-        if getMyExcessGrain > 0 [
-          set goHome false
+        set goHome false
+        ;; not content to stay in village any longer
+        ;; take the job that will fill complement whatever food is currently in excess
+        ifelse (getMyExcessGrain = 0) and (getMyExcessFish = 0) [
+          ;; no excess of either.  Head out to do job have comparative advantage in.
+          ifelse myCompAdv = "Fishing" [
+            set myJob "Fi"
+          ]
+          [
+            set myJob "Ga"
+          ]
         ]
-      ]
-    ]
-    ask (peopleHere with [myJob = "Ga"]) [
-      if getMyLifeLeft <= myMinRestTicks [
-        ;; want to go
-        if getMyExcessFish > 0 [
-          set goHome false
+        [
+          ;; have excess in one or the other food
+          ifelse getMyExcessGrain > 0 [
+            set myJob "Fi"
+          ]
+          [
+            set MyJob "Ga"
+          ]
         ]
       ]
     ]
@@ -542,8 +608,12 @@ end
 ;; each fish caught takes a time step.  Throwing the net takes one step.
 to harvest-fish [ thisPerson ]
   ask thisPerson [
-    ;; check if time to start heading for home
+    ;; check if time to start heading for home because running out of food
     if ((get-food-ticks self) - 1) < (get-ticks-to-home self) [
+      set goHome true
+    ]
+    ;; check if time to head home because no time left
+    if (maxClock - clock) = floor (get-ticks-to-home self) [
       set goHome true
     ]
     ;; check if they are going home
@@ -655,8 +725,12 @@ end
 ;; well as movement.
 to gather-grain [ thisPerson ]
   ask thisPerson [
-    ;; check if time to start heading for home
+    ;; check if time to start heading for home because running out of food
     if ((get-food-ticks self) - 1) < (get-ticks-to-home self) [
+      set goHome true
+    ]
+    ;; check if time to head home because no time left
+    if (maxClock - clock) = floor (get-ticks-to-home self) [
       set goHome true
     ]
     ;; check if going home
@@ -755,6 +829,18 @@ to grow-grain
       ]
     ]
   ]
+end
+
+to-report getPeopleAtHomeList
+  report map [ [v] -> getPeopleAtHome v ] sort villages
+end
+
+to-report getPeopleAtHome [thisVillage]
+  let myCount 0
+  ask thisVillage [
+    set myCount count myPeople with [patch-here = [patch-here] of thisVillage]
+  ]
+  report myCount
 end]]></code>
   <widgets>
     <view x="368" wrappingAllowedX="false" y="10" frameRate="30.0" minPycor="0" height="668" showTickCounter="true" patchSize="13.0" fontSize="10" wrappingAllowedY="false" width="668" tickCounterLabel="ticks" maxPycor="50" updateMode="0" maxPxcor="50" minPxcor="0"></view>
@@ -779,8 +865,8 @@ end]]></code>
     <slider x="10" step="0.01" y="370" max="1" width="225" display="land-yield-rng" height="50" min="0" direction="Horizontal" default="0.0" variable="land-yield-rng"></slider>
     <slider x="10" step="1" y="425" max="30" width="225" display="land-yield-maturity-ticks" height="50" min="0" direction="Horizontal" default="10.0" variable="land-yield-maturity-ticks"></slider>
     <monitor x="1045" precision="17" y="285" height="60" fontSize="11" width="135" display="myJob"><![CDATA[map [ [t] -> [myJob] of t ] sort people]]></monitor>
-    <monitor x="1045" precision="17" y="350" height="60" fontSize="11" width="135" display="myFish"><![CDATA[map [ [t] -> [myFish] of t ] sort people]]></monitor>
-    <monitor x="1045" precision="17" y="415" height="60" fontSize="11" width="135" display="myGrain"><![CDATA[map [ [t] -> [myGrain] of t ] sort people]]></monitor>
+    <monitor x="1045" precision="17" y="350" height="60" fontSize="11" width="135" display="myFish"><![CDATA[map [ [t] -> precision ([myFish] of t) 1 ] sort people]]></monitor>
+    <monitor x="1045" precision="17" y="415" height="60" fontSize="11" width="135" display="myGrain"><![CDATA[map [ [t] -> precision ([myGrain] of t) 1 ] sort people]]></monitor>
     <monitor x="1045" precision="17" y="480" height="60" fontSize="11" width="135" display="myLeisureTicks"><![CDATA[map [ [t] -> [myLeisureTicks] of t ] sort people]]></monitor>
     <plot x="1185" autoPlotX="true" yMax="10.0" autoPlotY="true" y="285" xMin="0.0" height="255" legend="true" xMax="10.0" yMin="0.0" width="255" display="Village">
       <setup></setup>
@@ -812,7 +898,7 @@ end]]></code>
     <note x="270" y="720" backgroundDark="0" fontSize="12" width="215" markdown="false" height="25" textColorDark="-1" textColorLight="-16777216" backgroundLight="0">Parameters for Fishing Job</note>
     <slider x="270" step="1" y="805" max="100" width="225" display="fisher-fish-max-carry" height="50" min="0" direction="Horizontal" default="30.0" variable="fisher-fish-max-carry"></slider>
     <slider x="270" step="1" y="860" max="500" width="225" display="fisher-grain-max-carry" height="50" min="0" direction="Horizontal" default="100.0" variable="fisher-grain-max-carry"></slider>
-    <slider x="10" step="1" y="750" max="10" width="225" display="village-population" height="50" min="0" direction="Horizontal" default="2.0" variable="village-population"></slider>
+    <slider x="10" step="1" y="750" max="10" width="225" display="village-population" height="50" min="0" direction="Horizontal" default="1.0" variable="village-population"></slider>
     <slider x="10" step="0.05" y="805" max="1" width="225" display="village-share-fishing" height="50" min="0" direction="Horizontal" default="0.5" variable="village-share-fishing"></slider>
     <slider x="985" step="1" y="860" max="500" width="225" display="gather-grain-max-carry" height="50" min="0" direction="Horizontal" default="200.0" variable="gather-grain-max-carry"></slider>
     <slider x="985" step="1" y="805" max="100" width="225" display="gather-fish-max-carry" height="50" min="0" direction="Horizontal" default="20.0" variable="gather-fish-max-carry"></slider>
@@ -826,16 +912,21 @@ end]]></code>
     <slider x="1445" step="0.01" y="860" max="2" width="225" display="gather-fish-take-step-cost-mu" height="50" min="0" direction="Horizontal" default="0.67" variable="gather-fish-take-step-cost-mu"></slider>
     <slider x="1445" step="0.01" y="915" max="1" width="225" display="gather-fish-take-step-cost-rng" height="50" min="0" direction="Horizontal" default="0.0" variable="gather-fish-take-step-cost-rng"></slider>
     <slider x="1445" step="0.01" y="805" max="1" width="225" display="gather-fish-net-radius-rng" height="50" min="0" direction="Horizontal" default="0.0" variable="gather-fish-net-radius-rng"></slider>
-    <slider x="270" step="1" y="915" max="50" width="225" display="fisher-min-rest-ticks" height="50" min="0" direction="Horizontal" default="10.0" variable="fisher-min-rest-ticks"></slider>
-    <slider x="985" step="1" y="915" max="50" width="225" display="gather-min-rest-ticks" height="50" min="0" direction="Horizontal" default="10.0" variable="gather-min-rest-ticks"></slider>
+    <slider x="270" step="1" y="915" max="50" width="225" display="fisher-min-rest-ticks" height="50" min="0" direction="Horizontal" default="18.0" variable="fisher-min-rest-ticks"></slider>
+    <slider x="985" step="1" y="915" max="50" width="225" display="gather-min-rest-ticks" height="50" min="0" direction="Horizontal" default="18.0" variable="gather-min-rest-ticks"></slider>
     <slider x="500" step="0.01" y="915" max="1" width="225" display="fisher-grain-step-cost-rng" height="50" min="0" direction="Horizontal" default="0.0" variable="fisher-grain-step-cost-rng"></slider>
     <slider x="1215" step="0.01" y="860" max="2" width="225" display="gather-grain-step-cost-mu" height="50" min="0" direction="Horizontal" default="0.33" variable="gather-grain-step-cost-mu"></slider>
     <slider x="1215" step="0.01" y="915" max="1" width="225" display="gather-grain-step-cost-rng" height="50" min="0" direction="Horizontal" default="0.0" variable="gather-grain-step-cost-rng"></slider>
     <slider x="500" step="0.01" y="860" max="2" width="225" display="fisher-grain-step-cost-mu" height="50" min="0" direction="Horizontal" default="0.67" variable="fisher-grain-step-cost-mu"></slider>
     <slider x="500" step="0.1" y="750" max="10" width="225" display="fisher-fish-step-eat" height="50" min="0" direction="Horizontal" default="1.0" variable="fisher-fish-step-eat"></slider>
-    <slider x="1215" step="0.1" y="750" max="10" width="225" display="gather-fish-step-eat" height="50" min="0" direction="Horizontal" default="2.0" variable="gather-fish-step-eat"></slider>
-    <slider x="500" step="0.1" y="805" max="50" width="225" display="fisher-grain-step-eat" height="50" min="0" direction="Horizontal" default="10.0" variable="fisher-grain-step-eat"></slider>
+    <slider x="1215" step="0.1" y="750" max="10" width="225" display="gather-fish-step-eat" height="50" min="0" direction="Horizontal" default="1.0" variable="gather-fish-step-eat"></slider>
+    <slider x="500" step="0.1" y="805" max="50" width="225" display="fisher-grain-step-eat" height="50" min="0" direction="Horizontal" default="5.0" variable="fisher-grain-step-eat"></slider>
     <slider x="1215" step="0.1" y="805" max="50" width="225" display="gather-grain-step-eat" height="50" min="0" direction="Horizontal" default="5.0" variable="gather-grain-step-eat"></slider>
+    <monitor x="1150" precision="17" y="190" height="60" fontSize="11" width="100">clock</monitor>
+    <monitor x="1045" precision="17" y="545" height="60" fontSize="11" width="135" display="myLifeLeft"><![CDATA[map [ [t] -> precision ([getMyLifeLeft] of t) 1 ] sort people]]></monitor>
+    <monitor x="1255" precision="17" y="190" height="60" fontSize="11" width="135" display="people in villages">getPeopleAtHomeList</monitor>
+    <slider x="10" step="1" y="860" max="10" width="225" display="count-of-villages" height="50" min="0" direction="Horizontal" default="5.0" variable="count-of-villages"></slider>
+    <switch x="10" y="915" height="40" on="false" variable="place-villages" width="110" display="place-villages"></switch>
   </widgets>
   <info>## WHAT IS IT?
 
