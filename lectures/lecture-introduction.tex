@@ -17,6 +17,7 @@
 }
 
 % Frame 1
+
 \begin{frame}{Systems}
 	% \begin{columns}
 		% \column{0.6\textwidth}
@@ -38,15 +39,32 @@
 	\includegraphics<article>[width=0.8\linewidth]{SESgraphic.png}
 \end{frame}
 
+
 % Interspersed notes text between slides
 \mode<article>{
-	\subsection{Detailed Explanation of Concept 1}
-	While the slide highlights the main points, it is important to note that the theoretical model relies on two primary assumptions...
+	\subsection{Systems and Subsystems}
+	The global social ecological system is far too complex for anyone to comprehend.  At present, it is probably too complex for AI to comprehend as well.  What both humans and AI do with this is focus on a part of the system that we are interested in.  We choose a boundary and a scale.  Things beyond the boundary are grouped together into subsystems, the internal details of which are not considered.  This would be at the scale that is coarser than the part of the system we are interested in.  For those things at a finer scale, we also relegate those things into subsystems, with the entire subsystem being taken as an element of the system we are studying.
+	
+	The concerns about sustainability can be seen as concerns about the details that are being left out.
+	
+	
 }
 
-% Frame 2
-\begin{frame}{Mathematical Representation}
-	\begin{equation*}
-		f(x) = \alpha + \beta x + \varepsilon
-	\end{equation*}
+\begin{frame}{Production Possibilities}
+	\begin{columns}[T]
+		\begin{column}{0.3\textwidth}
+			\begin{itemize}
+				\item What is missing?
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.7\textwidth}
+			\centering
+			\begin{tikzpicture}
+				\node [rectangle, draw] at (3,6) {Production Factor Markets};
+				\node [rectangle, draw] at (3,0) {Products and Services Markets};
+				\node [circle, draw, minimum size=70pt] at (0,3) {Households};
+				\node [circle, draw, minimum size=70pt] at (6,3) {Firms};
+			\end{tikzpicture}
+		\end{column}
+	\end{columns}
 \end{frame}
