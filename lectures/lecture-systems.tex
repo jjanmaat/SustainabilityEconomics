@@ -60,6 +60,140 @@
 	\end{itemize}
 \end{frame}
 
+% Interspersed notes text between slides
+\mode<article>{
+	\subsection{Systems and Subsystems}
+	The global social ecological system is far too complex for anyone to comprehend.  At present, it is probably too complex for AI to comprehend as well.  What both humans and AI do with this is focus on a part of the system that we are interested in.  We choose a boundary and a scale.  Things beyond the boundary are grouped together into subsystems, the internal details of which are not considered.  This would be at the scale that is coarser than the part of the system we are interested in.  For those things at a finer scale, we also relegate those things into subsystems, with the entire subsystem being taken as an element of the system we are studying.
+	
+	The concerns about sustainability can be seen as concerns about the details that are being left out.
+}
+
+\begin{frame}{The Economic System}
+	\begin{columns}[T]
+		\begin{column}{0.3\textwidth}
+			\begin{itemize}
+				\item Households own factors of production, sell (services of) to firms.
+				\item Households receive payments for provision of factors.
+				\item Households buy goods and services from firms.
+				\item Households expenditures are payments to firms for goods and services.
+				\item What is missing?
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.7\textwidth}
+			\centering
+			\begin{tikzpicture}
+				\clip (-1.5,-0.5) rectangle (7.5,6.5);
+				\useasboundingbox (-1.5,-0.5) rectangle (7.5,6.5);
+				% \filldraw [color=green!30, draw=black] (-1.5,-0.5) rectangle (7.5,6.5);
+				% \node [below right, align=left] at (-1.5,6.5) {Natural \\ Environment};
+				\node [rectangle, draw, fill=white, align=center] at (3,5.75) {Production Factor \\ Markets};
+				\node [rectangle, draw, fill=white, align=center] at (3,0.75) {Products and Services \\ Markets};
+				\node [circle, draw, minimum size=65pt, fill=white] (Households) at (0,3.25) {Households};
+				\node [circle, draw, minimum size=65pt, fill=white] (Firms) at (6,3.25) {Firms};
+				\draw [->, thick] (Households) to [bend left=20] node [above, midway] {Factors} (Firms); 
+				\draw [->, thick] (Firms) to [bend right=40] node [above, midway] {Payments} (Households); 
+				\draw [->, thick] (Households) to [bend left=-20] node [below, midway] {Expenditures} (Firms); 
+				\draw [->, thick] (Firms) to [bend right=-40, align=center] node [below, midway] {Goods and Services} (Households); 
+			\end{tikzpicture}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\mode<article>{
+	Introductory courses in economics typically present a circular model of the economy.  In this model, there are two elements, households and firms.  These elements interact in two markets, the factor market and the market for products and services.  Households own the factors of production, which includes owning the firms.  These factors are labour time, financial assets, entrepreneurial abilities, and land.  Labour time is sold to firms for wages, financial assets are provided to firms in exchange for dividends and interest payments and entrepreneurial abilities are paid for as profits.  Households also own land, which they rent to the firms.
+	
+	The firms take the factors of production and transform them into the goods and services that households consume.  Households purchase these goods and services in the market for products and services.  Household expenditures are the revenues that the firm collects.
+	
+	Economics is sometimes defined as the discipline that studies how households and firms make decisions in the face of scarcity.  Many of the problems that are the focus of economic research are where that scarcity is financial.  The contemporary (in 2026) concerns about the cost of living, the so called housing crisis, and concerns about AI replacing workers are concerns about financial scarcity.  Many people's income is insufficient to purchase the things they need - daily necessities and a decent place to live - and/or that that income is precarious.
+	
+	There is a substantial body of work - academic and otherwise - that speaks about this precarity leading people to focus on their immediate needs and therefore put less concern on the environment.  Opinion poles and recent election results bear this out.  There are important political dimensions to this.  Power relationships and how they shape the political space and the decisions made in that space are a very important part of the system.  However, for the time being, the aim here is to develop some of the tools that have been developed and used in the economics discipline to understand sustainability challenges. 
+}
+
+\begin{frame}{The Ecological Economic System}
+	\begin{columns}[T]
+		\begin{column}{0.3\textwidth}
+			\begin{itemize}
+				\item Households own natural resources (Land).
+				\item Households rent land to firms, that use natural resources.
+				\item Firms (and households) produce waste, dumping it into the environment.
+				\item What would make this sustainable?
+				\item<2> Sustainable if all waste assimilated into natural resources.
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.7\textwidth}
+			\centering
+			\begin{tikzpicture}
+				\clip (-1.5,-0.5) rectangle (7.5,6.5);
+				\useasboundingbox (-1.5,-0.5) rectangle (7.5,6.5);
+				\filldraw [color=green!30, draw=black] (-1.5,-0.5) rectangle (7.5,6.5);
+				\node [below right, align=left] at (-1.5,6.5) {Natural \\ Environment};
+				\node [rectangle, draw, fill=white, align=center] at (3,5.75) {Production Factor \\ Markets};
+				\node [rectangle, draw, fill=white, align=center] at (3,0.75) {Products and Services \\ Markets};
+				\node [circle, draw, minimum size=65pt, fill=white] (Households) at (0,3.25) {Households};
+				\node [circle, draw, minimum size=65pt, fill=white] (Firms) at (6,3.25) {Firms};
+				\node [circle, draw, align=center, fill=green!15, minimum size=55pt, dotted] (Resources) at (-0.75,0) {Natural \\ Resources};
+				\node [circle, draw, align=center, fill=green!15, minimum size=55pt, dotted] (Waste) at (6.75,0) {Waste};
+				\draw [->, thick] (Households) to [bend left=20] node [above, midway] {Factors} (Firms); 
+				\draw [->, thick] (Firms) to [bend right=40] node [above, midway] {Payments} (Households); 
+				\draw [->, thick] (Households) to [bend left=-20] node [below, midway] {Expenditures} (Firms); 
+				\draw [->, thick] (Firms) to [bend right=-40, align=center] node [below, midway] {Goods and Services} (Households); 
+				\draw [->, thick] (Resources) to [bend left=30] node [right, midway] {Own} (Households);
+				\draw [->, thick] (Firms) to [bend left=30] node [left, midway] {Dump} (Waste);
+				\draw<2> [->, thick] (Waste) to [bend left=7] node [above, midway] {Assimilation} (Resources);
+				\draw [black] (-1.5,-0.5) rectangle (7.5,6.5);
+			\end{tikzpicture}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\mode<article>{
+	There are many critics, both within the economics discipline and outside of it, who emphasize that the circular model of the economy is incomplete.  The flow of payments from firms to households that enables households to purchase the goods and services firms produce is fair to consider a closed system.  In fact, this is a central relationship that macroeconomists use when tracking the performance of the economy as a whole.  However, it does leave the illusion that the goods and services that households purchase and consume are transformed by households back into factors of production that the firms use.
+	
+	It is often suggested by these critics that students of economics need to be taught right from the start that the economy is embedded within the natural environment.  From a systems perspective, the economy is a subsystem of the natural environment.
+	
+	If the scale of analysis and focus of the question is the relationship between the economy and the natural environment, then everything that goes on inside the economy can just be left there.  The economy would then be like any other agent in the natural environment, an organism that takes in resources and expels waste.  The ecosystem is sustainable when all the waste produced by this economy subsystem is assimilated by processes in the environment that convert it back into natural resources.
+	
+	How do we get to a situation where these flows are stable, where none of the elements are growing at the expense of other elements.  
+}
+
+\begin{frame}{The Ecological System}
+	\begin{columns}[T]
+		\begin{column}{0.3\textwidth}
+			\begin{itemize}
+				\item The economy as an element of the ecological system.
+				\item The natural environment provides resources needed by the economy.
+				\item The natural environment supports the economy by receiving waste.
+				\item The system is sustainable if the flow of waste is fully assimilated back into natural resources.
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.7\textwidth}
+			\centering
+			\begin{tikzpicture}
+				\clip (-1.5,-0.5) rectangle (7.5,6.5);
+				\useasboundingbox (-1.5,-0.5) rectangle (7.5,6.5);
+				\filldraw [color=green!30, draw=black] (-1.5,-0.5) rectangle (7.5,6.5);
+				\node [below, align=left] at (3,6.5) {Natural Environment};
+				\node [circle, draw, minimum size=130pt, fill=white] (Economy) at (3,1.75) {Economy};
+				\node [rectangle, draw, fill=white, align=center, font=\tiny, color=gray!40, fill=white] at (3,3.25) {Production Factor \\ Markets};
+				\node [rectangle, draw, fill=white, align=center, font=\tiny, color=gray!40, fill=white] at (3,0.25) {Products and Services \\ Markets};
+				\node [circle, draw, minimum size=35pt, fill=white, font=\tiny, color=gray!40, fill=white] (Households) at (1.5,1.75) {Households};
+				\node [circle, draw, minimum size=35pt, fill=white, font=\tiny, color=gray!40, fill=white] (Firms) at (4.5,1.75) {Firms};
+				\node [circle, draw, align=center, fill=green!15, minimum size=80pt, dotted] (Resources) at (-0.25,5.25) {Natural \\ Resources};
+				\node [circle, draw, align=center, fill=green!15, minimum size=80pt, dotted] (Waste) at (6.25,5.25) {Waste};
+				\draw [->, gray!40] (Households) to [bend left=20, font=\tiny, color=gray!40, fill=white] node [above, midway] {Factors} (Firms); 
+				\draw [->, gray!40] (Firms) to [bend right=40, font=\tiny, color=gray!40, fill=white] node [above, midway] {Payments} (Households); 
+				\draw [->, gray!40] (Households) to [bend left=-20, font=\tiny, color=gray!40, fill=white] node [below, midway] {Expenditures} (Firms); 
+				\draw [->, gray!40] (Firms) to [bend right=-40, align=center, font=\tiny, color=gray!40, fill=white] node [below, midway] {Goods and Services} (Households); 
+				\draw [->, thick] (Resources) to [bend left=-20] node [left, near end] {Provisioning} (Economy);
+				\draw [->, thick] (Economy) to [bend left=-20] node [right, near start] {Supporting} (Waste);
+				\draw [->, thick] (Waste) to [bend left=-10] node [below, midway] {Assimilation} (Resources);
+				\draw [black] (-1.5,-0.5) rectangle (7.5,6.5);
+			\end{tikzpicture}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+
 \mode<article>{
 	In both the natural and social systems, researchers try to identify patterns in the systems that they are studying.  Those patterns emerge from the interactions between the elements that make up the system.  When systems are large and complex, the discipline typically finds ways to describe the patterns without examining the detail of the interacting entities that leads to the pattern.
 	
@@ -80,5 +214,34 @@
 		\item An ABM allows experiments with these agents, observing how the system that contains them evolves as a result of their interactions with other agents and the environment.
 		\item ABMs allow properties of the system to emerge, properties that are not inherent to the agents that make up the system.
 		\item \textit{\textbf{emergence}} is an important characteristic of complex systems.
+	\end{itemize}
+\end{frame}
+
+\mode<article>{
+	Building an agent based model and implementing it is a significant computational exercise.  However, the careful thinking process that goes into the design of the model is valuable, even if one never codes it up (with or without the help of AI).  This is because it forces us to think systematically about the details of how people respond to each other and to their environment. 
+}
+
+\begin{frame}{Agent Based Thinking}
+	\begin{itemize}
+		\item To build an ABM need:
+		\begin{enumerate}
+			\item A collection of agents with clearly defined behaviors.
+			\begin{itemize}
+				\item How they respond to other agents.
+				\item How they respond to the environment.
+				\item How they evolve over time.
+			\end{itemize}
+			\item A way for the agents to interact with each other and the environment.
+			\begin{itemize}
+				\item Which agents interact.
+				\item How interactions change.
+			\end{itemize}
+			\item A process for how the environment changes.
+			\begin{itemize}
+				\item How the environment responds to agents.
+				\item How the environment evolves over time.
+			\end{itemize}
+		\end{enumerate} 
+		\item Such careful thinking - looking at the trees - can illuminate features of the system that are not obvious when only looking at the forest.
 	\end{itemize}
 \end{frame}
