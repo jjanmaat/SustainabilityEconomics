@@ -537,6 +537,32 @@
 	Can we expect this outcome from people who interact independently?  
 }
 
+\begin{frame}{A Hermit Economy Agent Based Model}
+	\begin{itemize}
+		\item The Hermit
+		\begin{enumerate}
+			\item Has an energy level that is used up as time advances, with additional energy used for activities.
+			\item Can harvest fish or gather grain.  Maximum amount of each can carry.
+			\item Lives at a location on landscape that must return to at end of each day.
+			\item Travels to shore to fish, and back home when time exhausted or basket full.
+			\item Travels to nearest grain to gather, continuing moving and gathering till bucket full or time exhausted.
+			\item At end of day, consumes fish and grain to increase energy.
+		\end{enumerate}
+		\item Fish live in pond, population grows as described in previous section.
+		\item Grain
+		\begin{enumerate}
+			\item Patches slowly grow grain.
+			\item If grain harvested, starts growth cycle.
+			\item No grain to harvest till maturity reached.
+		\end{enumerate}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{A Hermit Economy Agent Based Model}
+	\centering
+	\includegraphics[width=0.85\textwidth]{NetLogoFishGrain1.png}
+\end{frame}
+
 \begin{frame}{Summary}
 	\begin{itemize}
 		\item A simple social ecological system, a hermit economy, is described.
@@ -558,6 +584,235 @@
 \begin{frame}{Risk and Uncertainty}
 	\begin{itemize}
 		\item A risky situation is one where the outcome is unknown, but possible outcomes and their odds are.
-		\item An uncertain situation is one where the possible outcomes and/or their odds are not known.
+		\item An uncertain situation is one where the possible outcomes and/or their odds are not known.\vspace{10pt}
+		\item In our hermit model, fish move randomly.  
+		\item How should the hermit respond to this risk?
 	\end{itemize}
+\end{frame}
+
+\begin{frame}{Fish Harvest Risk}
+	\begin{columns}[T]
+	\begin{column}{0.5\textwidth}
+		\begin{itemize}
+			\item Fish move randomly around pond.
+			\item Can calculate probability that any location in pond has a fish in it.
+			\item Can therefore calculate probability of any number of fish in area covered by net.
+			\item Can also calculate how many fish likely to move into area for further casts of the net, after first cast.
+			\item Can calculate an expected number of fish caught on any fishing trip.
+		\end{itemize}
+	\end{column}
+	\begin{column}{0.5\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{NetLogoFishGrainLandscape.png}
+	\end{column}
+\end{columns}
+\end{frame}
+
+\begin{frame}{Expected Value}
+	\begin{itemize}
+		\item \textbf{\textit{Expected value}} is a statistical concept, defined as the outcome that is expected to occur for a random event if it is repeated a large number of times.
+		\item A fair coin has equal odds of coming up heads or tails.
+		\item If you are offered \$10 for heads on a coin toss, \$0 on tails, what is your expected winnings?
+		\item The expected value is based on what the outcome would be if this is repeated a large number of times.
+		\item Half of the time you win \$10, half of the time you win nothing.  The expected value is \$5.
+		\[
+		E(\text{coin toss}) = \frac{1}{2}\times \$10 + \frac{1}{2} \times \$0 = \$5
+		\]
+		\item Need an \textit{exhaustive} set of events and probabilities.
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Expected Catch}
+	\begin{columns}[T]
+		\begin{column}{0.7\textwidth}
+			\begin{itemize}
+				\item For the fish pond, the probability of different numbers of fish in the net area is not the same.
+				\begin{itemize}
+					\item Probability of more than carrying capacity is (close to) zero.
+					\item Probability of no fish is small on the first cast.
+					\item Probability of lower numbers increases after first catch, falls for higher numbers.
+				\end{itemize}
+				\item Graph counts frequency of each number of fish in net span, for 4694 fish random movements around pond.
+				\item Probability is count / frequency.
+				\item For math keeners
+				\[
+				P(q = j) = \left( 
+				\begin{matrix}
+					K \\
+					j
+				\end{matrix}
+				\right) \left( \frac{A_n}{A} \right)^j \left( 1 - \frac{A_n}{A} \right)^{K-j} 
+				\]
+				$q$ = fish in net, $K$ = total fish in pond, $A$ = area of pond, and $A_n$ = area covered by net.
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.3\textwidth}
+			\centering
+			\includegraphics[width=0.9\textwidth]{NetLogoSecretFishCount.png}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Expected Catch}
+	\begin{itemize}
+		\item Amount of fish caught depends on fishing effort, fish in pond, and fish that have swam into net area.
+		\item Expected catch - average for many fishing trips - is sum of each possible catch, weighted by probability of that catch.
+		\item More math
+		\[
+		E(\text{catch}) = \sum_{j = 0}^{K}\ j\times P(j)
+		\]
+		\item Expected value is average catch from many fishing trips.
+		\item On an individual fishing trip, will catch be one of those possible. \\ Some of those possible far below expected value!!!
+		\item How should hermit choose to divide effort between grain gathering and fish harvesting?
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Expected Value}
+	\begin{itemize}
+		\item Which do you prefer?
+		\begin{enumerate}
+			\item \$10,000 for sure (100\% probability)
+			\item \$50,000 with 10\% odds, \$10,000 with 89\% odds and \$0 with 1\% odds.
+		\end{enumerate}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Expected Value}
+	\begin{itemize}
+		\item Which do you prefer?
+		\begin{enumerate}
+			\item \$10,000 with 89\% odds and \$0 with 11\% odds.
+			\item \$50,000 with 10\% odds and \$0 with 90\% odds.
+		\end{enumerate}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Allais Paradox}
+	\begin{itemize}
+		\item Expected values:
+		\begin{enumerate}
+			\item Situation \#1
+			\begin{itemize}
+				\item \$10,000
+				\item $ \$50,000 \times 0.10 + \$10,000 \times 0.89 + \$0 \times 0.01 = \$13,900 $ 
+			\end{itemize}
+			\item Situation \#2
+			\begin{itemize}
+				\item $ \$10,000 \times 0.89 + \$0 \times 0.11 = \$8,900 $
+				\item $ \$50,000 \times 0.10 + \$0 \times 0.90 = \$5,000 $ 
+			\end{itemize}
+		\end{enumerate}
+		\item Majority choose \$10,000 for sure in situation \#1 and 10\% chance of \$50,000 in situation \#2.
+		\item Demonstrates that risk attitudes are not consistent and/or people are not good at evaluating risky situations.
+	\end{itemize}
+\end{frame}
+
+\mode<article>{
+	Many of the decisions people make do not have certain outcomes.  How would we expect people to act in these situations.  We can characterize people as having different risk attitudes.  And we might also expect those risk attitudes to differ based on the situation.  The Allais paradox highlights how even in simple situations, people's attitudes towards risk can change.
+	
+	Our hermit needs fish to survive.  How at risk is their survival on today's catch?  If the hermit is able to store fish, or can survive for several days without fish, then they can manage better than if a poor catch today means they won't survive to tomorrow.  If they can survive for several days, then one bad catch can be 'made up for' with a better catch tomorrow.  However, if today's catch is essential for survival, then it may be the best survival strategy to put more effort toward fishing, so as to increase the odds of a larger catch.
+	
+	The less vulnerable someone is to the risky situation, the more likely they are to have a risk neutral attitude.  This is even more true if it is possible to \textit{\textbf{diversify}}.  Diversification is the strategy of spreading ones effort across a variety of risky activities.  If the likelihood of several bad activities occuring together is low, if the outcomes are not correlated, then the overall outcome is less likely to be bad.  It is also less likely to be extremely good, but that is the cost of protecting from the bad outcomes.
+}
+\begin{frame}{Risk Attitudes}
+	\begin{itemize}
+		\item Risk attitudes defined in relation to expected value.
+		\item Would hermit prefer being given their expected catch or going fishing and taking whatever actual catch they realize?
+		\begin{enumerate}
+			\item Hermit is \textbf{\textit{risk averse}} if would rather take expected catch than go fishing.
+			\item Hermit is \textbf{\textit{risk loving}} if prefers to go fishing and see what they get, rather than take the expected catch.
+			\item Hermit is \textbf{\textit{risk neutral}} if they don't care.
+		\end{enumerate}
+		\item The hermit needs fish to match with grain, in order to get more energy.
+		\item What risk attitude (risk preference) is the hermit likely to have?
+		\item How will the hermit's risk preference likely affect the amount of effort applied to fishing?
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Uncertainty}
+	\begin{itemize}
+		\item If the hermit is around today, and has access to media, will be aware of climate change.
+		\begin{itemize}
+			\item If hermit has been living in same place for long enough, has probably experienced climate change!!!
+		\end{itemize}
+		\item Climate change will affect the ecology of the fish pond.
+		\begin{itemize}
+			\item Will a warmer pond lead to faster fish growth?
+			\item Will a warmer pond lead to more food for fish to eat?
+			\item Will a warmer pond increase risk of eutrophication and collapse of fish?
+		\end{itemize}
+		\item System is complex.  Many possible outcomes.  Unlikely to be able to identify all possibilities.
+		\item System is complex.  Unlikely to be able to accurately guage probabilities of possible outcomes.
+		\item This is uncertainty!!!
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Uncertainty}
+	\begin{itemize}
+		\item There are two buckets with 100 ping pong balls in them.
+		\begin{enumerate}
+			\item Bucket \#1 has 50 red balls and 50 black balls.
+			\item Bucket \#2 has a mixture of red and black balls, numbers of each unknown.
+		\end{enumerate}
+		\item If you will be given \$100 if you pull a red ball out of the bucket, which bucket will you choose?
+		\begin{enumerate}
+			\item Bucket \#1
+			\item Bucket \#2
+		\end{enumerate}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Uncertainty}
+	\begin{itemize}
+		\item There are two buckets with 100 ping pong balls in them.
+		\begin{enumerate}
+			\item Bucket \#1 has 50 red balls and 50 black balls.
+			\item Bucket \#2 has a mixture of red and black balls, numbers of each unknown.
+		\end{enumerate}
+		\item If you will be given \$100 if you pull a black ball out of the bucket, which bucket will you choose?
+		\begin{enumerate}
+			\item Bucket \#1
+			\item Bucket \#2
+		\end{enumerate}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Ellsberg Paradox}
+	\begin{itemize}
+		\item There are two buckets with 100 ping pong balls in them.
+		\begin{enumerate}
+			\item Bucket \#1 has 50 red balls and 50 black balls.
+			\item Bucket \#2 has a mixture of red and black balls, numbers of each unknown.
+		\end{enumerate}
+		\item If you choose bucket \#1 when a red ball earns \$100, this implies that you believe odds of picking a red ball from bucket \#2 is less than even.
+		\item If you think the odds of choosing a red ball from bucket \#2 are less than even, then you must think the odds of drawing a black ball are better than even.
+		\item Majority of people choose bucket \#1, whether the prize comes from a red or black ball.
+		\item People generally prefer known odds to unknown odds.
+		\item People are generally \textbf{\textit{uncertainty averse}}.
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Handing Uncertainty}
+	\begin{itemize}
+		\item With risk, can maximize some function based on the distribution of outcomes.
+		\begin{itemize}
+			\item Maximize the expected value, when don't care about the variability.
+			\item Maximize the expected value less a penalty for volatility.  A way of accounting for risk aversion.
+		\end{itemize}
+		\item With uncertainty don't know the distribution.
+		\item People may respond to their perception of best and worst case outcomes that follow from different options.
+		\begin{itemize}
+			\item People who follow a \textbf{\textit{maximin}} (maximize the minimum) approach choose options that have the least bad (maximum) worst possible outcome (the minimum). Kind of like risk averse.
+			\item People who follow a \textbf{\textit{maximax}} (maximize the maximum) approach choose options that best possible (maximum) best outcome (the maximum).  Kind of like risk loving.
+			\item Other strategies people follow fall between these approaches, involving some balancing of the extremes and other anticipated outcomes.
+		\end{itemize}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Handing Uncertainty}
+	\begin{itemize}
+		\item Something about risk and uncertainty faced by entire groups.
+		\item Something about precautionary principle.
+	\end{itemize}
+	content...
 \end{frame}
