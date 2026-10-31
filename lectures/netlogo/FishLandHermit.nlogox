@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <model version="NetLogo 7.0.4" snapToGrid="true">
-  <code><![CDATA[;; Landscape with water and land.  
+  <code><![CDATA[extensions [array]
+
+;; Landscape with water and land.  
 ;; Fish live in the water, reproducing according to standard logistic growth 
 ;; Land produces grain.  Grain must be gathered from patches.
 ;;
@@ -55,28 +57,10 @@ villages-own [
 
 ;; Setup global variables
 globals [
-  ;; carrying capacity follows a triangle distribution
-  ;; fish-carrying-capacity-mu    ;; mean of fish carrying capacity
-  ;; fish-carrying-capacity-rng   ;; range for fish carrying capacity distribution
-  ;; fish-growth-rate
-  ;; fish-tick-move-distance
-  ;; land patch yield follows a triangle distribution
-  ;; land-yield-mu                ;; mean of land yield
-  ;; land-yield-rng               ;; range for land yield
-  ;; land-yield-maturity-ticks    ;; ticks till land is mature after harvest
-  ;; invent-fish-decay-mu         ;; mean decay rate for fish held in village inventory
-  ;; invent-fish-decay-rng
-  ;; invent-grain-decay-mu
-  ;; invent-grain-decay-rng
-  ;; invent-min-fish-ticks
-  ;; invent-min-grain-ticks
-  ;; people-max-steps
-  ;; fish-net-radius-mu
-  ;; fish-net-radius-rng
-  ;; fish-take-step-cost-mu
-  ;; fish-take-step-cost-rng
-  clock
-  maxClock
+  clock          ;; Counter for time until need to be back in village
+  maxClock       ;; Time when need to be in village.  Reset for clock.
+  secret-net     ;; Invisible net, to record distribution of number of fish in net
+  count-net-vec  ;; Vector to count frequency of fish numbers in net
 ]
 
 ;; set default values
@@ -95,36 +79,25 @@ to set-globals
   set land-yield-mu 5
   set land-yield-rng 0
   set land-yield-maturity-ticks 10
-  ;; set defaults for fisher
-  set fisher-max-steps 5
-  set fisher-grain-step-cost-mu 0.67
-  set fisher-grain-step-cost-rng 0
-  set fisher-fish-net-radius-mu 10
-  set fisher-fish-net-radius-rng 0
-  set fisher-fish-take-step-cost-mu 0.33
-  set fisher-fish-take-step-cost-rng 0
-  set fisher-fish-max-carry 30
-  set fisher-grain-max-carry 100
-  set fisher-fish-step-eat 1
-  set fisher-grain-step-eat 5
-  set fisher-min-rest-ticks 18
-  ;; set defaults for gatherer
-  ;; set gather-max-steps 5
-  ;; set gather-grain-step-cost-mu 0.33
-  ;; set gather-grain-step-cost-rng 0
-  ;; set gather-fish-net-radius-mu 5
-  ;; set gather-fish-net-radius-rng 0
-  ;; set gather-fish-take-step-cost-mu 0.67
-  ;; set gather-fish-take-step-cost-rng 0
-  ;; set gather-fish-max-carry 20
-  ;; set gather-grain-max-carry 200
-  ;; set gather-fish-step-eat 1
-  ;; set gather-grain-step-eat 5
-  ;; set gather-min-rest-ticks 18
-  ;; set village defaults
-  ;; set invent-min-fish-ticks 10
-  ;; set invent-min-grain-ticks 10
-  ;; set village-population 2
+  ;; set defaults for people
+  set maximum-energy 1000          ;; maximum energy level for person
+  set maximum-steps-per-tick 5     ;; maximum number of steps traveled per tick
+  set fishing-clock-share 0.5      ;; share of time to spend fishing
+  set energy-cost-tick 10          ;; basic metabolic cost for one tick
+  set energy-cost-movement 2       ;; energy cost of a movement step
+  set energy-cost-fish-unit 1      ;; cost of harvesting one unit of fish
+  set energy-cost-grain-unit 0.2   ;; energy cost of gathering one unit of grain
+  set fish-energy-gain 5           ;; energy gained per unit of fish consumed
+  set fish-max-carry 50            ;; maximum number of fish that person can carry
+  set fish-net-radius 15           ;; radius of net that is used to catch fish
+  set grain-energy-gain 1          ;; energy gained per unit of grain consumed
+  set grain-max-carry 250          ;; maximum number of grain units person can carry
+  ;; set village parameters
+  set fish-max-inventory 100       ;; maximum fish inventory held in village
+  set grain-max-inventory 1000     ;; maximum grain inventory held in village
+  set villages-count 1             ;; number of villages to set on setup
+  set villages-population 1        ;; number of identical villagers to create on setup
+  
   ;; set village-share-fishing 0.5
   ;; set up inventory decay parameters
   set invent-fish-decay-mu 0
@@ -177,18 +150,67 @@ to setup
   setup-fish fish-carrying-capacity-mu / 2
   reset-ticks
   setup-villages
+  ;; setup secret net
+  makeSecretNet
   ;; set the clock
   set clock 0
   set maxClock 12
   show "Done Setup"
 end
 
+;;
+;; Make the secret net
+to makeSecretNet
+  ;; pick midpoint vertically, on shore of lake
+  let shore one-of patches with [(pycor = (max-pycor - min-pycor) / 2) and (zone = "Land") and (not ((one-of (neighbors4 with [zone = "Water"])) = nobody))]
+  ask shore [
+    set pcolor 56
+    set secret-net (patches in-radius fish-net-radius) with [ zone = "Water" ]
+    ask secret-net [set pcolor 106]
+  ]
+  ;; create an array to store counts from the net
+  set count-net-vec array:from-list n-values fish-carrying-capacity-mu [0]
+end
+
+;;
+;; Count fish in the secret net, incrementing the array
+to countFishInSecret
+  let countFish count fish-on secret-net
+  array:set count-net-vec countFish (array:item count-net-vec countFish + 1)
+end
+
+;;
+;; Plot the secret net fish count
+to plotSecretNetCount [arr]
+  ; 1. Tell NetLogo which plot to use
+  set-current-plot "Secret Fish Count"
+  
+  ; 2. Clear the previous data so bars don't stack on top of old ones
+  clear-plot
+  
+  ; 3. Loop through every index of the array
+  let i 0
+  let arr-size min list array:length arr plot-x-max
+  
+  while [i < arr-size] [
+    ; Get the value at the current index
+    let val array:item arr i
+    
+    ; Plot the value at X-coordinate 'i'
+    plotxy i val
+    
+    ; Move to the next index
+    set i (i + 1)
+  ]
+end
+
+;;
 ;; get harvester location
 to setup-villages
   ;; check that location is on land, and that this village is not located in the same place
   ;; as another village
-  let count-of-homes 1
-  create-villages count-of-homes [
+  ;; let count-of-homes 1
+  create-villages villages-count [
     ;; First thing is placing the village.  This is done for each village.  If placement is user 
     let newPlace one-of patches with [ zone = "Land" ]
     ;; doing the random placement
@@ -214,8 +236,8 @@ to setup-villages
     ;; create people and add them to the village
     let parent self
     set ourPeople []
-    let family-size 1
-    hatch family-size [
+    ;; let family-size 1
+    hatch villages-population [
       set breed people
       move-to newPlace
       set shape "person"
@@ -226,34 +248,34 @@ to setup-villages
       ]
       ;; set energy related parameters for people
       set myEnergy 1000      ;; storage for energy
-      set myEnergyMax 1000   ;; maximum energy that can be stored
-      set myEnergyTick 20   ;; basic energy needed to survive a tick
-      set myEnergyMove 5   ;; energy needed for each step moved
-      set myEnergyFish 2  ;; energy needed per fish harvested
-      set myEnergyGrain 0.25  ;; energy needed per unit of grain harvested
+      set myEnergyMax maximum-energy   ;; maximum energy that can be stored
+      set myEnergyTick energy-cost-tick   ;; basic energy needed to survive a tick
+      set myEnergyMove energy-cost-movement   ;; energy needed for each step moved
+      set myEnergyFish energy-cost-fish-unit  ;; energy needed per fish harvested
+      set myEnergyGrain energy-cost-grain-unit  ;; energy needed per unit of grain harvested
       ;; set myEnergyForFish 0.5 ;; share of energy that is devoted to fishing
                               ;; Fish parameters
       set myFish 0         ;; fish person holds
-      set myFishMax 30     ;; maximum number of fish that can be held
-      set myFishEnergy 10   ;; energy gain per fish consumed
+      set myFishMax fish-max-carry     ;; maximum number of fish that can be held
+      set myFishEnergy fish-energy-gain   ;; energy gain per fish consumed
       set myFishNet no-patches     ;; patches in fishing net
-      set myFishNetRadius 10 ;; radius of fish net
+      set myFishNetRadius fish-net-radius ;; radius of fish net
                              ;; Grain parameters
       set myGrain 0       ;; grain person holds
-      set myGrainMax 120     ;; maximum units of grain that can be held
-      set myGrainEnergy 2  ;; energy gain per unit of grain consumed
+      set myGrainMax grain-max-carry     ;; maximum units of grain that can be held
+      set myGrainEnergy grain-energy-gain  ;; energy gain per unit of grain consumed
                              ;; further parameters
-      set myJobFishShare 0.5
-      set myMaxSteps 4
+      set myJobFishShare fishing-clock-share
+      set myMaxSteps maximum-steps-per-tick
       set myLeisureTicks 0
       ;; set fishing characteristics
       set goHome true
     ]
     ;; set up the initial inventory
     set ourFish 0
-    set ourFishMax 200
+    set ourFishMax fish-max-inventory
     set ourGrain 0
-    set ourGrainMax 1000
+    set ourGrainMax grain-max-inventory
   ]
 end
 
@@ -283,6 +305,10 @@ to go
   ;; advance the clock, reset if hits max time
   set clock clock + 1
   if clock > maxClock [ set clock 0 ]
+  ;;
+  ;; plot count in secret array
+  countFishInSecret
+  plotSecretNetCount count-net-vec
   tick
 end
 ;;
@@ -341,8 +367,8 @@ to in-village [ thisHome ]
           if myEnergyAdd > 0 [
             set myEnergy myEnergy + myEnergyAdd
             ;; reduce the inventory
-            set takeFish myEnergyAdd * myFishEnergy
-            set takeGrain myEnergyAdd * myGrainEnergy
+            set takeFish myEnergyAdd / myFishEnergy
+            set takeGrain myEnergyAdd / myGrainEnergy
             ask myVillage [
               set ourFish ourFish - takeFish
               set ourGrain ourGrain - takeGrain
@@ -447,10 +473,11 @@ to harvest-fish [ thisPerson ]
         ;; pull as many fish out of the net as possible
         let inNet fish-on myFishNet
         let caughtFish up-to-n-of (myFishMax - myFish) inNet
-        set myFish MyFish + count caughtFish
-        set myEnergy myEnergy - (count caughtFish * myFishEnergy)
+        let countCaughtFish count caughtFish
+        set myFish MyFish + countCaughtFish
+        set myEnergy myEnergy - (countCaughtFish * myEnergyFish)
         ask caughtFish [ die ]
-        show "Hauling in fish"
+        show ( word "Hauling in fish.  Energy cost: " (countCaughtFish * myEnergyFish) )
       ]
       [
         ;; no water in neighbourhood, so move toward shore
@@ -597,17 +624,38 @@ to gather-grain [ thisPerson ]
       move-toward-village self
     ]
     [
-      if [grain] of patch-here > 0 [
-        ;; gather as much as possible, first from patch on, then from neighbours 4
-        gatherPatch self patch-here
-        if myGrain < myGrainMax [
-          ;; still have space to harvest more
-          let harvestPatches ( patch-set patch-here neighbors4 )
-          ask harvestPatches [ gatherPatch myself self ]
+      ;; need to integrate movement toward grain and harvesting of grain
+      ;; each patch with some grain to harvest counts as a move
+      let stepsMoved 0
+      while [stepsMoved < myMaxSteps] [
+        ;; harvest from the patch here if it has grain
+        let harvestPatches ( patch-set patch-here neighbors4 ) with [grain > 0]
+        let toHarvest up-to-n-of (myMaxSteps - stepsMoved) harvestPatches
+        show toHarvest
+        ask toHarvest [
+          show self
+          let grainBefore grain
+          gatherPatch myself self
+          show self
+          show grainBefore
+          if grainBefore = grain [
+            set stepsMoved stepsMoved + 1
+            ask myself [
+              set myEnergy myEnergy - myEnergyMove
+              if myEnergy < 0 [ die ]
+            ]
+          ]
+        ]
+        ;; if have steps left, move toward patch with grain
+        if stepsMoved < myMaxSteps [
+          let nearGrain min-one-of patches with [ grain > 0][distance thisPerson]
+          face nearGrain
+          forward 1
+          set stepsMoved stepsMoved + 1
+          set myEnergy myEnergy - myEnergyMove
+          if myEnergy < 0 [ die ]
         ]
       ]
-      ;; move toward grain
-      move-toward-grain self
     ]
   ]
 end
@@ -688,10 +736,37 @@ to-report getPeopleAtHome [thisVillage]
   report myCount
 end]]></code>
   <widgets>
-    <view x="368" wrappingAllowedX="false" y="10" frameRate="30.0" minPycor="0" height="668" showTickCounter="true" patchSize="13.0" fontSize="10" wrappingAllowedY="false" width="668" tickCounterLabel="ticks" maxPycor="50" updateMode="0" maxPxcor="50" minPxcor="0"></view>
-    <button x="10" y="10" height="40" disableUntilTicks="false" forever="false" kind="Observer" width="55">setup</button>
+    <view x="480" wrappingAllowedX="false" y="10" frameRate="30.0" minPycor="0" height="668" showTickCounter="true" patchSize="13.0" fontSize="10" wrappingAllowedY="false" width="668" tickCounterLabel="ticks" maxPycor="50" updateMode="0" maxPxcor="50" minPxcor="0"></view>
     <button x="70" y="10" height="40" disableUntilTicks="false" forever="false" kind="Observer" width="55" display="step">go</button>
-    <plot x="1045" autoPlotX="true" yMax="10.0" autoPlotY="true" y="10" xMin="0.0" height="175" legend="false" xMax="10.0" yMin="0.0" width="240" display="Fish Population">
+    <button x="130" y="10" height="40" disableUntilTicks="false" forever="true" kind="Observer" width="55">go</button>
+    <button x="190" y="10" height="40" disableUntilTicks="false" forever="false" kind="Observer" width="65">defaults</button>
+    <slider x="245" step="1" y="85" max="500" width="225" display="fish-max-inventory" height="50" min="0" direction="Horizontal" default="100.0" variable="fish-max-inventory"></slider>
+    <slider x="245" step="1" y="250" max="10" width="225" display="villages-population" height="50" min="0" direction="Horizontal" default="1.0" variable="villages-population"></slider>
+    <slider x="245" step="1" y="195" max="10" width="225" display="villages-count" height="50" min="0" direction="Horizontal" default="1.0" variable="villages-count"></slider>
+    <slider x="245" step="1" y="140" max="5000" width="225" display="grain-max-inventory" height="50" min="0" direction="Horizontal" default="1000.0" variable="grain-max-inventory"></slider>
+    <note x="245" y="55" backgroundDark="0" fontSize="12" width="150" markdown="false" height="25" textColorDark="-1" textColorLight="-16777216" backgroundLight="0">Village Parameters</note>
+    <slider x="10" step="1" y="85" max="2000" width="225" display="maximum-energy" height="50" min="0" direction="Horizontal" default="1000.0" variable="maximum-energy"></slider>
+    <slider x="10" step="1" y="690" max="500" width="225" display="grain-max-carry" height="50" min="0" direction="Horizontal" default="250.0" variable="grain-max-carry"></slider>
+    <slider x="10" step="0.1" y="635" max="20" width="225" display="grain-energy-gain" height="50" min="0" direction="Horizontal" default="1.0" variable="grain-energy-gain"></slider>
+    <slider x="10" step="0.1" y="525" max="100" width="225" display="fish-max-carry" height="50" min="0" direction="Horizontal" default="50.0" variable="fish-max-carry"></slider>
+    <slider x="10" step="1" y="580" max="20" width="225" display="fish-net-radius" height="50" min="0" direction="Horizontal" default="15.0" variable="fish-net-radius"></slider>
+    <slider x="10" step="0.1" y="470" max="20" width="225" display="fish-energy-gain" height="50" min="0" direction="Horizontal" default="5.0" variable="fish-energy-gain"></slider>
+    <slider x="10" step="0.01" y="415" max="10" width="225" display="energy-cost-grain-unit" height="50" min="0" direction="Horizontal" default="0.2" variable="energy-cost-grain-unit"></slider>
+    <slider x="10" step="0.01" y="360" max="10" width="225" display="energy-cost-fish-unit" height="50" min="0" direction="Horizontal" default="1.0" variable="energy-cost-fish-unit"></slider>
+    <slider x="10" step="1" y="305" max="100" width="225" display="energy-cost-movement" height="50" min="0" direction="Horizontal" default="2.0" variable="energy-cost-movement"></slider>
+    <slider x="10" step="1" y="250" max="100" width="225" display="energy-cost-tick" height="50" min="0" direction="Horizontal" default="10.0" variable="energy-cost-tick"></slider>
+    <note x="10" y="55" backgroundDark="0" fontSize="12" width="215" markdown="false" height="25" textColorDark="-1" textColorLight="-16777216" backgroundLight="0">Parameters for People</note>
+    <slider x="10" step="1" y="140" max="30" width="225" display="maximum-steps-per-tick" height="50" min="0" direction="Horizontal" default="5.0" variable="maximum-steps-per-tick"></slider>
+    <slider x="10" step="0.05" y="195" max="1" width="225" display="fishing-clock-share" height="50" min="0" direction="Horizontal" default="0.5" variable="fishing-clock-share"></slider>
+    <plot x="1405" autoPlotX="true" yMax="10.0" autoPlotY="true" y="10" xMin="0.0" height="175" legend="false" xMax="10.0" yMin="0.0" width="240" display="My Energy">
+      <setup></setup>
+      <update></update>
+      <pen interval="1.0" mode="0" display="default" color="-16777216" legend="true">
+        <setup></setup>
+        <update>plot mean ([myEnergy] of people)</update>
+      </pen>
+    </plot>
+    <plot x="1160" autoPlotX="true" yMax="10.0" autoPlotY="true" y="10" xMin="0.0" height="175" legend="false" xMax="10.0" yMin="0.0" width="240" display="Fish Population">
       <setup></setup>
       <update></update>
       <pen interval="1.0" mode="0" display="default" color="-16777216" legend="true">
@@ -699,67 +774,63 @@ end]]></code>
         <update>plot count fish</update>
       </pen>
     </plot>
-    <button x="130" y="10" height="40" disableUntilTicks="false" forever="true" kind="Observer" width="55">go</button>
-    <monitor x="1045" precision="17" y="190" height="60" fontSize="11" width="100">count fish</monitor>
-    <note x="10" y="55" backgroundDark="0" fontSize="12" width="170" markdown="false" height="25" textColorDark="-1" textColorLight="-16777216" backgroundLight="0">Environmental Parameters</note>
-    <slider x="10" step="1" y="85" max="500" width="225" display="fish-carrying-capacity-mu" height="50" min="0" direction="Horizontal" default="200.0" variable="fish-carrying-capacity-mu"></slider>
-    <slider x="10" step="0.01" y="145" max="1" width="225" display="fish-carrying-capacity-rng" height="50" min="0" direction="Horizontal" default="0.0" variable="fish-carrying-capacity-rng"></slider>
-    <slider x="10" step="0.01" y="205" max="0.25" width="225" display="fish-growth-rate" height="50" min="0" direction="Horizontal" default="0.1" variable="fish-growth-rate"></slider>
-    <slider x="10" step="0.1" y="260" max="10" width="225" display="fish-tick-move-distance" height="50" min="0" direction="Horizontal" default="2.0" variable="fish-tick-move-distance"></slider>
-    <slider x="10" step="0.1" y="315" max="10" width="225" display="land-yield-mu" height="50" min="0" direction="Horizontal" default="5.0" variable="land-yield-mu"></slider>
-    <slider x="10" step="0.01" y="370" max="1" width="225" display="land-yield-rng" height="50" min="0" direction="Horizontal" default="0.0" variable="land-yield-rng"></slider>
-    <slider x="10" step="1" y="425" max="30" width="225" display="land-yield-maturity-ticks" height="50" min="0" direction="Horizontal" default="10.0" variable="land-yield-maturity-ticks"></slider>
-    <monitor x="1045" precision="17" y="285" height="60" fontSize="11" width="135" display="myJob"><![CDATA[map [ [t] -> [myJob] of t ] sort people]]></monitor>
-    <monitor x="1045" precision="17" y="350" height="60" fontSize="11" width="135" display="myFish"><![CDATA[map [ [t] -> precision ([myFish] of t) 1 ] sort people]]></monitor>
-    <monitor x="1045" precision="17" y="415" height="60" fontSize="11" width="135" display="myGrain"><![CDATA[map [ [t] -> precision ([myGrain] of t) 1 ] sort people]]></monitor>
-    <monitor x="1045" precision="17" y="480" height="60" fontSize="11" width="135" display="myLeisureTicks"><![CDATA[map [ [t] -> [myLeisureTicks] of t ] sort people]]></monitor>
-    <plot x="1185" autoPlotX="true" yMax="10.0" autoPlotY="true" y="285" xMin="0.0" height="255" legend="true" xMax="10.0" yMin="0.0" width="255" display="Village">
+    <plot x="1405" autoPlotX="true" yMax="10.0" autoPlotY="true" y="190" xMin="0.0" height="175" legend="false" xMax="10.0" yMin="0.0" width="240" display="My Fish">
       <setup></setup>
       <update></update>
-      <pen interval="1.0" mode="0" display="ourFish" color="-13345367" legend="true">
+      <pen interval="1.0" mode="0" display="default" color="-16777216" legend="true">
         <setup></setup>
-        <update>plot sum [ourFish] of villages</update>
-      </pen>
-      <pen interval="1.0" mode="0" display="ourGrain" color="-10899396" legend="true">
-        <setup></setup>
-        <update>plot sum [ourGrain] of villages</update>
-      </pen>
-      <pen interval="1.0" mode="0" display="myLeisureTicks" color="-5825686" legend="true">
-        <setup></setup>
-        <update>plot sum [ sum [ myLeisureTicks ] of myPeople ] of villages </update>
-      </pen>
-      <pen interval="1.0" mode="0" display="population" color="-2064490" legend="true">
-        <setup></setup>
-        <update>plot count people</update>
+        <update>plot mean ([myFish] of people)</update>
       </pen>
     </plot>
-    <slider x="10" step="0.01" y="480" max="1" width="225" display="invent-fish-decay-mu" height="50" min="0" direction="Horizontal" default="0.0" variable="invent-fish-decay-mu"></slider>
-    <slider x="10" step="0.01" y="535" max="1" width="225" display="invent-fish-decay-rng" height="50" min="0" direction="Horizontal" default="0.0" variable="invent-fish-decay-rng"></slider>
-    <slider x="10" step="0.01" y="590" max="1" width="225" display="invent-grain-decay-mu" height="50" min="0" direction="Horizontal" default="0.0" variable="invent-grain-decay-mu"></slider>
-    <slider x="10" step="0.01" y="645" max="1" width="225" display="invent-grain-decay-rng" height="50" min="0" direction="Horizontal" default="0.0" variable="invent-grain-decay-rng"></slider>
-    <note x="10" y="720" backgroundDark="0" fontSize="12" width="150" markdown="false" height="25" textColorDark="-1" textColorLight="-16777216" backgroundLight="0">Village Parameters</note>
-    <button x="190" y="10" height="40" disableUntilTicks="false" forever="false" kind="Observer" width="65">defaults</button>
-    <slider x="270" step="1" y="750" max="20" width="225" display="fisher-max-steps" height="50" min="0" direction="Horizontal" default="5.0" variable="fisher-max-steps"></slider>
-    <note x="270" y="720" backgroundDark="0" fontSize="12" width="215" markdown="false" height="25" textColorDark="-1" textColorLight="-16777216" backgroundLight="0">Parameters for Fishing Job</note>
-    <slider x="270" step="1" y="805" max="100" width="225" display="fisher-fish-max-carry" height="50" min="0" direction="Horizontal" default="30.0" variable="fisher-fish-max-carry"></slider>
-    <slider x="270" step="1" y="860" max="500" width="225" display="fisher-grain-max-carry" height="50" min="0" direction="Horizontal" default="100.0" variable="fisher-grain-max-carry"></slider>
-    <slider x="730" step="1" y="750" max="20" width="225" display="fisher-fish-net-radius-mu" height="50" min="0" direction="Horizontal" default="10.0" variable="fisher-fish-net-radius-mu"></slider>
-    <slider x="730" step="0.01" y="805" max="1" width="225" display="fisher-fish-net-radius-rng" height="50" min="0" direction="Horizontal" default="0.0" variable="fisher-fish-net-radius-rng"></slider>
-    <slider x="730" step="0.01" y="860" max="2" width="225" display="fisher-fish-take-step-cost-mu" height="50" min="0" direction="Horizontal" default="0.33" variable="fisher-fish-take-step-cost-mu"></slider>
-    <slider x="730" step="0.01" y="915" max="1" width="225" display="fisher-fish-take-step-cost-rng" height="50" min="0" direction="Horizontal" default="0.0" variable="fisher-fish-take-step-cost-rng"></slider>
-    <slider x="270" step="1" y="915" max="50" width="225" display="fisher-min-rest-ticks" height="50" min="0" direction="Horizontal" default="18.0" variable="fisher-min-rest-ticks"></slider>
-    <slider x="500" step="0.01" y="915" max="1" width="225" display="fisher-grain-step-cost-rng" height="50" min="0" direction="Horizontal" default="0.0" variable="fisher-grain-step-cost-rng"></slider>
-    <slider x="500" step="0.01" y="860" max="2" width="225" display="fisher-grain-step-cost-mu" height="50" min="0" direction="Horizontal" default="0.67" variable="fisher-grain-step-cost-mu"></slider>
-    <slider x="500" step="0.1" y="750" max="10" width="225" display="fisher-fish-step-eat" height="50" min="0" direction="Horizontal" default="1.0" variable="fisher-fish-step-eat"></slider>
-    <slider x="500" step="0.1" y="805" max="50" width="225" display="fisher-grain-step-eat" height="50" min="0" direction="Horizontal" default="5.0" variable="fisher-grain-step-eat"></slider>
-    <monitor x="1150" precision="17" y="190" height="60" fontSize="11" width="100">clock</monitor>
-    <monitor x="1255" precision="17" y="190" height="60" fontSize="11" width="135" display="people in villages">getPeopleAtHomeList</monitor>
-    <monitor x="1045" precision="17" y="545" height="60" fontSize="11" width="135" display="myEnergy"><![CDATA[map [ [t] -> [myEnergy] of t ] sort people]]></monitor>
-    <monitor x="1045" precision="17" y="610" height="60" fontSize="11" width="135" display="goHome"><![CDATA[map [ [t] -> [goHome] of t ] sort people]]></monitor>
-    <monitor x="1045" precision="17" y="675" height="60" fontSize="11" width="135" display="myJobTime"><![CDATA[map [ [t] -> [myJobTime] of t ] sort people]]></monitor>
-    <monitor x="1045" precision="1" y="740" height="60" fontSize="11" width="135" display="timeToVillage"><![CDATA[map [ [t] -> (precision ([time-to-village self] of t) 2 ) ] sort people]]></monitor>
-    <monitor x="1215" precision="1" y="675" height="60" fontSize="11" width="135" display="ourFish"><![CDATA[map [ [t] -> [ourFish] of t ] sort villages]]></monitor>
-    <monitor x="1215" precision="1" y="740" height="60" fontSize="11" width="135" display="ourGrain"><![CDATA[map [ [t] -> [ourGrain] of t ] sort villages]]></monitor>
+    <monitor x="1160" precision="17" y="370" height="60" fontSize="11" width="135" display="myJob"><![CDATA[map [ [t] -> [myJob] of t ] sort people]]></monitor>
+    <monitor x="1160" precision="17" y="435" height="60" fontSize="11" width="135" display="myJobTime"><![CDATA[map [ [t] -> [myJobTime] of t ] sort people]]></monitor>
+    <plot x="1160" autoPlotX="true" yMax="10.0" autoPlotY="true" y="190" xMin="0.0" height="175" legend="false" xMax="10.0" yMin="0.0" width="240" display="My Grain">
+      <setup></setup>
+      <update></update>
+      <pen interval="1.0" mode="0" display="default" color="-16777216" legend="true">
+        <setup></setup>
+        <update>plot mean ([myGrain] of people)</update>
+      </pen>
+    </plot>
+    <plot x="1160" autoPlotX="true" yMax="10.0" autoPlotY="true" y="500" xMin="0.0" height="175" legend="false" xMax="10.0" yMin="0.0" width="240" display="Our Grain">
+      <setup></setup>
+      <update></update>
+      <pen interval="1.0" mode="0" display="default" color="-16777216" legend="true">
+        <setup></setup>
+        <update>plot mean ([ourGrain] of villages)</update>
+      </pen>
+    </plot>
+    <plot x="1405" autoPlotX="true" yMax="10.0" autoPlotY="true" y="500" xMin="0.0" height="175" legend="false" xMax="10.0" yMin="0.0" width="240" display="Our Fish">
+      <setup></setup>
+      <update></update>
+      <pen interval="1.0" mode="0" display="default" color="-16777216" legend="true">
+        <setup></setup>
+        <update>plot mean ([ourFish] of villages)</update>
+      </pen>
+    </plot>
+    <slider x="245" step="1" y="360" max="500" width="225" display="fish-carrying-capacity-mu" height="50" min="0" direction="Horizontal" default="200.0" variable="fish-carrying-capacity-mu"></slider>
+    <note x="245" y="330" backgroundDark="0" fontSize="12" width="170" markdown="false" height="25" textColorDark="-1" textColorLight="-16777216" backgroundLight="0">Environmental Parameters</note>
+    <slider x="245" step="0.01" y="415" max="1" width="225" display="fish-carrying-capacity-rng" height="50" min="0" direction="Horizontal" default="0.0" variable="fish-carrying-capacity-rng"></slider>
+    <slider x="245" step="0.01" y="470" max="0.25" width="225" display="fish-growth-rate" height="50" min="0" direction="Horizontal" default="0.1" variable="fish-growth-rate"></slider>
+    <slider x="245" step="0.1" y="525" max="10" width="225" display="fish-tick-move-distance" height="50" min="0" direction="Horizontal" default="2.0" variable="fish-tick-move-distance"></slider>
+    <slider x="245" step="0.1" y="580" max="10" width="225" display="land-yield-mu" height="50" min="0" direction="Horizontal" default="5.0" variable="land-yield-mu"></slider>
+    <slider x="245" step="0.01" y="635" max="1" width="225" display="land-yield-rng" height="50" min="0" direction="Horizontal" default="0.0" variable="land-yield-rng"></slider>
+    <slider x="245" step="1" y="690" max="30" width="225" display="land-yield-maturity-ticks" height="50" min="0" direction="Horizontal" default="10.0" variable="land-yield-maturity-ticks"></slider>
+    <slider x="475" step="0.01" y="690" max="1" width="225" display="invent-fish-decay-mu" height="50" min="0" direction="Horizontal" default="0.0" variable="invent-fish-decay-mu"></slider>
+    <slider x="705" step="0.01" y="690" max="1" width="225" display="invent-fish-decay-rng" height="50" min="0" direction="Horizontal" default="0.0" variable="invent-fish-decay-rng"></slider>
+    <slider x="935" step="0.01" y="690" max="1" width="225" display="invent-grain-decay-mu" height="50" min="0" direction="Horizontal" default="0.0" variable="invent-grain-decay-mu"></slider>
+    <slider x="1165" step="0.01" y="690" max="1" width="225" display="invent-grain-decay-rng" height="50" min="0" direction="Horizontal" default="0.0" variable="invent-grain-decay-rng"></slider>
+    <monitor x="1300" precision="17" y="435" height="60" fontSize="11" width="100">clock</monitor>
+    <monitor x="1300" precision="17" y="370" height="60" fontSize="11" width="100" display="people in villages">getPeopleAtHomeList</monitor>
+    <button x="10" y="10" height="40" disableUntilTicks="false" forever="false" kind="Observer" width="55">setup</button>
+    <plot x="1405" autoPlotX="true" yMax="10.0" autoPlotY="true" y="370" xMin="0.0" height="125" legend="false" xMax="100.0" yMin="0.0" width="240" display="Secret Fish Count">
+      <setup></setup>
+      <update></update>
+      <pen interval="1.0" mode="1" display="default" color="-16777216" legend="true">
+        <setup></setup>
+        <update>plot mean ([myFish] of people)</update>
+      </pen>
+    </plot>
   </widgets>
   <info>## WHAT IS IT?
 

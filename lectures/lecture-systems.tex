@@ -245,3 +245,58 @@
 		\item Such careful thinking - looking at the trees - can illuminate features of the system that are not obvious when only looking at the forest.
 	\end{itemize}
 \end{frame}
+
+\begin{frame}{Termites and Wood Chips}
+	\begin{columns}[T]
+		\begin{column}{0.4\textwidth}
+	\begin{itemize}
+	\item Termites
+	\begin{enumerate}
+		\item Move randomly around landscape. Can carry one wood chip.
+		\item If not carrying, encounter a wood chip, pick it up.
+		\item If carrying, encounter a wood chip, put carried chip down in adjacent empty spot.
+	\end{enumerate}
+	\item Environment initialized with random distribution of termites and wood chips.
+	\item Each time step, termites move one space on landscape.
+	\item Implemented in NetLogo (https://www.netlogo.org/)
+\end{itemize}
+		\end{column}
+		\begin{column}{0.6\textwidth}
+			\centering
+			\includegraphics[width=\textwidth]{NetLogoTermites.png}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Traffic}
+	\begin{columns}[T]
+		\begin{column}{0.4\textwidth}
+			\begin{itemize}
+				\item Cars
+				\begin{enumerate}
+					\item Accelerate if space ahead, until speed limit.
+					\item If car ahead, slow to a bit less than speed of car ahead.
+				\end{enumerate}
+				\item Environment a linear one lane road.
+				\item Each time step, cars move forward, adjusting speed based on other cars.
+				\item Implemented in NetLogo (https://www.netlogo.org/)
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.6\textwidth}
+			\centering
+			\includegraphics[width=\textwidth]{NetLogoTraffic.png}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Summary}
+	\begin{itemize}
+		\item A system is a collection of connected elements.
+		\item We inhabit a complex, adaptive social ecological system.
+		\item How a system is analyzed depends on a chosen boundary, spatial and temporal scale.
+		\item System models used in economics often focus on elements connected by financial flows.
+		\item Economic system models can be coupled with the natural system to explore economy environment relationships.
+		\item Careful, detailed description of the elements of a system and their relationships can clarify system dynamics.
+		\item Tools such as agent based models can reveal emergent properties of systems that do not obviously follow from characteristics of agents and their relationships.
+	\end{itemize}
+\end{frame}
