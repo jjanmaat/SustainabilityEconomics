@@ -449,7 +449,7 @@
 \end{frame}
 
 \mode<article>{
-	When the production functions were described above, some aspects relevant to sustainability were illustrate that do not show up here.  For fishing, if harvesting reduces the fish stock, then the production function slope becomes flatter.  It will take more effort, more days spent fishing, to fill up the fish basket.  This shows up in the PPF as a rotation inward around the intercept with the Grain axis.  The decline in the fish stock does not affect the amount of grain that can be gathered, if all the effort is devoted to gathering grain.  However, the amount of grain production that is given up to harvest another fish increases.
+	When the production functions were described above, some aspects relevant to sustainability were illustrate that do not show up here.  For fishing, if harvesting reduces the fish stock, then the production function slope becomes steeper.  It will take more effort, more days spent fishing, to fill up the fish basket.  When all the effort is devoted to fishing, the catch will be lower on account of the lower stock.  The fish axis intercept for the PPF has shifted inward.  The decline in the fish stock does not affect the amount of grain that can be gathered, if all the effort is devoted to gathering grain.  Therefore, the intercept of the PPF with the grain axis is unchanged.  However, the effort that is made availeble for fishing when the grain bucket is full is less effective with a smaller stock.  This effort 'buys' less fish, and therefore the PPF bends down at a lower fish harvest level when the fish scok is less.  
 	
 	When the grain available in patches near the village is depleted, more effort must be spent on travel.  This reduces the total effort available for both activities, if we start from the same premise where we only examine how to reallocate effort after enough food is devoted to enabling both the fish harvester and the grain gatherer to travel to and from their respective activity locations.  The PPF shifts left, lowering the intersection with the Grain axis.  Since the total effort to divide is reduced, there is no longer enough effort to fill the fish basket, even when all the effort is put toward fishing.
 }
@@ -460,25 +460,25 @@
 		\coordinate (ListBase) at (6.5,6);
 		% Left figure
 		\draw [-] (6,0) to node [below, sloped] {Fish} (0,0) to node [above, sloped] {Grain} (0,6);
-		\draw [-,thick,gray] (5,0) to (5,0.5) to (4.5,1) to node [left, right, yshift=4pt] {$S_1$} (0,3.25) {};
-		\draw [-,thick] (4.25,0) to node [left, below left, yshift=5pt] {$S_2$} (3.75,0.75) to (0,3.25) {};
-		\draw [-,dashed] (0,1) to (6,1) {};
-		\node [align=center] at (5.5,0.5) {First \\ cast};
-		\node [anchor=north west, text width=0.35\textwidth] at ([xshift=-5.5cm]ListBase) {
+		\draw [-,thick,gray] (0,5) to (0.5,5) to (1,4.5) to node [left, right, yshift=4pt] {$S_1$} (3.25,0) {};
+		\draw [-,thick] (0,5) to (0.35,5) to (0.85,4.25) to node [left, below left, yshift=5pt, near end] {$S_2$} (2,0) {};
+		\draw [-,dashed] (1,0) to (1,6) {};
+		\node [align=center] at (0.5,5.5) {First \\ cast};
+		\node [anchor=north west, text width=0.35\textwidth] at ([xshift=-4.5cm]ListBase) {
 			\begin{itemize}
-				\item Stock decrease, $S_2 < S_1$
-				\item PPF rotates inward as fishing effort less effective.
+				\item Stock decrease, \\ $S_2 < S_1$
+				\item PPF rotates inward \\ as fishing effort less \\ effective.
 			\end{itemize}
 		};
 		% Right figure, more travel for grain harvest
 		\draw [-] (13,0) to node [below, sloped] {Fish} (7,0) to node [above, sloped] {Grain} (7,6);
-		\draw [-,thick,gray] (12,0) to (12,0.5) to (11.5,1) to node [above, sloped] {grain near village} (7,3.25) {};
-		\draw [-,thick] (11.5,0) to (10.5,1) to node [below, sloped] {near village deleted} (7,2.75) {};
-		\draw [-,dashed] (7,1) to (13,1) {};
-		\node [align=center] at (12.5,0.5) {First \\ cast};
-		\node [anchor=north west, text width=0.35\textwidth] at ([xshift=1cm]ListBase) {
+		\draw [-,thick,gray] (7,5) to (7.5,5) to (8,4.5) to node [above, sloped] {grain near village} (10.25,0) {};
+		\draw [-,thick] (7,4.5) to (8,3.5) to node [below, sloped] {near village deleted} (9.75,0) {};
+		\draw [-,dashed] (8,0) to (8,6) {};
+		\node [align=center] at (7.5,5.5) {First \\ cast};
+		\node [anchor=north west, text width=0.35\textwidth] at ([xshift=2.5cm]ListBase) {
 			\begin{itemize}
-				\item More effort needed to get to patches with grain.
+				\item More effort needed to get \\ to patches with grain.
 				\item PPF shifts left as more effort needed for grain harvester travel.
 			\end{itemize}
 		};
@@ -497,7 +497,7 @@
 				\item Lifespans $L_1$ and $L_2$ are attainable.
 				\begin{itemize}
 					\item At \textbf{b} attain $L_1$.
-					\item At \textbf{a} attain $L_2$.
+					\item At \textbf{a} attain $L^*$.
 					\item Same effort level.
 				\end{itemize}
 				\item Lifespans $L_3$, $L_4$ and $L_5$ are not attainable.
@@ -506,26 +506,28 @@
 		\begin{column}{0.7\textwidth}
 			\centering
 			\begin{tikzpicture}
+				% Indifference curves
+				\draw [-, dashed] (0,0) to (3,6) {};
+				\draw [-] (6,1) node [right, above left] {$L_1$} to (0.5,1) to (0.5,6);
+				\draw [-] (6,2) node [right, above left] {$L_2$} to (1,2) to (1,6);
+				\draw [-, thick] (6,2.5) node [right, above left] {$L^*$} to (1.25,2.5) to (1.25,6);
+				\draw [-, thick, gray!35] (6,3) node [right, above left] {$L_3$} to (1.5,3) to (1.5,6);
+				\draw [-, thick, gray!35] (6,4) node [right, above left] {$L_4$} to (2,4) to (2,6);
+				\draw [-, thick, gray!35] (6,5) node [right, above left] {$L_5$} to (2.5,5) to (2.5,6);
+				\node [below right, xshift=2pt] at (1.25,2.5) {a}; 
+				\node [below left, xshift=-3pt] at (2.25,1) {b};
+				
 				% Axes for plot
 				\draw [-] (6,0) to node [below, sloped] {Fish} (0,0) to node [above, sloped] {Grain} (0,6);
 				% \draw [-,thick] (3,0) to (2,1) to (0,2) node [left, right, yshift=2pt] {$E_2$};
-				\draw [-,thick] (4,0) to (3,1) to (0,2.5) node [left, right, yshift=2pt] {};
-				% \draw [-,thick] (5,0) to (5,0.5) to (4.5,1) to (0,3.25) node [left, right, yshift=2pt] {$E_4$};
+				\draw [-,thick] (0,4) to (1,3) to (2.5,0) node [left, right, yshift=2pt] {};
+				% \draw [-,thick] (0,5) to (0.5,5) to (1,4.5) to (3.25,0) node [left, right, yshift=2pt] {$E_4$};
 				% \draw [-,thick] (5,0) to node [above right, sloped] {Basket full} (5,4) to (3,5) to 
 				% node [right, above, sloped] {Bucket full}(0,5) node [left, below right] {$E_5$};
 				% \draw [-,dashed] (0,1) to (6,1) {};
 				% \draw [-,thick] (0,0) node [above right] {$E_1$} to (0,0) {};
 				% \node [align=center] at (5.5,0.5) {First \\ cast};
 				
-				% Indifference curves
-				\draw [-, dashed] (0,0) to (3,6) {};
-				\draw [-, thick] (6,1) node [right, above left] {$L_1$} to (0.5,1) to (0.5,6);
-				\draw [-, thick] (6,2) node [right, above left] {$L_2$} to (1,2) to (1,6);
-				\draw [-, thick, gray!35] (6,3) node [right, above left] {$L_3$} to (1.5,3) to (1.5,6);
-				\draw [-, thick, gray!35] (6,4) node [right, above left] {$L_4$} to (2,4) to (2,6);
-				\draw [-, thick, gray!35] (6,5) node [right, above left] {$L_5$} to (2.5,5) to (2.5,6);
-				\node [below, xshift=2pt] at (1,2) {a}; 
-				\node [below] at (3,1) {b};
 			\end{tikzpicture}
 		\end{column}
 	\end{columns}
@@ -726,6 +728,116 @@
 		\item The hermit needs fish to match with grain, in order to get more energy.
 		\item What risk attitude (risk preference) is the hermit likely to have?
 		\item How will the hermit's risk preference likely affect the amount of effort applied to fishing?
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Risk and Sustainability}
+	\begin{columns}[T]
+		\begin{column}{0.3\textwidth}
+			\begin{itemize}
+				\item $E(PPF)$ expected combinations of fish and grain.
+				\item Effort with expected lifespan $L^*$ gives actual fish harvests of $F_L$ or $F_H$.
+				\item Effort with expected lifespan $L^2$ gives actual fish harvests of $\tilde{F}_L$ or $\tilde{F}_H$.
+				\begin{itemize}
+					\item Attains $L_1$ for both harvest realizations..
+				\end{itemize}
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.7\textwidth}
+			\centering
+			\begin{tikzpicture}
+				% Indifference curves
+				\draw [-, dashed] (0,0) to (3,6) {};
+				\draw [-] (6,1) node [right, above left] {$L_1$} to (0.5,1) to (0.5,6);
+				\draw [-, thick] (6,2) node [right, above left] {$L_2$} to (1,2) to (1,6);
+				\draw [-, thick, dashed] (6,2.5) node [right, above left] {$L^*$} to (1.25,2.5) to (1.25,6);
+				% \draw [-, thick, gray!35] (6,3) node [right, above left] {$L_3$} to (1.5,3) to (1.5,6);
+				% \draw [-, thick, gray!35] (6,4) node [right, above left] {$L_4$} to (2,4) to (2,6);
+				% \draw [-, thick, gray!35] (6,5) node [right, above left] {$L_5$} to (2.5,5) to (2.5,6);
+				% \node [below right, xshift=2pt] at (1.25,2.5) {a}; 
+				% \node [below left, xshift=-3pt] at (2.25,1) {b};
+				
+				% Axes for plot
+				\draw [-] (6,0) to node [below, sloped] {Fish} (0,0) to node [above, sloped] {Grain} (0,6);
+				% \draw [-,thick] (3,0) to (2,1) to (0,2) node [left, right, yshift=2pt] {$E_2$};
+				\draw [-,thick, dotted] (0,4) to (1,3) to (2.5,0) node [above right] {$E(PPF)$};
+				% \draw [-,thick] (0,4) to (1,2.5) to (1.825,0) node [above right] {};
+				% \draw [-, thin] (1.5,0) to (1.5,6);
+				% Points at effort chosen when no risk
+				\filldraw [black] (0.25,2.5) circle (2pt) node [above] {$F_L$};
+				\filldraw [black] (2.25,2.5) circle (2pt) node [above] {$F_H$};
+				% Points at effort chosen to survive when there is risk
+				\filldraw [black] (0.5,2.0) circle (2pt) node [below] {$\tilde{F}_L$};
+				\filldraw [black] (2.5,2.0) circle (2pt) node [below] {$\tilde{F}_H$};
+				% \draw [-,thick] (0,5) to (0.5,5) to (1,4.5) to (3.25,0) node [left, right, yshift=2pt] {$E_4$};
+				% \draw [-,thick] (5,0) to node [above right, sloped] {Basket full} (5,4) to (3,5) to 
+				% node [right, above, sloped] {Bucket full}(0,5) node [left, below right] {$E_5$};
+				% \draw [-,dashed] (0,1) to (6,1) {};
+				% \draw [-,thick] (0,0) node [above right] {$E_1$} to (0,0) {};
+				% \node [align=center] at (5.5,0.5) {First \\ cast};
+				
+			\end{tikzpicture}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Risk and Sustainability}
+	\begin{columns}[T]
+		\begin{column}{0.3\textwidth}
+			\begin{itemize}
+				\item Increased effort reduces fish stock, rotating $E(PPF)$ inward.
+				\item Inward rotation .
+				\item Effort with expected lifespan $L^2$ gives actual fish harvests of $\tilde{F}_L$ or $\tilde{F}_H$.
+				\begin{itemize}
+					\item Attains $L_1$ for both harvest realizations..
+				\end{itemize}
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.7\textwidth}
+			\centering
+			\begin{tikzpicture}
+				% Indifference curves
+				\draw [-, dashed] (0,0) to (3,6) {};
+				\draw [-] (6,1) node [right, above left] {$L_1$} to (0.5,1) to (0.5,6);
+				\draw [-, thick, dashed] (6,2) node [right, above left] {$L_2$} to (1,2) to (1,6);
+				\draw [-, thick, dashed, gray!35] (6,2.5) node [right, above left] {$L^*$} to (1.25,2.5) to (1.25,6);
+				% \draw [-, thick, gray!35] (6,3) node [right, above left] {$L_3$} to (1.5,3) to (1.5,6);
+				% \draw [-, thick, gray!35] (6,4) node [right, above left] {$L_4$} to (2,4) to (2,6);
+				% \draw [-, thick, gray!35] (6,5) node [right, above left] {$L_5$} to (2.5,5) to (2.5,6);
+				% \node [below right, xshift=2pt] at (1.25,2.5) {a}; 
+				% \node [below left, xshift=-3pt] at (2.25,1) {b};
+				
+				% Axes for plot
+				\draw [-] (6,0) to node [below, sloped] {Fish} (0,0) to node [above, sloped] {Grain} (0,6);
+				% \draw [-,thick] (3,0) to (2,1) to (0,2) node [left, right, yshift=2pt] {$E_2$};
+				\draw [-,thick, dotted, gray!35] (0,4) to (1,3) to (2.5,0) node [above right] {};
+				\draw [-,thick, dotted] (0,4) to (1,2.5) to (1.825,0) node [above right] {$E(PPF)$};
+				% \draw [-, thin] (1.5,0) to (1.5,6);
+				% Points at effort chosen when no risk
+				\filldraw [gray!35] (0.25,2.5) circle (2pt) node [above] {};
+				\filldraw [gray!35] (2.25,2.5) circle (2pt) node [above] {};
+				% Points at effort chosen to survive when there is risk
+				\filldraw [black] (0.5,2.0) circle (2pt) node [below] {};
+				\filldraw [black] (2.5,2.0) circle (2pt) node [below] {};
+				% Points after stock decline rotates PPF inward
+				\filldraw [black] (0.5,1.0) circle (2pt) node [above left,xshift=2pt] {$\underline{F}_L$};
+				\filldraw [black] (2.5,1.0) circle (2pt) node [above] {$\underline{F}_H$};
+				% \draw [-,thick] (0,5) to (0.5,5) to (1,4.5) to (3.25,0) node [left, right, yshift=2pt] {$E_4$};
+				% \draw [-,thick] (5,0) to node [above right, sloped] {Basket full} (5,4) to (3,5) to 
+				% node [right, above, sloped] {Bucket full}(0,5) node [left, below right] {$E_5$};
+				% \draw [-,dashed] (0,1) to (6,1) {};
+				% \draw [-,thick] (0,0) node [above right] {$E_1$} to (0,0) {};
+				% \node [align=center] at (5.5,0.5) {First \\ cast};
+				
+			\end{tikzpicture}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+
+\begin{frame}{Risk and Sustainability}
+	\begin{itemize}
+		\item 
 	\end{itemize}
 \end{frame}
 
