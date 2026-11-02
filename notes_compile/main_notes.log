@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.28 (TeX Live 2025/Debian) (preloaded format=pdflatex 2026.10.9)  29 OCT 2026 18:27
+This is pdfTeX, Version 3.141592653-2.6-1.40.28 (TeX Live 2025/Debian) (preloaded format=pdflatex 2026.10.9)  1 NOV 2026 22:21
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -875,10 +875,13 @@ Package: trimspaces 2009/09/17 v1.1 Trim spaces around a token list
 \tcb@temp=\box96
 \tcb@temp=\box97
 \tcb@temp=\box98
-))
+)
+Package hyperref Info: Option `colorlinks' set `true' on input line 22.
+\c@articleslide=\count355
+)
 (/usr/share/texlive/texmf-dist/tex/latex/l3backend/l3backend-pdftex.def
 File: l3backend-pdftex.def 2025-10-09 L3 backend support: PDF output (pdfTeX)
-\l__color_backend_stack_int=\count355
+\l__color_backend_stack_int=\count356
 )
 (./main_notes.aux)
 \openout1 = `main_notes.aux'.
@@ -904,16 +907,16 @@ LaTeX Font Info:    ... okay on input line 23.
 
 (/usr/share/texlive/texmf-dist/tex/context/base/mkii/supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
-\scratchcounter=\count356
+\scratchcounter=\count357
 \scratchdimen=\dimen310
 \scratchbox=\box99
-\nofMPsegments=\count357
-\nofMParguments=\count358
+\nofMPsegments=\count358
+\nofMParguments=\count359
 \everyMPshowfont=\toks51
-\MPscratchCnt=\count359
+\MPscratchCnt=\count360
 \MPscratchDim=\dimen311
-\MPnumerator=\count360
-\makeMPintoPDFobject=\count361
+\MPnumerator=\count361
+\makeMPintoPDFobject=\count362
 \everyMPtoPDFconversion=\toks52
 ) (/usr/share/texlive/texmf-dist/tex/latex/epstopdf-pkg/epstopdf-base.sty
 Package: epstopdf-base 2020-01-24 v2.11 Base part for package epstopdf
@@ -982,7 +985,7 @@ Dictionary: translator-theorem-dictionary, Language: English
 * \@reversemarginfalse
 * (1in=72.27pt=25.4mm, 1cm=28.453pt)
 
-Package hyperref Info: Link coloring OFF on input line 23.
+Package hyperref Info: Link coloring ON on input line 23.
 (./main_notes.out) (./main_notes.out)
 \@outlinefile=\write4
 \openout4 = `main_notes.out'.
@@ -1023,7 +1026,7 @@ File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 ] [2]
 Chapter 1.
 (../lectures/lecture-introduction.tex
-<../lectures/images/SESgraphic.png, id=112, 304.13625pt x 304.13625pt>
+<../lectures/images/SESgraphic.png, id=117, 304.13625pt x 304.13625pt>
 File: ../lectures/images/SESgraphic.png Graphic file (type png)
 <use ../lectures/images/SESgraphic.png>
 Package pdftex.def Info: ../lectures/images/SESgraphic.png  used on input line 
@@ -1035,6 +1038,16 @@ Underfull \vbox (badness 10000) has occurred while \output is active []
  [3
 
 ]
+Overfull \hbox (4.86665pt too wide) in paragraph at lines 70--70
+ []  []
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 70--70
+
+ []
+
+
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
  [4 <../lectures/images/SESgraphic.png>]) [5] [6
@@ -1054,32 +1067,199 @@ Underfull \vbox (badness 10000) has occurred while \output is active []
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
  [8]
+Underfull \hbox (badness 6412) in paragraph at lines 100--100
+\OT1/cmr/m/n/10.95 tors of pro-duc-tion,
+ []
+
+
+Underfull \hbox (badness 1552) in paragraph at lines 100--100
+\OT1/cmr/m/n/10.95 sell (ser-vices of) to
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 100--100
+[]\OT1/cmr/m/n/10.95 Households re-ceive
+ []
+
+
+Underfull \hbox (badness 2277) in paragraph at lines 100--100
+\OT1/cmr/m/n/10.95 pay-ments for pro-vi-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 100--100
+[]\OT1/cmr/m/n/10.95 Households buy
+ []
+
+
+Underfull \hbox (badness 7558) in paragraph at lines 100--100
+\OT1/cmr/m/n/10.95 goods and ser-vices
+ []
+
+
+Underfull \hbox (badness 3199) in paragraph at lines 100--100
+[]\OT1/cmr/m/n/10.95 Households ex-pen-di-
+ []
+
+
+Overfull \hbox (4.86665pt too wide) in paragraph at lines 100--100
+ []  []
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 100--100
+
+ []
+
+
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
  [9]
-[10] [11] [12]
-<../lectures/images/NetLogoTermites.png, id=162, 907.39pt x 777.90625pt>
+Underfull \hbox (badness 10000) in paragraph at lines 147--147
+[]\OT1/cmr/m/n/10.95 Firms (and house-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 147--147
+[]\OT1/cmr/m/n/10.95 What would make
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 147--147
+[]\OT1/cmr/m/n/10.95 Sustainable if all
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 147--147
+\OT1/cmr/m/n/10.95 waste as-sim-i-lated
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 147--147
+\OT1/cmr/m/n/10.95 into nat-u-ral re-
+ []
+
+
+Overfull \hbox (4.86665pt too wide) in paragraph at lines 147--147
+ []  []
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 147--147
+
+ []
+
+
+Underfull \vbox (badness 1077) has occurred while \output is active []
+
+ [10]
+Underfull \hbox (badness 10000) in paragraph at lines 194--194
+[]\OT1/cmr/m/n/10.95 The nat-u-ral en-vi-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 194--194
+\OT1/cmr/m/n/10.95 ron-ment pro-vides
+ []
+
+
+Underfull \hbox (badness 1533) in paragraph at lines 194--194
+\OT1/cmr/m/n/10.95 re-sources needed by
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 194--194
+\OT1/cmr/m/n/10.95 ment sup-ports the
+ []
+
+
+Underfull \hbox (badness 2213) in paragraph at lines 194--194
+\OT1/cmr/m/n/10.95 able if the flow of
+ []
+
+
+Overfull \hbox (4.86665pt too wide) in paragraph at lines 194--194
+ []  []
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 194--194
+
+ []
+
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+ [11]
+[12]
+Underfull \hbox (badness 3746) in paragraph at lines 269--269
+[]\OT1/cmr/m/n/10.95 Move ran-domly around
+ []
+
+
+Underfull \hbox (badness 1803) in paragraph at lines 269--269
+\OT1/cmr/m/n/10.95 wood chip, put car-ried
+ []
+
+
+Underfull \hbox (badness 3954) in paragraph at lines 269--269
+\OT1/cmr/m/n/10.95 chip down in ad-ja-cent
+ []
+
+
+Underfull \hbox (badness 2478) in paragraph at lines 269--269
+[]\OT1/cmr/m/n/10.95 Environment ini-tial-ized with
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 269--269
+[]\OT1/cmr/m/n/10.95 Implemented in Net-L-ogo
+ []
+
+<../lectures/images/NetLogoTermites.png, id=176, 907.39pt x 777.90625pt>
 File: ../lectures/images/NetLogoTermites.png Graphic file (type png)
 <use ../lectures/images/NetLogoTermites.png>
 Package pdftex.def Info: ../lectures/images/NetLogoTermites.png  used on input 
 line 269.
-(pdftex.def)             Requested size: 438.45708pt x 375.88342pt.
+(pdftex.def)             Requested size: 263.07692pt x 225.52768pt.
+
+Overfull \hbox (4.86665pt too wide) in paragraph at lines 269--269
+ []  []
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 269--269
+
+ []
+
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
  [13]
-<../lectures/images/NetLogoTraffic.png, id=172, 918.43124pt x 761.84625pt>
+Underfull \hbox (badness 10000) in paragraph at lines 290--290
+[]\OT1/cmr/m/n/10.95 Implemented in Net-L-ogo
+ []
+
+<../lectures/images/NetLogoTraffic.png, id=188, 918.43124pt x 761.84625pt>
 File: ../lectures/images/NetLogoTraffic.png Graphic file (type png)
 <use ../lectures/images/NetLogoTraffic.png>
 Package pdftex.def Info: ../lectures/images/NetLogoTraffic.png  used on input l
 ine 290.
-(pdftex.def)             Requested size: 438.45708pt x 363.70583pt.
+(pdftex.def)             Requested size: 263.07692pt x 218.22116pt.
 
-Underfull \vbox (badness 10000) has occurred while \output is active []
+Overfull \hbox (4.86665pt too wide) in paragraph at lines 290--290
+ []  []
+ []
 
- [14 <../lectures/images/NetLogoTermites.png>]
-Underfull \vbox (badness 10000) has occurred while \output is active []
 
- [15 <../lectures/images/NetLogoTraffic.png>]) [16] [17
+Underfull \hbox (badness 10000) in paragraph at lines 290--290
 
-] [18]
+ []
+
+[14 <../lectures/images/NetLogoTermites.png> <../lectures/images/NetLogoTraffic
+.png>]) [15] [16
+
+] [17] [18]
 Chapter 3.
 (../lectures/lecture-SES-FishPond.tex [19
 
@@ -1090,7 +1270,7 @@ PopGenFishbowl/PopGenFishbowl.html
  []
 
 [20]
-<../lectures/images/NetLogoFishPond1.png, id=209, 1595.9625pt x 852.18375pt>
+<../lectures/images/NetLogoFishPond1.png, id=230, 1595.9625pt x 852.18375pt>
 File: ../lectures/images/NetLogoFishPond1.png Graphic file (type png)
 <use ../lectures/images/NetLogoFishPond1.png>
 Package pdftex.def Info: ../lectures/images/NetLogoFishPond1.png  used on input
@@ -1103,7 +1283,7 @@ Underfull \vbox (badness 10000) has occurred while \output is active []
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
  [22 <../lectures/images/NetLogoFishPond1.png>]
-<../lectures/images/NetLogoFishPond2.png, id=219, 1595.9625pt x 852.18375pt>
+<../lectures/images/NetLogoFishPond2.png, id=244, 1595.9625pt x 852.18375pt>
 File: ../lectures/images/NetLogoFishPond2.png Graphic file (type png)
 <use ../lectures/images/NetLogoFishPond2.png>
 Package pdftex.def Info: ../lectures/images/NetLogoFishPond2.png  used on input
@@ -1125,67 +1305,320 @@ Underfull \vbox (badness 10000) has occurred while \output is active []
 Chapter 4.
 (../lectures/lecture-SES-Hermit.tex [31
 
-] [32]
-Underfull \vbox (badness 10000) has occurred while \output is active []
+]
+Underfull \hbox (badness 1152) in paragraph at lines 87--87
+[]\OT1/cmr/m/n/10.95 Carbohydrates, fat and pro-
+ []
 
- [33]
+
+Overfull \hbox (4.86665pt too wide) in paragraph at lines 87--87
+ []  []
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 87--87
+
+ []
+
+[32] [33]
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
  [34]
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
  [35]
+[36] [37]
+Underfull \hbox (badness 2237) in paragraph at lines 397--397
+[]\OT1/cmr/m/n/10.95 At $\OML/cmm/m/it/10.95 E[]$\OT1/cmr/m/n/10.95 , most ef-f
+ort
+ []
+
+
+Overfull \hbox (4.86665pt too wide) in paragraph at lines 397--397
+ []  []
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 397--397
+
+ []
+
+[38]
+Underfull \hbox (badness 1803) in paragraph at lines 449--449
+\OT1/cmr/m/n/10.95 for no re-duc-tion in
+ []
+
+
+Overfull \hbox (4.86665pt too wide) in paragraph at lines 449--449
+ []  []
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 449--449
+
+ []
+
+[39]
+Overfull \hbox (4.86665pt too wide) in paragraph at lines 534--534
+ []  []
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 534--534
+
+ []
+
+[40]
+<../lectures/images/NetLogoFishGrain1.png, id=370, 1740.5025pt x 1116.17pt>
+File: ../lectures/images/NetLogoFishGrain1.png Graphic file (type png)
+<use ../lectures/images/NetLogoFishGrain1.png>
+Package pdftex.def Info: ../lectures/images/NetLogoFishGrain1.png  used on inpu
+t line 566.
+(pdftex.def)             Requested size: 372.69118pt x 239.00108pt.
+ [41 <../lectures/images/NetLogoFishGrain1.png>]
+<../lectures/images/NetLogoFishGrainLandscape.png, id=388, 680.5425pt x 683.553
+76pt>
+File: ../lectures/images/NetLogoFishGrainLandscape.png Graphic file (type png)
+<use ../lectures/images/NetLogoFishGrainLandscape.png>
+Package pdftex.def Info: ../lectures/images/NetLogoFishGrainLandscape.png  used
+ on input line 611.
+(pdftex.def)             Requested size: 219.22853pt x 220.19147pt.
+
+Overfull \hbox (4.86665pt too wide) in paragraph at lines 611--611
+ []  []
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 611--611
+
+ []
+
+
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
- [36]
+ [42]
+<../lectures/images/NetLogoSecretFishCount.png, id=395, 246.9225pt x 491.8375pt
+>
+File: ../lectures/images/NetLogoSecretFishCount.png Graphic file (type png)
+<use ../lectures/images/NetLogoSecretFishCount.png>
+Package pdftex.def Info: ../lectures/images/NetLogoSecretFishCount.png  used on
+ input line 656.
+(pdftex.def)             Requested size: 118.38379pt x 235.80164pt.
+
+Underfull \hbox (badness 10000) in paragraph at lines 656--656
+ []
+ []
+
+
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
- [37]
-[38] [39]
-Underfull \vbox (badness 2809) has occurred while \output is active []
+ [43 <../lectures/images/NetLogoFishGrainLandscape.png>]
+Underfull \vbox (badness 10000) has occurred while \output is active []
 
- [40]
-[41]) [42]
-Chapter 5.
-(../lectures/lecture-SESmodel2.tex [43
-
-] [44]
+ [44 <../lectures/images/NetLogoSecretFishCount.png>]
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
  [45]
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
  [46]
-[47]
-<../lectures/images/Asterix_Fishmonger.jpg, id=344, 651.43375pt x 551.05875pt>
+Underfull \hbox (badness 4699) in paragraph at lines 774--774
+\OT1/cmr/m/n/10.95 ($\OML/cmm/m/it/10.95 F[]$\OT1/cmr/m/n/10.95 , $\OML/cmm/m/i
+t/10.95 F[]$\OT1/cmr/m/n/10.95 )or high
+ []
+
+
+Underfull \hbox (badness 1694) in paragraph at lines 774--774
+\OT1/cmr/m/n/10.95 ($\OML/cmm/m/it/10.95 F[]$\OT1/cmr/m/n/10.95 , $\OML/cmm/m/i
+t/10.95 F[]$\OT1/cmr/m/n/10.95 ) fish-ing
+ []
+
+
+Overfull \hbox (4.86665pt too wide) in paragraph at lines 774--774
+ []  []
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 774--774
+
+ []
+
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+ [47]
+Underfull \hbox (badness 10000) in paragraph at lines 828--828
+[]$\OML/cmm/m/it/10.95 E\OT1/cmr/m/n/10.95 (\OML/cmm/m/it/10.95 PPF\OT1/cmr/m/n
+/10.95 )$ ex-pected
+ []
+
+
+Underfull \hbox (badness 1275) in paragraph at lines 828--828
+\OT1/cmr/m/n/10.95 com-bi-na-tions of fish
+ []
+
+
+Underfull \hbox (badness 3646) in paragraph at lines 828--828
+[]\OT1/cmr/m/n/10.95 Attains $\OML/cmm/m/it/10.95 L[]$ \OT1/cmr/m/n/10.95 for
+ []
+
+
+Overfull \hbox (4.86665pt too wide) in paragraph at lines 828--828
+ []  []
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 828--828
+
+ []
+
+
+Underfull \hbox (badness 5607) in paragraph at lines 883--883
+[]\OT1/cmr/m/n/10.95 Increased ef-fort re-
+ []
+
+
+Underfull \hbox (badness 4108) in paragraph at lines 883--883
+\OT1/cmr/m/n/10.95 tat-ing $\OML/cmm/m/it/10.95 E\OT1/cmr/m/n/10.95 (\OML/cmm/m
+/it/10.95 PPF\OT1/cmr/m/n/10.95 )$ in-
+ []
+
+
+Underfull \hbox (badness 1184) in paragraph at lines 883--883
+\OT1/cmr/m/n/10.95 ef-fort with ex-pected
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 883--883
+\OT1/cmr/m/n/10.95 guar-an-tees lifes-pan
+ []
+
+
+Underfull \hbox (badness 3009) in paragraph at lines 883--883
+[]\OT1/cmr/m/n/10.95 Fishing ef-fort share
+ []
+
+
+Underfull \hbox (badness 2277) in paragraph at lines 883--883
+\OT1/cmr/m/n/10.95 driv-ing stock lower,
+ []
+
+
+Overfull \hbox (4.86665pt too wide) in paragraph at lines 883--883
+ []  []
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 883--883
+
+ []
+
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+ [48]
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+ [49]
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+ [50]
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+ [51])
+[52]
+Chapter 5.
+(../lectures/lecture-SESmodel2.tex [53
+
+]
+Underfull \hbox (badness 10000) in paragraph at lines 99--99
+\OT1/cmr/m/n/10.95 har-vesters ex-change
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 99--99
+\OT1/cmr/m/n/10.95 each ac-cord-ing to
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 99--99
+\OT1/cmr/m/n/10.95 ac-cord-ing to their
+ []
+
+
+Overfull \hbox (4.86665pt too wide) in paragraph at lines 99--99
+ []  []
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 99--99
+
+ []
+
+[54]
+Underfull \hbox (badness 2237) in paragraph at lines 139--139
+[]\OT1/cmr/m/n/10.95 At $\OML/cmm/m/it/10.95 E[]$\OT1/cmr/m/n/10.95 , most ef-f
+ort
+ []
+
+
+Overfull \hbox (4.86665pt too wide) in paragraph at lines 139--139
+ []  []
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 139--139
+
+ []
+
+[55]
+Overfull \hbox (4.86665pt too wide) in paragraph at lines 222--222
+ []  []
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 222--222
+
+ []
+
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+ [56]
+<../lectures/images/Asterix_Fishmonger.jpg, id=502, 651.43375pt x 551.05875pt>
 File: ../lectures/images/Asterix_Fishmonger.jpg Graphic file (type jpg)
 <use ../lectures/images/Asterix_Fishmonger.jpg>
 Package pdftex.def Info: ../lectures/images/Asterix_Fishmonger.jpg  used on inp
 ut line 241.
-(pdftex.def)             Requested size: 438.45708pt x 370.90594pt.
-) [48 <../lectures/images/Asterix_Fishmonger.jpg>] (./main_notes.aux)
+(pdftex.def)             Requested size: 219.22853pt x 185.44876pt.
+
+Overfull \hbox (4.86665pt too wide) in paragraph at lines 241--241
+ []  []
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 241--241
+
+ []
+
+) [57 <../lectures/images/Asterix_Fishmonger.jpg>] [58
+
+] (./main_notes.aux)
  ***********
 LaTeX2e <2025-11-01>
 L3 programming layer <2026-01-19>
  ***********
-
-
-Package rerunfilecheck Warning: File `main_notes.out' has changed.
-(rerunfilecheck)                Rerun to get outlines right
-(rerunfilecheck)                or use package `bookmark'.
-
-Package rerunfilecheck Info: Checksums for `main_notes.out':
-(rerunfilecheck)             Before: C323BFB346214A6B342968AF1BF5D8D8;2118
-(rerunfilecheck)             After:  20761BE310D80C7F3028C62CD585814A;2296.
+Package rerunfilecheck Info: File `main_notes.out' has not changed.
+(rerunfilecheck)             Checksum: 74EF8A71804CF8CFBC740FD512623D15;2360.
  ) 
 Here is how much of TeX's memory you used:
- 38800 strings out of 469396
- 921316 string characters out of 5467330
- 1396147 words of memory out of 5000000
- 66717 multiletter control sequences out of 15000+600000
+ 39078 strings out of 469396
+ 926384 string characters out of 5467330
+ 1395386 words of memory out of 5000000
+ 66877 multiletter control sequences out of 15000+600000
  638351 words of font info for 78 fonts, out of 8000000 for 9000
  81 hyphenation exceptions out of 8191
- 118i,9n,124p,1026b,1077s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 118i,11n,124p,1026b,1133s stack positions out of 10000i,1000n,20000p,200000b,200000s
  </home/jjanmaat/.texlive2025/texmf-var/fonts/pk/ljfour/jknappen/ec/tcrm1095.
 600pk></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb>
 </usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/
@@ -1198,12 +1631,12 @@ t/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/share/texlive/texmf-dist/fonts
 public/amsfonts/cm/cmr6.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/a
 msfonts/cm/cmr8.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/
 cm/cmsl10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cms
-y10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pf
-b>
-Output written on main_notes.pdf (54 pages, 868862 bytes).
+y10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy8.pfb
+></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb>
+Output written on main_notes.pdf (64 pages, 1084293 bytes).
 PDF statistics:
- 433 PDF objects out of 1000 (max. 8388607)
- 335 compressed objects within 4 object streams
- 92 named destinations out of 1000 (max. 500000)
- 147 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 624 PDF objects out of 1000 (max. 8388607)
+ 505 compressed objects within 6 object streams
+ 210 named destinations out of 1000 (max. 500000)
+ 170 words of extra memory for PDF output out of 10000 (max. 10000000)
 

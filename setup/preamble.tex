@@ -34,51 +34,60 @@
 	}
 }
 
-%% --- 2. DEFINE THE WRAPPER ENVIRONMENT ---
-%% This safely captures everything inside the frame and renders it into a single, unbreakable box
-%\NewEnviron{sframe}[1]{%
-%	\begin{center}
-%		\begin{tcolorbox}[slidebox]
-%			{\large\bfseries #1}\par\medskip % Formatted Slide Title
-%			\BODY                            % Actual slide content
-%		\end{tcolorbox}
-%	\end{center}
-%}
-%
-%% --- 3. REDIRECT BEAMER FRAMES TO THE SAFE ENVIROMENT ---
-%% In article mode, we redefine \begin{frame} to use our safe sframe tool
-%	\mode<article>{
-%		\let\frame\sframe
-%		\let\endframe\endsframe
-%	}
+% --- 2. SLIDE COUNTER + WRAPPER ENVIRONMENT ---
+\newcounter{articleslide}
+\renewcommand{\thearticleslide}{\arabic{articleslide}}
+% Optional: reset per lecture/section instead of numbering continuously
+% \@addtoreset{articleslide}{section}
 
-% --- 2. DEFINING THE NEW COOPERATIVE WRAPPER ---
+% Lets \autoref{lbl} print "Slide 7" automatically
+\providecommand{\articleslideautorefname}{Slide}
+\def\articleslideautorefname{Slide}
+
+% Convenience macro: \sref{lbl} -> "Slide 7" (hyperlinked)
+\newcommand{\sref}[1]{\hyperref[#1]{Slide~\ref*{#1}}}
+
+\NewEnviron{sframe}[1]{%
+	\refstepcounter{articleslide}% sets \@currentlabel so \label works in the body
+	\begin{center}
+		\begin{tcolorbox}[slidebox]
+			\setlength{\textwidth}{\linewidth}% columns are sized relative to the box interior
+			{\large\bfseries Slide \thearticleslide: #1}\par\medskip
+			\BODY
+		\end{tcolorbox}
+	\end{center}
+}
+
+% --- 3. REDIRECT BEAMER FRAMES TO THE SAFE ENVIRONMENT ---
 \mode<article>{
-	\NewEnviron{articleframe}[2][]{% 
-		% #1 captures Beamer options like [label=slide:key]
-		% #2 captures the Title in braces {Slide Title}
-		\stepcounter{framenumber}% Manually advance slide counts in article mode
-		
-		% Force \label inside this box to capture the current Slide Number instead of Section
-		\makeatletter
-		\def\@currentlabel{\theframenumber}%
-		\makeatother
-		
-		% Unpack the Beamer options (like label) so hyperref maps the digital anchor
-		\setkeys{beamer@frame}{#1}% 
-		
-		\begin{center}
-			\begin{tcolorbox}[slidebox]
-				% HEADER: Prints a digital anchor, unique slide identifier, and the title
-				\noindent{\color{blue!70!black}\pointer}~\textbf{Slide \theframenumber: #2}
-				\par\medskip\nopagebreak
-				
-				\BODY % Actual slide content
-			\end{tcolorbox}
-		\end{center}
+	\let\frame\sframe
+	\let\endframe\endsframe
+}
+
+% --- 4. RESTORE COLUMN LAYOUT IN ARTICLE MODE ---
+\mode<article>{
+	\newif\ifslidecolopen
+	\global\slidecolopenfalse
+	% close the current column's minipage, if one is open
+	\def\slidecolclose{\ifslidecolopen\end{minipage}\global\slidecolopenfalse\fi}
+
+\renewenvironment{columns}[1][]{%
+	\par\medskip\noindent\global\slidecolopenfalse
+}{%
+	\slidecolclose
+	\par\medskip
+}
+
+% \column[align]{width}  -- also what \begin{column}[align]{width} calls
+	\renewcommand{\column}[2][t]{%
+		\ifslidecolopen\slidecolclose\hfill\fi
+		\begin{minipage}[#1]{#2}%
+			\vspace{0pt}% makes [t] align the tops of the columns, not the first baselines
+			\global\slidecolopentrue
+			\setlength{\textwidth}{\linewidth}%
+		}
+		% \end{column} closes the minipage opened by \begin{column}
+		\def\endcolumn{\slidecolclose\hfill}
 	}
 	
-	% --- 3. REDIRECT BEAMER FRAMES IN ARTICLE MODE ---
-	\let\frame\articleframe
-	\let\endframe\endarticleframe
-}
+	
