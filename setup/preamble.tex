@@ -4,6 +4,8 @@
 \usetikzlibrary{shapes,arrows.meta,positioning,plotmarks,shapes.misc,decorations.pathreplacing} 
 \usepackage{graphicx}
 \usepackage{pgfplots}
+\usepackage{xcolor}
+\usepackage{hyperref}
 \graphicspath{
 	{../lectures/images/}
 	{../lectures/code/}
@@ -11,6 +13,13 @@
 \usepackage{natbib}
 \usepackage{tcolorbox}
 \usepackage{environ} % Required for handling environment bodies safely
+
+% Configure hyperlinks to be visually clear digitally, but clean when printed
+\hypersetup{
+	colorlinks=true,
+	linkcolor=blue,    % Visible digitally
+	urlcolor=blue
+}
 
 % --- 1. DEFINE UNBREAKABLE BOX STYLING ---
 \tcbset{
@@ -25,20 +34,51 @@
 	}
 }
 
-% --- 2. DEFINE THE WRAPPER ENVIRONMENT ---
-% This safely captures everything inside the frame and renders it into a single, unbreakable box
-\NewEnviron{sframe}[1]{%
-	\begin{center}
-		\begin{tcolorbox}[slidebox]
-			{\large\bfseries #1}\par\medskip % Formatted Slide Title
-			\BODY                            % Actual slide content
-		\end{tcolorbox}
-	\end{center}
-}
+%% --- 2. DEFINE THE WRAPPER ENVIRONMENT ---
+%% This safely captures everything inside the frame and renders it into a single, unbreakable box
+%\NewEnviron{sframe}[1]{%
+%	\begin{center}
+%		\begin{tcolorbox}[slidebox]
+%			{\large\bfseries #1}\par\medskip % Formatted Slide Title
+%			\BODY                            % Actual slide content
+%		\end{tcolorbox}
+%	\end{center}
+%}
+%
+%% --- 3. REDIRECT BEAMER FRAMES TO THE SAFE ENVIROMENT ---
+%% In article mode, we redefine \begin{frame} to use our safe sframe tool
+%	\mode<article>{
+%		\let\frame\sframe
+%		\let\endframe\endsframe
+%	}
 
-% --- 3. REDIRECT BEAMER FRAMES TO THE SAFE ENVIROMENT ---
-% In article mode, we redefine \begin{frame} to use our safe sframe tool
-	\mode<article>{
-		\let\frame\sframe
-		\let\endframe\endsframe
+% --- 2. DEFINING THE NEW COOPERATIVE WRAPPER ---
+\mode<article>{
+	\NewEnviron{articleframe}[2][]{% 
+		% #1 captures Beamer options like [label=slide:key]
+		% #2 captures the Title in braces {Slide Title}
+		\stepcounter{framenumber}% Manually advance slide counts in article mode
+		
+		% Force \label inside this box to capture the current Slide Number instead of Section
+		\makeatletter
+		\def\@currentlabel{\theframenumber}%
+		\makeatother
+		
+		% Unpack the Beamer options (like label) so hyperref maps the digital anchor
+		\setkeys{beamer@frame}{#1}% 
+		
+		\begin{center}
+			\begin{tcolorbox}[slidebox]
+				% HEADER: Prints a digital anchor, unique slide identifier, and the title
+				\noindent{\color{blue!70!black}\pointer}~\textbf{Slide \theframenumber: #2}
+				\par\medskip\nopagebreak
+				
+				\BODY % Actual slide content
+			\end{tcolorbox}
+		\end{center}
 	}
+	
+	% --- 3. REDIRECT BEAMER FRAMES IN ARTICLE MODE ---
+	\let\frame\articleframe
+	\let\endframe\endarticleframe
+}
