@@ -731,6 +731,51 @@
 	\end{itemize}
 \end{frame}
 
+\mode<article>{
+	The relationship between risk, the hermit's effort choice, and the stock is complicated.  We will break it down with a simplification to illustrate the ideas.  The flow chart represents choices as circles, with the name in the circle representing who makes a choice there.  The rectangles are the outcomes that follow from the sequence of choices that led there.  
+	
+	The hermit makes the first choice, that being between a high and a low effort level.  Once the effort is chosen, nature gets to make a choice.  We do not typically consider nature as choosing, in the same way as a person, who we expect to have some sort of a goal.  However, it is convenient to think of nature as a decision maker who 'rolls the dice'.  In this case, there are two possible outcomes that nature chooses between, with the probability of choosing the low fish yield being $p_L$ for the low effort branch and $p_H$ for the high effort branch.
+	
+	Notice that once an effort level is chosen, there are only two possible outcomes.  This is shown on the low effort branch by the probability of the high yield being $1 - p_L$, and on the high effort branch, the probability of the high yield being $1 - p_H$.  When we have a list with all the possible outcomes and their probabilities, the probabilities must add up to one.  Here, on each branch, there are only two possible outcomes, so the probability of one outcome is one less the probability of the other outcome.  Of course, no probability can ever be greater than one, as something with a probability of 1 has 100\% odds of occurring.
+	
+	The flowchart represents the decision during one fishing session.  The stock of fish in the pond evolves over time.  The hermit will keep making this choice, but the size of the fish harvest will change depending on how the stock changes.  Increasing effort translates into higher catches on average, and that will on average reduce the stock more.  By textit{on average} refers to the average catch for many fishing sessions where the same effort is applied.
+}
+
+\begin{frame}{Risk and Sustainability}
+	\begin{columns}[T]
+		\begin{column}{0.3\textwidth}
+			\begin{itemize}
+				\item Hermit chooses effort $E_L$ or $E_H$. \\ $E_H > E_L$
+				\item Nature 'chooses' low ($F_{LL}$, $F_{HL}$)or high ($F_{LH}$, $F_{HH}$) fishing yields. \\ $F_{HL} > F_{LL}$ \\ $F_{HH} > F_{LH}$
+				\item Stock affected by harvest.
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.7\textwidth}
+			\centering
+			\begin{tikzpicture}
+				% Indifference curves
+				\node [draw, circle] (hermit) at (4,5) {Hermit};
+				\node [draw, circle] (natureL) at (2,3) {Nature};
+				\node [draw, circle] (natureR) at (6,3) {Nature};
+				\node [draw, rectangle] (fishLL) at (1,1) {$F_{LL}$};
+				\node [draw, rectangle] (fishLR) at (3,1) {$F_{LH}$};
+				\node [draw, rectangle] (fishRL) at (5,1) {$F_{HL}$};
+				\node [draw, rectangle] (fishRR) at (7,1) {$F_{HH}$};
+				% \draw [thin, rounded corners=5pt] (1,2) rectangle (7,4);
+				\draw [->] (hermit) to node [left] {$E_L$} (natureL);
+				\draw [->] (hermit) to node [right] {$E_H$} (natureR);
+				\draw [->] (natureL) to node [left, near end] {$p_L$} (fishLL);
+				\draw [->] (natureL) to node [right, near end] {$1 - p_L$} (fishLR);
+				\draw [->] (natureR) to node [left, near end] {$p_H$} (fishRL);
+				\draw [->] (natureR) to node [right, near end] {$1 - p_H$} (fishRR);
+			\end{tikzpicture}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\mode<article>{
+	We can put together the impact of risk and how the production possiblities frontier relates to the stock size together to show how things can change over time.  In the figure
+}
 \begin{frame}{Risk and Sustainability}
 	\begin{columns}[T]
 		\begin{column}{0.3\textwidth}
@@ -786,11 +831,9 @@
 		\begin{column}{0.3\textwidth}
 			\begin{itemize}
 				\item Increased effort reduces fish stock, rotating $E(PPF)$ inward.
-				\item Inward rotation .
-				\item Effort with expected lifespan $L^2$ gives actual fish harvests of $\tilde{F}_L$ or $\tilde{F}_H$.
-				\begin{itemize}
-					\item Attains $L_1$ for both harvest realizations..
-				\end{itemize}
+				\item With inward rotation effort with expected lifespan $L_2$ no longer guarantees lifespan $L_1$.
+				\item Fishing effort share increases to guarantee $L_1$.
+				\item To avoid risk of lifespan below $L_1$, fishing effort share increased, driving stock lower, and hermit just surviving.
 			\end{itemize}
 		\end{column}
 		\begin{column}{0.7\textwidth}
@@ -816,9 +859,13 @@
 				% Points at effort chosen when no risk
 				\filldraw [gray!35] (0.25,2.5) circle (2pt) node [above] {};
 				\filldraw [gray!35] (2.25,2.5) circle (2pt) node [above] {};
+				\filldraw [black] (0.1,2.5) circle (2pt) node [above] {};
+				\filldraw [black] (2.1,2.5) circle (2pt) node [above] {};
 				% Points at effort chosen to survive when there is risk
-				\filldraw [black] (0.5,2.0) circle (2pt) node [below] {};
-				\filldraw [black] (2.5,2.0) circle (2pt) node [below] {};
+				\filldraw [gray!35] (0.5,2.0) circle (2pt) node [below] {};
+				\filldraw [gray!35] (2.5,2.0) circle (2pt) node [below] {};
+				\filldraw [black] (0.3,2.0) circle (2pt) node [below] {};
+				\filldraw [black] (2.3,2.0) circle (2pt) node [below] {};
 				% Points after stock decline rotates PPF inward
 				\filldraw [black] (0.5,1.0) circle (2pt) node [above left,xshift=2pt] {$\underline{F}_L$};
 				\filldraw [black] (2.5,1.0) circle (2pt) node [above] {$\underline{F}_H$};
